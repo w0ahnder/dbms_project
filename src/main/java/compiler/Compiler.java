@@ -36,20 +36,26 @@ public class Compiler {
 
     inputDir = args[0];
     outputDir = args[1];
+    //inputDir = "src/test/resources/samples/input";
+    //outputDir = "src/test/resources/samples/expected_output/outputs";
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");
     try {
+      logger.info("reading queries");
       String str = Files.readString(Paths.get(inputDir + "/queries.sql"));
       Statements statements = CCJSqlParserUtil.parseStatements(str);
+      logger.info("Parsing statement");
       QueryPlanBuilder queryPlanBuilder = new QueryPlanBuilder();
+      logger.info("Finished builder");
 
       if (outputToFiles) {
         for (File file : (new File(outputDir).listFiles())) file.delete(); // clean output directory
       }
 
       int counter = 1; // for numbering output files
+      logger.info("entering statement loop");
       for (Statement statement : statements.getStatements()) {
 
-        logger.info("Processing query: " + statement);
+        logger.info("Processing query " + counter + ": " + statement);
 
         try {
           Operator plan = queryPlanBuilder.buildPlan(statement);

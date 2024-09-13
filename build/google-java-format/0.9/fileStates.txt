@@ -1,0 +1,10 @@
+src/test/java/HelperMethods.java,1725718904156380979,368,FORMATTED
+src/main/java/common/DBCatalog.java,1726185100073695866,2370,FORMATTED
+src/main/java/operator/ScanOperator.java,1726185100110602059,1467,FORMATTED
+src/test/java/P1UnitTests.java,1725718904156614459,9990,FORMATTED
+src/main/java/operator/Operator.java,1725718904155752546,1576,FORMATTED
+src/test/java/ParserExample.java,1725718904156805586,2572,FORMATTED
+src/main/java/common/QueryPlanBuilder.java,1726185100087898401,2227,FORMATTED
+src/main/java/compiler/Compiler.java,1726192111588840884,2613,FORMATTED
+src/main/java/common/Tuple.java,1725718904155263153,2123,FORMATTED
+src/test/java/ParserExample2.java,1726185100050137233,3643,FORMATTED

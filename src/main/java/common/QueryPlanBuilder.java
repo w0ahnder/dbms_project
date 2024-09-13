@@ -1,7 +1,13 @@
 package common;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import jdk.jshell.spi.ExecutionControl;
+import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
 import operator.*;
 
 /**
@@ -31,6 +37,19 @@ public class QueryPlanBuilder {
    */
   @SuppressWarnings("unchecked")
   public Operator buildPlan(Statement stmt) throws ExecutionControl.NotImplementedException {
-    throw new ExecutionControl.NotImplementedException("");
+    Select select = (Select) stmt;
+    PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
+    Table fromItem = (Table) plainSelect.getFromItem();
+    String tableName = fromItem.getName();
+    ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tableName);
+    String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
+
+    ScanOperator sc = null;
+    try {
+      sc = new ScanOperator(schema, table_path);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+    return sc;
   }
 }
