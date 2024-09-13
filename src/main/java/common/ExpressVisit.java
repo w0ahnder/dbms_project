@@ -8,9 +8,9 @@ import net.sf.jsqlparser.schema.Column;
 
 public abstract class ExpressVisit implements ExpressionVisitor {
 
-    public void visit(AndExpression andexpr){
+    public void visit(AndExpression andExpr){
     }
-    public void visit(LongValue longval){}
+    public void visit(LongValue longVal){}
     public void visit(Column column){}
     public void visit(EqualsTo equalsto){}
     public void visit(NotEqualsTo notequalsto){}

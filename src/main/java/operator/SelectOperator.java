@@ -8,6 +8,7 @@ import net.sf.jsqlparser.schema.Column;
 
 public class SelectOperator extends Operator{
     public SelectOperator(ArrayList<Column> outputSchema, String path){
+
         super(outputSchema);
     }
     public void reset(){}
