@@ -1,5 +1,6 @@
 package common;
 
+import java.beans.Expression;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import jdk.jshell.spi.ExecutionControl;
@@ -43,6 +44,7 @@ public class QueryPlanBuilder {
     String tableName = fromItem.getName();
     ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tableName);
     String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
+    //Expression where = plainSelect.getWhere();
 
     ScanOperator sc = null;
     try {
