@@ -41,30 +41,6 @@ public class ScanOperatorTest {
         queryPlanBuilder = new QueryPlanBuilder();
         statementList = statements.getStatements();
     }
-
-    @Test
-    public void testQuery1() throws ExecutionControl.NotImplementedException {
-        Operator plan = queryPlanBuilder.buildPlan(statementList.get(0));
-
-        int expectedSize = 6;
-
-        Tuple[] expectedTuples =
-                new Tuple[] {
-                        new Tuple(new ArrayList<>(List.of(1, 200, 50))),
-                        new Tuple(new ArrayList<>(List.of(2, 200, 200))),
-                        new Tuple(new ArrayList<>(List.of(3, 100, 105))),
-                        new Tuple(new ArrayList<>(List.of(4, 100, 50))),
-                        new Tuple(new ArrayList<>(List.of(5, 100, 500))),
-                        new Tuple(new ArrayList<>(List.of(6, 300, 400)))
-                };
-
-        for (int i = 0; i < expectedSize; i++) {
-            Tuple expectedTuple = expectedTuples[i];
-            Tuple actualTuple = plan.getNextTuple();
-            Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
-        }
-    }
-
     @Test
     public void testQuery1GetNextTuple() throws ExecutionControl.NotImplementedException {
         Operator plan = queryPlanBuilder.buildPlan(statementList.get(0));
@@ -87,7 +63,7 @@ public class ScanOperatorTest {
 
         for (int i = 0; i < expectedSize; i++) {
             Tuple expectedTuple = expectedTuples[i];
-            Tuple actualTuple = tuples.get(i);
+            Tuple actualTuple = plan.getNextTuple();
             Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
         }
     }
@@ -95,8 +71,6 @@ public class ScanOperatorTest {
     @Test
     public void testQuery1Reset() throws ExecutionControl.NotImplementedException {
         Operator plan = queryPlanBuilder.buildPlan(statementList.get(0));
-
-        List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
         int resetIndex = 3;
 
@@ -111,13 +85,12 @@ public class ScanOperatorTest {
                 };
 
         for (int i = 0; i < resetIndex; i++) {
-            Tuple expectedTuple = expectedTuples[i];
-            Tuple actualTuple = tuples.get(i);
+            plan.getNextTuple();
         }
         plan.reset();
-        for (int i = 0; i < resetIndex; i++) {
+        for (int i = 0; i < expectedTuples.length; i++) {
             Tuple expectedTuple = expectedTuples[i];
-            Tuple actualTuple = tuples.get(i);
+            Tuple actualTuple = plan.getNextTuple();
             Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
         }
         PrintStream printStream = new PrintStream(System.out);
