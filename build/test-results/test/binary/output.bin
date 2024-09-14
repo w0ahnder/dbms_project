@@ -1,2 +1,0 @@
-?SELECT * FROM Sailors WHERE 3 < 7 AND 5 < 7 AND Sailors.C > 50
-#3 < 7 AND 5 < 7 AND Sailors.C > 50

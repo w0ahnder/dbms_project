@@ -57,14 +57,7 @@ public class test_practice {
   public void testQuery1() throws ExecutionControl.NotImplementedException, IOException, JSQLParserException, URISyntaxException {
     setupBeforeAllTests();
     Operator plan = queryPlanBuilder.buildPlan(statementList.get(0));
-
-    //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    //GreaterThan exp = new GreaterThan();
     Select select = (Select) statementList.get(0);
-    System.out.println(select);
-    Expression where = ((PlainSelect) select.getSelectBody()).getWhere();
-    //GreaterThan gt = (GreaterThan) where;
-    System.out.println(where);
     String outputDir = "src/test/resources/samples/expected_output/outputs";
     for (File file : (new File(outputDir).listFiles())) file.delete();
     File outfile = new File(outputDir + "/query");

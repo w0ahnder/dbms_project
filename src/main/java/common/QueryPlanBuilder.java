@@ -65,6 +65,10 @@ public class QueryPlanBuilder {
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
+    if(where==null){
+      return sc;
+    }
+
     return so;
   }
 

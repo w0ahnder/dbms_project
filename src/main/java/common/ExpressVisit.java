@@ -14,8 +14,8 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.SubSelect;
-
 import java.lang.Long;
+
 public abstract class ExpressVisit implements ExpressionVisitor {
     protected long longvalue=0;
     private boolean cond=false;
