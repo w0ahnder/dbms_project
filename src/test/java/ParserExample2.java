@@ -11,16 +11,15 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
-import net.sf.jsqlparser.statement.select.Join;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 import operator.ScanOperator;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +44,7 @@ public class ParserExample2 {
     DBCatalog.getInstance().setDataDirectory(resourcePath.resolve("db").toString());
 
     URI queriesUri =
-        Objects.requireNonNull(classLoader.getResource("samples/input/queries.sql")).toURI();
+        Objects.requireNonNull(classLoader.getResource("samples/input/queries2.sql")).toURI();
     Path queriesFilePath = Paths.get(queriesUri);
 
     Statements statements = CCJSqlParserUtil.parseStatements(Files.readString(queriesFilePath));
@@ -64,9 +63,32 @@ public class ParserExample2 {
       Table fromItem = (Table) plainSelect.getFromItem();
       String tableName = fromItem.getName();
       //////gets the entire WHERE condition.
-      Expression where = plainSelect.getWhere();
-      //AndExpression andexp = where.visit(this);
+      FromItem from = plainSelect.getFromItem();
+      logger.info("From item is " + from);
+      if(plainSelect.getJoins()!=null) {
+        logger.info("From item joins is " + (plainSelect.getJoins()).get(0).toString());
 
+      }
+      else {
+        logger.info("From item joins is " + (plainSelect.getJoins()));
+      }
+
+      Expression where = plainSelect.getWhere();
+      if(where!=null){
+        logger.info("left where:" + ((BinaryExpression)where).getLeftExpression());
+      }
+      if(where instanceof AndExpression) {
+        AndExpression andexp = (AndExpression) where;
+        logger.info("And left Body:" + andexp.getLeftExpression());
+        logger.info("And RIGHT Body:" + andexp.getRightExpression());
+        Expression right_and = (((BinaryExpression)andexp).getRightExpression());
+        String right_and_expr = ((BinaryExpression)right_and).getLeftExpression().toString();
+        String[] table_column = right_and_expr.split("\\.");
+        logger.info("THIS IS A TABLE: " + table_column[0] + " THIS IS A COLUMN: "+ table_column[1]);
+
+        logger.info("right where:" +((BinaryExpression)(andexp.getLeftExpression())).getRightExpression());
+
+      }
       logger.info("Select body is " + select.getSelectBody());
       logger.info("From item is " + fromItem);
       // get file for from table

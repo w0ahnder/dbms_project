@@ -1,12 +1,14 @@
 package common;
-
-import java.beans.Expression;
+import net.sf.jsqlparser.expression.BinaryExpression;
+import net.sf.jsqlparser.expression.Expression;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import jdk.jshell.spi.ExecutionControl;
+import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.FromItem;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import operator.*;
@@ -27,6 +29,8 @@ import operator.*;
  * 2 student instructions, Section 2.1
  */
 public class QueryPlanBuilder {
+  ArrayList<Expression> andExpressions;
+  ArrayList<String> table_names;
   public QueryPlanBuilder() {}
 
   /**
@@ -40,18 +44,57 @@ public class QueryPlanBuilder {
   public Operator buildPlan(Statement stmt) throws ExecutionControl.NotImplementedException {
     Select select = (Select) stmt;
     PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
-    Table fromItem = (Table) plainSelect.getFromItem();
-    String tableName = fromItem.getName();
+    Table fromItemT = (Table) plainSelect.getFromItem();
+    String tableName = fromItemT.getName();
     ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tableName);
-    String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
-    //Expression where = plainSelect.getWhere();
 
+    String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
+    Expression where = plainSelect.getWhere();
+
+    FromItem fromItem = plainSelect.getFromItem();
+    table_names = new ArrayList<>();
+    //FROM Sailors, Reserves,Boats
+    //Sailors is given in .getFromItem
+    //[Reserves, Boats] in .getJoins() plainSelect.getJoins().get(0).toString is table name
+    //now evaluate
     ScanOperator sc = null;
+    SelectOperator so=null;
     try {
       sc = new ScanOperator(schema, table_path);
+      so = new SelectOperator(sc.getOutputSchema(), sc, where);
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
-    return sc;
+    return so;
+  }
+
+  public ArrayList<Expression> getAnds(Expression where){
+    ArrayList<Expression> ands = new ArrayList<>();
+    if(where!=null){
+      while(where instanceof AndExpression){
+        ands.add(((AndExpression) where).getRightExpression());
+        where = ((AndExpression) where).getLeftExpression();
+      }
+      ands.add(where);
+    }
+    return ands;
+  }
+  public void getColumn(Expression ex){
+    for(int i=0; i<andExpressions.size();i++) {
+      Expression curr = andExpressions.get(i);
+      Expression right = (((BinaryExpression) ex).getRightExpression());
+      Expression left = (((BinaryExpression) ex).getLeftExpression());
+      String right_and_expr = ((BinaryExpression) right).getRightExpression().toString();
+      String left_and_expr = ((BinaryExpression) left).getLeftExpression().toString();
+      String[] right_col = right_and_expr.split("\\.");
+      String[] left_col = left_and_expr.split("\\.");
+      String table;
+      String col;
+      if (right_col.length > 1) {
+        table = right_col[0];
+        col = right_col[1];
+      }
+
+    }
   }
 }

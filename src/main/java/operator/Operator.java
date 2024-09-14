@@ -57,6 +57,7 @@ public abstract class Operator {
   public void dump(PrintStream printStream) {
     Tuple t;
     while ((t = this.getNextTuple()) != null) {
+
       printStream.println(t);
     }
   }
