@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="test_practice" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-09-14T13:08:00" hostname="dhcp-vl2042-5118.redrover.cornell.edu" time="0.015">
+<testsuite name="test_practice" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-09-14T13:36:25" hostname="dhcp-vl2042-5118.redrover.cornell.edu" time="0.019">
   <properties/>
-  <testcase name="testQuery1()" classname="test_practice" time="0.015"/>
+  <testcase name="testQuery1()" classname="test_practice" time="0.019"/>
   <system-out><![CDATA[SELECT * FROM Sailors WHERE 3 < 7 AND 5 < 7 AND Sailors.C > 50
 3 < 7 AND 5 < 7 AND Sailors.C > 50
 ]]></system-out>

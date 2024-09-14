@@ -35,12 +35,24 @@ public abstract class ExpressVisit implements ExpressionVisitor {
         cond = left &&right;
     }
     public void visit(Column column){}
-    public void visit(EqualsTo equalsto){}
+    public void visit(EqualsTo equalsto){
+        equalsto.getLeftExpression().accept(this);
+        long left = longvalue;
+        equalsto.getRightExpression().accept(this);
+        long right = longvalue;
+        cond =  left==right;
+    }
 
     public void visit(LongValue longval){
         longvalue = longval.getValue();
     }
-    public void visit(NotEqualsTo notequalsto){}
+    public void visit(NotEqualsTo notequalsto){
+        notequalsto.getLeftExpression().accept(this);
+        long left = longvalue;
+        notequalsto.getRightExpression().accept(this);
+        long right = longvalue;
+        cond =  left != right;
+    }
     public void visit(GreaterThan greaterThan){
         long left =0;
         long right =0;
@@ -50,7 +62,15 @@ public abstract class ExpressVisit implements ExpressionVisitor {
         right = longvalue;
         cond = left > right;
     }
-    public void visit(GreaterThanEquals greaterEq){}
+    public void visit(GreaterThanEquals greaterEq){
+        long left =0;
+        long right =0;
+        greaterEq.getLeftExpression().accept(this);
+        left = longvalue;
+        greaterEq.getRightExpression().accept(this);
+        right = longvalue;
+        cond = left >= right;
+    }
     public void visit(MinorThan minorThan){
 
         minorThan.getLeftExpression().accept(this);
@@ -59,7 +79,13 @@ public abstract class ExpressVisit implements ExpressionVisitor {
         long right = longvalue;
         cond =  left<right;
     }
-    public void visit(MinorThanEquals minorThanEq){}
+    public void visit(MinorThanEquals minorThanEq){
+        minorThanEq.getLeftExpression().accept(this);
+        long left = longvalue;
+        minorThanEq.getRightExpression().accept(this);
+        long right = longvalue;
+        cond = left <= right;
+    }
 
     //extra
     public void visit(InExpression inExpression) {
