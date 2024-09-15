@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -20,8 +21,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.io.PrintStream;
-public class ScanOperatorTest {
+
+public class SelectOperatorTest {
     private static List<Statement> statementList;
     private static QueryPlanBuilder queryPlanBuilder;
     private static Statements statements;
@@ -41,13 +42,14 @@ public class ScanOperatorTest {
         queryPlanBuilder = new QueryPlanBuilder();
         statementList = statements.getStatements();
     }
+
     @Test
     public void getNextTupleTest() throws ExecutionControl.NotImplementedException {
-        Operator plan = queryPlanBuilder.buildPlan(statementList.get(0));
+        Operator plan = queryPlanBuilder.buildPlan(statementList.get(1));
 
         List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
-        int expectedSize = 6;
+        int expectedSize = 3;
 
         Assertions.assertEquals(expectedSize, tuples.size(), "Unexpected number of rows.");
 
@@ -56,9 +58,6 @@ public class ScanOperatorTest {
                         new Tuple(new ArrayList<>(List.of(1, 200, 50))),
                         new Tuple(new ArrayList<>(List.of(2, 200, 200))),
                         new Tuple(new ArrayList<>(List.of(3, 100, 105))),
-                        new Tuple(new ArrayList<>(List.of(4, 100, 50))),
-                        new Tuple(new ArrayList<>(List.of(5, 100, 500))),
-                        new Tuple(new ArrayList<>(List.of(6, 300, 400)))
                 };
 
         for (int i = 0; i < expectedSize; i++) {
@@ -70,7 +69,7 @@ public class ScanOperatorTest {
 
     @Test
     public void resetTest() throws ExecutionControl.NotImplementedException {
-        Operator plan = queryPlanBuilder.buildPlan(statementList.get(0));
+        Operator plan = queryPlanBuilder.buildPlan(statementList.get(1));
 
         int resetIndex = 3;
 
@@ -79,20 +78,19 @@ public class ScanOperatorTest {
                         new Tuple(new ArrayList<>(List.of(1, 200, 50))),
                         new Tuple(new ArrayList<>(List.of(2, 200, 200))),
                         new Tuple(new ArrayList<>(List.of(3, 100, 105))),
-                        new Tuple(new ArrayList<>(List.of(4, 100, 50))),
-                        new Tuple(new ArrayList<>(List.of(5, 100, 500))),
-                        new Tuple(new ArrayList<>(List.of(6, 300, 400)))
                 };
 
         for (int i = 0; i < resetIndex; i++) {
             plan.getNextTuple();
         }
         plan.reset();
+        PrintStream printStream = new PrintStream(System.out);
+        plan.dump(printStream );
         for (int i = 0; i < expectedTuples.length; i++) {
             Tuple expectedTuple = expectedTuples[i];
             Tuple actualTuple = plan.getNextTuple();
             Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
         }
-        PrintStream printStream = new PrintStream(System.out);
+
     }
 }

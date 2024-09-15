@@ -17,8 +17,8 @@ import net.sf.jsqlparser.statement.select.SubSelect;
 import java.lang.Long;
 
 public abstract class ExpressVisit implements ExpressionVisitor {
-    protected long longvalue=0;
-    private boolean cond=false;
+    protected long longValue=0;
+    private boolean cond;
 
     public boolean return_cond(){
         return cond;
@@ -32,58 +32,58 @@ public abstract class ExpressVisit implements ExpressionVisitor {
         boolean left = cond;
         andexpr.getRightExpression().accept(this);
         boolean right = cond;
-        cond = left &&right;
+        cond = left && right;
     }
     public void visit(Column column){}
     public void visit(EqualsTo equalsto){
         equalsto.getLeftExpression().accept(this);
-        long left = longvalue;
+        long left = longValue;
         equalsto.getRightExpression().accept(this);
-        long right = longvalue;
+        long right = longValue;
         cond =  left==right;
     }
 
     public void visit(LongValue longval){
-        longvalue = longval.getValue();
+        longValue = longval.getValue();
     }
     public void visit(NotEqualsTo notequalsto){
         notequalsto.getLeftExpression().accept(this);
-        long left = longvalue;
+        long left = longValue;
         notequalsto.getRightExpression().accept(this);
-        long right = longvalue;
+        long right = longValue;
         cond =  left != right;
     }
     public void visit(GreaterThan greaterThan){
-        long left =0;
-        long right =0;
+        long left = 0;
+        long right = 0;
         greaterThan.getLeftExpression().accept(this);
-        left = longvalue;
+        left = longValue;
         greaterThan.getRightExpression().accept(this);
-        right = longvalue;
+        right = longValue;
         cond = left > right;
     }
     public void visit(GreaterThanEquals greaterEq){
-        long left =0;
-        long right =0;
+        long left = 0;
+        long right = 0;
         greaterEq.getLeftExpression().accept(this);
-        left = longvalue;
+        left = longValue;
         greaterEq.getRightExpression().accept(this);
-        right = longvalue;
+        right = longValue;
         cond = left >= right;
     }
     public void visit(MinorThan minorThan){
 
         minorThan.getLeftExpression().accept(this);
-        long left=longvalue;
+        long left = longValue;
         minorThan.getRightExpression().accept(this);
-        long right = longvalue;
+        long right = longValue;
         cond =  left<right;
     }
     public void visit(MinorThanEquals minorThanEq){
         minorThanEq.getLeftExpression().accept(this);
-        long left = longvalue;
+        long left = longValue;
         minorThanEq.getRightExpression().accept(this);
-        long right = longvalue;
+        long right = longValue;
         cond = left <= right;
     }
 

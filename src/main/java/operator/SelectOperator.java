@@ -30,7 +30,7 @@ public class SelectOperator extends Operator{
         //get Tuple from scan ====> check if it passes condition
         Tuple curr = scanOp.getNextTuple();
         while( curr!=null){
-            SelectVisitor sv = new SelectVisitor(this, curr, this.outputSchema, expression);
+            SelectVisitor sv = new SelectVisitor(curr, this.outputSchema, expression);
             if(sv.evaluate_expr()){
                 return curr;
             }

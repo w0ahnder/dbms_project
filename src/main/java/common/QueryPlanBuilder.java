@@ -78,6 +78,7 @@ public class QueryPlanBuilder {
     ScanOperator sc = null;
     SelectOperator so = null;
     ProjectOperator po = null;
+
     try {
       sc = new ScanOperator(schema, table_path);
       so = new SelectOperator(sc.getOutputSchema(), sc, where);
