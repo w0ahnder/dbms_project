@@ -2,22 +2,26 @@ package operator;
 
 import common.SelectVisitor;
 import common.Tuple;
+import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
-
-import java.util.ArrayList;
 
 public class JoinOperator extends Operator {
   Operator leftOperator;
   Operator rightOperator;
   Expression condition;
+  Tuple leftTuple;
 
-  public JoinOperator(ArrayList<Column> outputSchema, Operator leftOperator, Operator rightOperator,
+  public JoinOperator(
+      ArrayList<Column> outputSchema,
+      Operator leftOperator,
+      Operator rightOperator,
       Expression condition) {
     super(outputSchema);
     this.leftOperator = leftOperator;
     this.rightOperator = rightOperator;
     this.condition = condition;
+    this.leftTuple = leftOperator.getNextTuple();
   }
 
   public void reset() {
@@ -26,7 +30,6 @@ public class JoinOperator extends Operator {
   }
 
   public Tuple getNextTuple() {
-    Tuple leftTuple = leftOperator.getNextTuple();
     while (leftTuple != null) {
       Tuple rightTuple = rightOperator.getNextTuple();
       while (rightTuple != null) {
@@ -34,7 +37,10 @@ public class JoinOperator extends Operator {
         elements.addAll(leftTuple.getAllElements());
         elements.addAll(rightTuple.getAllElements());
         Tuple curr = new Tuple(elements);
-        // TODO: Replace SelectVisitor with JoinVisitor
+
+        if (this.condition == null) {
+          return curr;
+        }
         SelectVisitor sv = new SelectVisitor(curr, this.outputSchema, this.condition);
         if (sv.evaluate_expr()) {
           return curr;
@@ -48,6 +54,3 @@ public class JoinOperator extends Operator {
     return leftTuple;
   }
 }
-
-// TODO 1: implement JoinVisitor
-// TODO 2: Expressions, Left, Right
