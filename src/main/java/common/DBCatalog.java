@@ -5,9 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import org.apache.logging.log4j.LogManager;
@@ -27,8 +24,9 @@ public class DBCatalog {
 
   private final HashMap<String, ArrayList<Column>> tables;
   private static DBCatalog db;
-  //key is alias, and value is table name
+  // key is alias, and value is table name
   private final HashMap<String, String> aliasmap;
+  private static boolean useAlias = false;
 
   private String dbDirectory;
 
@@ -82,44 +80,41 @@ public class DBCatalog {
    * @return file where table is found on disk
    */
   public File getFileForTable(String tableName) {
+   if(useAlias){
+     tableName = aliasmap.get(tableName);
+     return new File(dbDirectory + "/data/" + tableName);
+   }
     return new File(dbDirectory + "/data/" + tableName);
   }
 
   public ArrayList<Column> get_Table(String tableName) {
+    if(useAlias){
+      return tables.get(aliasmap.get(tableName));
+    }
     System.out.println("getting table ");
     return tables.get(tableName);
   }
-  public ArrayList<Column> get_Table(String name, boolean if_alias) {
-    if(if_alias){
-      String tableName = aliasmap.get(name);
-      return tables.get(tableName);
-    }
-    return tables.get(name);
+  public boolean getUseAlias(){
+    return useAlias;
   }
-
-  public File getFileForTable(String name, boolean if_alias) {
-    if(if_alias){
-      String tableName = aliasmap.get(name);
-      return new File(dbDirectory + "/data/" + tableName);
-    }
-    return new File(dbDirectory + "/data/" + name);
-  }
-
-  public void setTableAlias(String tableName, String alias){
-    //ArrayList<Column> columns =tables.get(tableName);
+  /**
+   * Adds (alias, tableName) to a hashmap, and updates schemaName
+   * for all columns in the table
+   * */
+  public void setTableAlias(String tableName, String alias) {
+    // ArrayList<Column> columns =tables.get(tableName);
     aliasmap.put(alias, tableName);
-    for(Column c: tables.get(tableName)){
-        c.getTable().setSchemaName(alias);
+  }
 
+  public void setUseAlias(boolean is){
+    useAlias = is;
+  }
+
+  public String getTableName(String name){
+    if(useAlias){
+      return aliasmap.get(name);
     }
+    return name;
   }
 
-
-
-  public void getAllAliases(){
-
-  }
-  public ArrayList<Column> getTablewithAlias(String alias) {
-    return tables.get(aliasmap.get(alias));
-  }
 }

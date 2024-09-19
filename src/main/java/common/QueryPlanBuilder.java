@@ -35,7 +35,7 @@ public class QueryPlanBuilder {
   ArrayList<Expression> andExpressions = new ArrayList<>();
   ArrayList<String> tableNames;
   ArrayList<String> aliases;
-  Boolean if_alias=false;
+  Boolean if_alias = false;
 
   public QueryPlanBuilder() {}
 
@@ -55,44 +55,48 @@ public class QueryPlanBuilder {
     String tableName = fromItemT.getName().trim();
     Alias alias1 = plainSelect.getFromItem().getAlias();
     aliases = new ArrayList<>();
-    if(alias1 !=null){
-      if_alias=true;
+    if (alias1 != null) {
+      if_alias = true;
       System.out.println("Alias1:" + alias1.toString().trim());
+      //set alias boolean in DBCatalog
+      DBCatalog.getInstance().setUseAlias(if_alias);
       DBCatalog.getInstance().setTableAlias(tableName, alias1.toString().trim());
       aliases.add(alias1.toString().trim());
-
     }
 
     List<Join> joinTables =
         Optional.ofNullable(plainSelect.getJoins()).orElse(Collections.emptyList());
-    //get rest of the tables in the join
+    // get rest of the tables in the join
     ArrayList<String> tables = new ArrayList<>();
 
     tables.add(tableName);
-    joinTables
-        .forEach(
-            join -> {
-              Table fromTable = (Table) join.getRightItem();
-              String fromName = fromTable.getName();
-              System.out.println("FROM NAME:" + fromName);
-              tables.add(fromName);
-              if(if_alias) {
-                //set alias for the all the tables used in the join
-                String alias = join.getRightItem().getAlias().toString().trim();
-                System.out.println("Alias:" + alias);
-                aliases.add(alias);
-                DBCatalog.getInstance().setTableAlias(fromName, alias);
-              }
-            });
+    joinTables.forEach(
+        join -> {
+          Table fromTable = (Table) join.getRightItem();
+          String fromName = fromTable.getName();
+          System.out.println("FROM NAME:" + fromName);
+          tables.add(fromName);
+          if (if_alias) {
+            // set alias for the all the tables used in the join
+            String alias = join.getRightItem().getAlias().toString().trim();
+            System.out.println("Alias:" + alias);
+            aliases.add(alias);
+            //add alias, tablename to hashmap
+            DBCatalog.getInstance().setTableAlias(fromName, alias);
+          }
+        });
+    //String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
+    if(if_alias){
+      tableName = alias1.toString().trim();
+    }
     String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
-    System.out.println("tablename:" + tableName);
     ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tableName);
     Expression where = plainSelect.getWhere();
     // List of all and expressions
     if (where != null) {
       andExpressions = getAndExpressions(where);
     }
-    //System.out.println("Aliases: " + )
+    // System.out.println("Aliases: " + )
     List<SelectItem> selectItems = plainSelect.getSelectItems();
     Operator result = null;
     try {
@@ -102,10 +106,8 @@ public class QueryPlanBuilder {
       }
 
       if (tables.size() > 1) {
-        if(if_alias)
-          result = createJoinOperator(andExpressions, aliases);
-        else
-          result = createJoinOperator(andExpressions, tables);
+        if (if_alias) result = createJoinOperator(andExpressions, aliases);
+        else result = createJoinOperator(andExpressions, tables);
       }
       if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
         result = new ProjectOperator(result.getOutputSchema(), result, selectItems);
@@ -118,6 +120,7 @@ public class QueryPlanBuilder {
 
   /**
    * Creates a tree of all necessary operators and returns
+   *
    * @param andExpressions List of all expressions in a statement
    * @param tableNames names of all tables to be joined
    * @return JoinOperator object that is the root of all other operators
@@ -129,10 +132,9 @@ public class QueryPlanBuilder {
     System.out.println("Craeting JOIn");
     JoinOperator joinOperator = null;
     if (tableNames.size() == 1) {
-      System.out.println("only one table");
       return joinOperator;
     }
-    System.out.println(tableNames.toString());
+    //System.out.println("all table name"+tableNames.toString());
     String lastTable = tableNames.get(tableNames.size() - 1);
     TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
     ArrayList<Expression> leftExpressions = new ArrayList<>();
@@ -141,10 +143,11 @@ public class QueryPlanBuilder {
     List<String> tablesInExpression;
 
     for (Expression expr : andExpressions) {
-      //GETS ALL TABLE ANEMS IN THE EXPRESSION
+      // GETS ALL TABLE ANEMS IN THE EXPRESSION
       tablesInExpression = tablesNamesFinder.getTableList(expr);
-      System.out.println("TABLES IN EXPRESSION: " + tablesInExpression.toString());
-      if (tablesInExpression.size() == 1 && tablesInExpression.get(0).trim().equalsIgnoreCase(lastTable)) {
+      //System.out.println("TABLES IN EXPRESSION: " + tablesInExpression.toString());
+      if (tablesInExpression.size() == 1
+          && tablesInExpression.get(0).trim().equalsIgnoreCase(lastTable)) {
         rightExpressions.add(expr);
       } else if (tablesInExpression.contains(lastTable)) {
         inExpressions.add(expr);
@@ -152,8 +155,10 @@ public class QueryPlanBuilder {
         leftExpressions.add(expr);
       }
     }
-    //sailors
-    System.out.println("left expressions: "+ leftExpressions.toString());
+
+
+    // sailors
+    //System.out.println("left expressions: " + leftExpressions.toString());
     // expressions that do not mention the last table
     Expression leftExpression;
     if (leftExpressions.size() == 0) {
@@ -192,35 +197,35 @@ public class QueryPlanBuilder {
     } else {
       tableNames.remove(tableNames.get(tableNames.size() - 1));
       Operator leftOperator = createJoinOperator(getAndExpressions(leftExpression), tableNames);
-      ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(lastTable,if_alias);
-      String rightTablePath = DBCatalog.getInstance().getFileForTable(lastTable,if_alias).getPath();
+
+      ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(lastTable);
+      String rightTablePath =
+          DBCatalog.getInstance().getFileForTable(lastTable).getPath();
       Operator rightOperator = new ScanOperator(rightSchema, rightTablePath);
       ;
       if (rightExpression != null) {
-        rightOperator = new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
+        rightOperator =
+            new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
       }
 
       ArrayList<Column> leftSchema = leftOperator.getOutputSchema();
       joinSchema = new ArrayList<>();
       joinSchema.addAll(leftSchema);
       leftSchema.addAll(rightSchema);
-      joinOperator =
-          new JoinOperator(joinSchema, leftOperator, rightOperator, inExpression);
+      joinOperator = new JoinOperator(joinSchema, leftOperator, rightOperator, inExpression);
     }
     return joinOperator;
   }
 
   /**
    * Base case for JoinOperator: a case where there are only two tables to join
+   *
    * @param tableNames : the list of names of tables to be joined
    * @param rightExpression : Expressions that only mention the right table
    * @param leftExpression : Expressions that only mention left table
-   * @param inExpression : Expressions that contain both right and left table
-   * Example: SELECT A, B WHERE A.C = 1 AND A.D = B.C AND B.D = 2 AND A.D = 4
-   * tableNames = [A, B]
-   * rightExpression: B.D = 2
-   * leftExpression: A.C = 1 AND A.D = 4
-   * inExpression: A.D = B.C
+   * @param inExpression : Expressions that contain both right and left table Example: SELECT A, B
+   *     WHERE A.C = 1 AND A.D = B.C AND B.D = 2 AND A.D = 4 tableNames = [A, B] rightExpression:
+   *     B.D = 2 leftExpression: A.C = 1 AND A.D = 4 inExpression: A.D = B.C
    * @return JoinOperator object
    */
   private JoinOperator joinTwoTables(
@@ -231,22 +236,23 @@ public class QueryPlanBuilder {
       throws FileNotFoundException {
     String leftTable = tableNames.get(0);
     String rightTable = tableNames.get(1);
-    System.out.println(DBCatalog.getInstance().get_Table(rightTable,if_alias));
-    ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(rightTable,if_alias);
-    ArrayList<Column> leftSchema = DBCatalog.getInstance().get_Table(leftTable, if_alias);
-    String rightTablePath = DBCatalog.getInstance().getFileForTable(rightTable,if_alias).getPath();
-    String leftTablePath = DBCatalog.getInstance().getFileForTable(leftTable,if_alias).getPath();
+    System.out.println(DBCatalog.getInstance().get_Table(rightTable));
+    ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(rightTable);
+    ArrayList<Column> leftSchema = DBCatalog.getInstance().get_Table(leftTable);
+    String rightTablePath = DBCatalog.getInstance().getFileForTable(rightTable).getPath();
+    String leftTablePath = DBCatalog.getInstance().getFileForTable(leftTable).getPath();
     Operator rightOperator = new ScanOperator(rightSchema, rightTablePath);
     Operator leftOperator = new ScanOperator(leftSchema, leftTablePath);
     if (rightExpression != null) {
-      System.out.println("right:"+ rightExpression.toString());
-      rightOperator = new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
+      //System.out.println("right:" + rightExpression.toString());
+      rightOperator =
+          new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
     }
     if (leftExpression != null) {
-      System.out.println("left:"+ leftExpression.toString());
+      //System.out.println("left:" + leftExpression.toString());
       leftOperator = new SelectOperator(leftSchema, (ScanOperator) leftOperator, leftExpression);
     }
-    ArrayList<Column>  joinSchema = new ArrayList<>();
+    ArrayList<Column> joinSchema = new ArrayList<>();
     joinSchema.addAll(leftSchema);
     joinSchema.addAll(rightSchema);
     return new JoinOperator(joinSchema, leftOperator, rightOperator, inExpression);
@@ -254,6 +260,7 @@ public class QueryPlanBuilder {
 
   /**
    * Changes an andExpression into a list of Expressions which are not andExpression
+   *
    * @param where an Expression
    * @return a list of Expressions that are not andExpressions
    */
@@ -271,6 +278,7 @@ public class QueryPlanBuilder {
 
   /**
    * Takes in a list of expressions and connects them with an and clause
+   *
    * @param expressions: List of expressions
    * @return an AndExpression that connects all other expressions
    */

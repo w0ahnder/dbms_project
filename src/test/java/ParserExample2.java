@@ -15,7 +15,6 @@ import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
@@ -62,35 +61,36 @@ public class ParserExample2 {
 
       Table fromItem = (Table) plainSelect.getFromItem();
       String tableName = fromItem.getName();
-      //////gets the entire WHERE condition.
+      ////// gets the entire WHERE condition.
       FromItem from = plainSelect.getFromItem();
       List<Join> TABLES_JOINS = plainSelect.getJoins();
 
       logger.info("From item is " + from);
       logger.info("Alias:" + fromItem.getAlias());
-      if(plainSelect.getJoins()!=null) {
+      if (plainSelect.getJoins() != null) {
         TABLES_JOINS.forEach(join -> logger.info("Aliases are " + join.getRightItem().getAlias()));
 
-      }
-      else {
+      } else {
         logger.info("From item joins is " + (plainSelect.getJoins()));
       }
 
       Expression where = plainSelect.getWhere();
-      if(where!=null){
-        logger.info("left where:" + ((BinaryExpression)where).getLeftExpression());
+      if (where != null) {
+        logger.info("left where:" + ((BinaryExpression) where).getLeftExpression());
       }
-      if(where instanceof AndExpression) {
+      if (where instanceof AndExpression) {
         AndExpression andexp = (AndExpression) where;
         logger.info("And left Body:" + andexp.getLeftExpression());
         logger.info("And RIGHT Body:" + andexp.getRightExpression());
-        Expression right_and = (((BinaryExpression)andexp).getRightExpression());
-        String right_and_expr = ((BinaryExpression)right_and).getLeftExpression().toString();
+        Expression right_and = (((BinaryExpression) andexp).getRightExpression());
+        String right_and_expr = ((BinaryExpression) right_and).getLeftExpression().toString();
         String[] table_column = right_and_expr.split("\\.");
-        logger.info("THIS IS A TABLE: " + table_column[0] + " THIS IS A COLUMN: "+ table_column[1]);
+        logger.info(
+            "THIS IS A TABLE: " + table_column[0] + " THIS IS A COLUMN: " + table_column[1]);
 
-        logger.info("right where:" +((BinaryExpression)(andexp.getLeftExpression())).getRightExpression());
-
+        logger.info(
+            "right where:"
+                + ((BinaryExpression) (andexp.getLeftExpression())).getRightExpression());
       }
       logger.info("Select body is " + select.getSelectBody());
       logger.info("From item is " + fromItem);
@@ -103,7 +103,6 @@ public class ParserExample2 {
         logger.info("From item is " + t.toString());
       }
       logger.info("Where is :" + where);
-
 
       /*for(SelectItem s: selectCols){
           logger.info("Select item is " + s);

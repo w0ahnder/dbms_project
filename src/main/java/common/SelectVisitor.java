@@ -17,6 +17,7 @@ public class SelectVisitor extends ExpressVisit {
 
   /**
    * evaluates expression and returns result
+   *
    * @return boolean value of the expression evaluated
    */
   public boolean evaluate_expr() {
@@ -26,29 +27,29 @@ public class SelectVisitor extends ExpressVisit {
 
   /**
    * gets the value of a column
+   *
    * @param column Column to be visited
    */
   public void visit(Column column) {
+    // S.A
     String[] data = (column.toString()).split("\\.");
+    //could be an alias
     String table = data[0];
-    System.out.println("table:"+table);
-    System.out.println("Column column:"+column.toString());
+    //System.out.println("table:" + table);
+    //System.out.println("Column column:" + column.toString());
     String col = data[1];
+    //System.out.println("col:" + col);
+    String tablename = DBCatalog.getInstance().getTableName(table);
     int count = 0;
+    //get alias and use as table name
     for (Column c : schema) {
       String colName = c.getColumnName();
-      System.out.println("Column name:"+colName);
-      String tablename;
-      String alias = c.getTable().getSchemaName();
-      System.out.println("SCHEMA NAME:" + alias);
-      if(alias!=null){
-        tablename = alias;
-      }
-      else{
-        tablename = c.getTable().getName();
-      }
-
-      if (colName.equalsIgnoreCase(col) && tablename.equalsIgnoreCase(table)) {
+      String cTable = c.getTable().getName();
+      //String table = c.getTable().toString();
+//      System.out.println("Column name:" + colName);
+//      System.out.println("table" + table);
+//      System.out.println("table/alias name:" + tablename);
+      if (colName.equalsIgnoreCase(col) && tablename.equalsIgnoreCase(cTable)) {
         longValue = tuple.getElementAtIndex(count);
         return;
       }

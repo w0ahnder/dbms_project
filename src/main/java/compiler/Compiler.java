@@ -36,8 +36,8 @@ public class Compiler {
 
     inputDir = args[0];
     outputDir = args[1];
-    //inputDir = "src/test/resources/samples/input";
-    //outputDir = "src/test/resources/samples/expected_output/outputs";
+    // inputDir = "src/test/resources/samples/input";
+    // outputDir = "src/test/resources/samples/expected_output/outputs";
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");
     try {
       logger.info("reading queries");
