@@ -64,9 +64,12 @@ public class ParserExample2 {
       String tableName = fromItem.getName();
       //////gets the entire WHERE condition.
       FromItem from = plainSelect.getFromItem();
+      List<Join> TABLES_JOINS = plainSelect.getJoins();
+
       logger.info("From item is " + from);
+      logger.info("Alias:" + fromItem.getAlias());
       if(plainSelect.getJoins()!=null) {
-        logger.info("From item joins is " + (plainSelect.getJoins()).get(0).toString());
+        TABLES_JOINS.forEach(join -> logger.info("Aliases are " + join.getRightItem().getAlias()));
 
       }
       else {

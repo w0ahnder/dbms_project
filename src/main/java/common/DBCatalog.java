@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import org.apache.logging.log4j.LogManager;
@@ -24,12 +27,15 @@ public class DBCatalog {
 
   private final HashMap<String, ArrayList<Column>> tables;
   private static DBCatalog db;
+  //key is alias, and value is table name
+  private final HashMap<String, String> aliasmap;
 
   private String dbDirectory;
 
   /** Reads schemaFile and populates schema information */
   private DBCatalog() {
     tables = new HashMap<>();
+    aliasmap = new HashMap<>();
   }
 
   /**
@@ -80,6 +86,40 @@ public class DBCatalog {
   }
 
   public ArrayList<Column> get_Table(String tableName) {
+    System.out.println("getting table ");
     return tables.get(tableName);
+  }
+  public ArrayList<Column> get_Table(String name, boolean if_alias) {
+    if(if_alias){
+      String tableName = aliasmap.get(name);
+      return tables.get(tableName);
+    }
+    return tables.get(name);
+  }
+
+  public File getFileForTable(String name, boolean if_alias) {
+    if(if_alias){
+      String tableName = aliasmap.get(name);
+      return new File(dbDirectory + "/data/" + tableName);
+    }
+    return new File(dbDirectory + "/data/" + name);
+  }
+
+  public void setTableAlias(String tableName, String alias){
+    //ArrayList<Column> columns =tables.get(tableName);
+    aliasmap.put(alias, tableName);
+    for(Column c: tables.get(tableName)){
+        c.getTable().setSchemaName(alias);
+
+    }
+  }
+
+
+
+  public void getAllAliases(){
+
+  }
+  public ArrayList<Column> getTablewithAlias(String alias) {
+    return tables.get(aliasmap.get(alias));
   }
 }

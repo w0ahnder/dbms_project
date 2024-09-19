@@ -31,12 +31,24 @@ public class SelectVisitor extends ExpressVisit {
   public void visit(Column column) {
     String[] data = (column.toString()).split("\\.");
     String table = data[0];
+    System.out.println("table:"+table);
+    System.out.println("Column column:"+column.toString());
     String col = data[1];
     int count = 0;
     for (Column c : schema) {
       String colName = c.getColumnName();
-      String tableName = c.getTable().getName();
-      if (colName.equalsIgnoreCase(col) && tableName.equalsIgnoreCase(table)) {
+      System.out.println("Column name:"+colName);
+      String tablename;
+      String alias = c.getTable().getSchemaName();
+      System.out.println("SCHEMA NAME:" + alias);
+      if(alias!=null){
+        tablename = alias;
+      }
+      else{
+        tablename = c.getTable().getName();
+      }
+
+      if (colName.equalsIgnoreCase(col) && tablename.equalsIgnoreCase(table)) {
         longValue = tuple.getElementAtIndex(count);
         return;
       }

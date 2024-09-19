@@ -6,16 +6,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import jdk.jshell.spi.ExecutionControl;
+import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.select.AllColumns;
-import net.sf.jsqlparser.statement.select.Join;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 import operator.*;
 
@@ -37,6 +34,8 @@ import operator.*;
 public class QueryPlanBuilder {
   ArrayList<Expression> andExpressions = new ArrayList<>();
   ArrayList<String> tableNames;
+  ArrayList<String> aliases;
+  Boolean if_alias=false;
 
   public QueryPlanBuilder() {}
 
@@ -52,27 +51,48 @@ public class QueryPlanBuilder {
     Select select = (Select) stmt;
     PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
     Table fromItemT = (Table) plainSelect.getFromItem();
+
     String tableName = fromItemT.getName().trim();
-    ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tableName);
+    Alias alias1 = plainSelect.getFromItem().getAlias();
+    aliases = new ArrayList<>();
+    if(alias1 !=null){
+      if_alias=true;
+      System.out.println("Alias1:" + alias1.toString().trim());
+      DBCatalog.getInstance().setTableAlias(tableName, alias1.toString().trim());
+      aliases.add(alias1.toString().trim());
+
+    }
+
     List<Join> joinTables =
         Optional.ofNullable(plainSelect.getJoins()).orElse(Collections.emptyList());
-
+    //get rest of the tables in the join
     ArrayList<String> tables = new ArrayList<>();
-    tables.add(tableName);
-    joinTables.forEach(
-        join -> {
-          Table fromTable = (Table) join.getRightItem();
-          String fromName = fromTable.getName();
-          tables.add(fromName);
-        });
-    String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
-    Expression where = plainSelect.getWhere();
 
+    tables.add(tableName);
+    joinTables
+        .forEach(
+            join -> {
+              Table fromTable = (Table) join.getRightItem();
+              String fromName = fromTable.getName();
+              System.out.println("FROM NAME:" + fromName);
+              tables.add(fromName);
+              if(if_alias) {
+                //set alias for the all the tables used in the join
+                String alias = join.getRightItem().getAlias().toString().trim();
+                System.out.println("Alias:" + alias);
+                aliases.add(alias);
+                DBCatalog.getInstance().setTableAlias(fromName, alias);
+              }
+            });
+    String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
+    System.out.println("tablename:" + tableName);
+    ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tableName);
+    Expression where = plainSelect.getWhere();
     // List of all and expressions
     if (where != null) {
       andExpressions = getAndExpressions(where);
     }
-
+    //System.out.println("Aliases: " + )
     List<SelectItem> selectItems = plainSelect.getSelectItems();
     Operator result = null;
     try {
@@ -80,8 +100,12 @@ public class QueryPlanBuilder {
       if (where != null) {
         result = new SelectOperator(schema, (ScanOperator) result, where);
       }
+
       if (tables.size() > 1) {
-        result = createJoinOperator(andExpressions, tables);
+        if(if_alias)
+          result = createJoinOperator(andExpressions, aliases);
+        else
+          result = createJoinOperator(andExpressions, tables);
       }
       if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
         result = new ProjectOperator(result.getOutputSchema(), result, selectItems);
@@ -93,7 +117,7 @@ public class QueryPlanBuilder {
   }
 
   /**
-   * Creates a tree of all necessary operators and returns 
+   * Creates a tree of all necessary operators and returns
    * @param andExpressions List of all expressions in a statement
    * @param tableNames names of all tables to be joined
    * @return JoinOperator object that is the root of all other operators
@@ -102,10 +126,13 @@ public class QueryPlanBuilder {
   private JoinOperator createJoinOperator(
       ArrayList<Expression> andExpressions, ArrayList<String> tableNames)
       throws FileNotFoundException {
+    System.out.println("Craeting JOIn");
     JoinOperator joinOperator = null;
     if (tableNames.size() == 1) {
+      System.out.println("only one table");
       return joinOperator;
     }
+    System.out.println(tableNames.toString());
     String lastTable = tableNames.get(tableNames.size() - 1);
     TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
     ArrayList<Expression> leftExpressions = new ArrayList<>();
@@ -114,8 +141,10 @@ public class QueryPlanBuilder {
     List<String> tablesInExpression;
 
     for (Expression expr : andExpressions) {
+      //GETS ALL TABLE ANEMS IN THE EXPRESSION
       tablesInExpression = tablesNamesFinder.getTableList(expr);
-      if (tablesInExpression.size() == 1 && tablesInExpression.get(0).equalsIgnoreCase(lastTable)) {
+      System.out.println("TABLES IN EXPRESSION: " + tablesInExpression.toString());
+      if (tablesInExpression.size() == 1 && tablesInExpression.get(0).trim().equalsIgnoreCase(lastTable)) {
         rightExpressions.add(expr);
       } else if (tablesInExpression.contains(lastTable)) {
         inExpressions.add(expr);
@@ -123,7 +152,8 @@ public class QueryPlanBuilder {
         leftExpressions.add(expr);
       }
     }
-
+    //sailors
+    System.out.println("left expressions: "+ leftExpressions.toString());
     // expressions that do not mention the last table
     Expression leftExpression;
     if (leftExpressions.size() == 0) {
@@ -157,21 +187,25 @@ public class QueryPlanBuilder {
     ArrayList<Column> joinSchema;
     if (tableNames.size() == 2) {
       // If two tables remaining process each and combine
+
       joinOperator = joinTwoTables(tableNames, rightExpression, leftExpression, inExpression);
     } else {
       tableNames.remove(tableNames.get(tableNames.size() - 1));
       Operator leftOperator = createJoinOperator(getAndExpressions(leftExpression), tableNames);
-      ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(lastTable);
-      String rightTablePath = DBCatalog.getInstance().getFileForTable(lastTable).getPath();
+      ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(lastTable,if_alias);
+      String rightTablePath = DBCatalog.getInstance().getFileForTable(lastTable,if_alias).getPath();
       Operator rightOperator = new ScanOperator(rightSchema, rightTablePath);
+      ;
       if (rightExpression != null) {
         rightOperator = new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
       }
+
       ArrayList<Column> leftSchema = leftOperator.getOutputSchema();
       joinSchema = new ArrayList<>();
       joinSchema.addAll(leftSchema);
       leftSchema.addAll(rightSchema);
-      joinOperator = new JoinOperator(joinSchema, leftOperator, rightOperator, inExpression);
+      joinOperator =
+          new JoinOperator(joinSchema, leftOperator, rightOperator, inExpression);
     }
     return joinOperator;
   }
@@ -186,7 +220,7 @@ public class QueryPlanBuilder {
    * tableNames = [A, B]
    * rightExpression: B.D = 2
    * leftExpression: A.C = 1 AND A.D = 4
-   * inExpression: A.D = B.C 
+   * inExpression: A.D = B.C
    * @return JoinOperator object
    */
   private JoinOperator joinTwoTables(
@@ -197,23 +231,22 @@ public class QueryPlanBuilder {
       throws FileNotFoundException {
     String leftTable = tableNames.get(0);
     String rightTable = tableNames.get(1);
-    ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(rightTable);
-    ArrayList<Column> leftSchema = DBCatalog.getInstance().get_Table(leftTable);
-
-    String rightTablePath = DBCatalog.getInstance().getFileForTable(rightTable).getPath();
-    String leftTablePath = DBCatalog.getInstance().getFileForTable(leftTable).getPath();
-
+    System.out.println(DBCatalog.getInstance().get_Table(rightTable,if_alias));
+    ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(rightTable,if_alias);
+    ArrayList<Column> leftSchema = DBCatalog.getInstance().get_Table(leftTable, if_alias);
+    String rightTablePath = DBCatalog.getInstance().getFileForTable(rightTable,if_alias).getPath();
+    String leftTablePath = DBCatalog.getInstance().getFileForTable(leftTable,if_alias).getPath();
     Operator rightOperator = new ScanOperator(rightSchema, rightTablePath);
     Operator leftOperator = new ScanOperator(leftSchema, leftTablePath);
-
     if (rightExpression != null) {
-      rightOperator = new SelectOperator(rightSchema, rightOperator, rightExpression);
+      System.out.println("right:"+ rightExpression.toString());
+      rightOperator = new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
     }
     if (leftExpression != null) {
-      leftOperator = new SelectOperator(leftSchema, leftOperator, leftExpression);
+      System.out.println("left:"+ leftExpression.toString());
+      leftOperator = new SelectOperator(leftSchema, (ScanOperator) leftOperator, leftExpression);
     }
-
-    ArrayList<Column> joinSchema = new ArrayList<>();
+    ArrayList<Column>  joinSchema = new ArrayList<>();
     joinSchema.addAll(leftSchema);
     joinSchema.addAll(rightSchema);
     return new JoinOperator(joinSchema, leftOperator, rightOperator, inExpression);
@@ -239,7 +272,7 @@ public class QueryPlanBuilder {
   /**
    * Takes in a list of expressions and connects them with an and clause
    * @param expressions: List of expressions
-   * @return an AndExpression that connects all other expressions 
+   * @return an AndExpression that connects all other expressions
    */
   private AndExpression createAndExpression(List<Expression> expressions) {
     if (expressions.size() < 2) {

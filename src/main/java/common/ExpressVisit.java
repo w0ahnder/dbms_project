@@ -36,6 +36,7 @@ public abstract class ExpressVisit implements ExpressionVisitor {
     }
     public void visit(Column column){}
     public void visit(EqualsTo equalsto){
+        System.out.println("equalsto:"+ equalsto.toString());
         equalsto.getLeftExpression().accept(this);
         long left = longValue;
         equalsto.getRightExpression().accept(this);
