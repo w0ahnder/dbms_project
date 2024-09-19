@@ -37,6 +37,7 @@ public class QueryPlanBuilder {
   ArrayList<String> aliases;
   Boolean if_alias = false;
 
+
   public QueryPlanBuilder() {}
 
   /**
@@ -110,7 +111,9 @@ public class QueryPlanBuilder {
         else result = createJoinOperator(andExpressions, tables);
       }
       if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
+        System.out.println("output schema for projection:"  + result.getOutputSchema());
         result = new ProjectOperator(result.getOutputSchema(), result, selectItems);
+
       }
       return result;
     } catch (FileNotFoundException e) {
@@ -140,7 +143,7 @@ public class QueryPlanBuilder {
     ArrayList<Expression> leftExpressions = new ArrayList<>();
     ArrayList<Expression> inExpressions = new ArrayList<>();
     ArrayList<Expression> rightExpressions = new ArrayList<>();
-    List<String> tablesInExpression;
+    List<String> tablesInExpression = new ArrayList<>();
 
     for (Expression expr : andExpressions) {
       // GETS ALL TABLE ANEMS IN THE EXPRESSION
@@ -156,7 +159,6 @@ public class QueryPlanBuilder {
       }
     }
 
-
     // sailors
     //System.out.println("left expressions: " + leftExpressions.toString());
     // expressions that do not mention the last table
@@ -168,7 +170,6 @@ public class QueryPlanBuilder {
     } else {
       leftExpression = createAndExpression(leftExpressions);
     }
-
     // expressions that only mention the last table
     Expression rightExpression;
     if (rightExpressions.size() == 0) {
@@ -178,7 +179,6 @@ public class QueryPlanBuilder {
     } else {
       rightExpression = createAndExpression(rightExpressions);
     }
-
     // expressions that mention the last table and another table
     Expression inExpression;
     if (inExpressions.size() == 0) {
@@ -188,11 +188,10 @@ public class QueryPlanBuilder {
     } else {
       inExpression = createAndExpression(inExpressions);
     }
-
     ArrayList<Column> joinSchema;
     if (tableNames.size() == 2) {
       // If two tables remaining process each and combine
-
+      System.out.println("joining two tables");
       joinOperator = joinTwoTables(tableNames, rightExpression, leftExpression, inExpression);
     } else {
       tableNames.remove(tableNames.get(tableNames.size() - 1));
@@ -236,15 +235,18 @@ public class QueryPlanBuilder {
       throws FileNotFoundException {
     String leftTable = tableNames.get(0);
     String rightTable = tableNames.get(1);
-    System.out.println(DBCatalog.getInstance().get_Table(rightTable));
+    System.out.println("left table:" + DBCatalog.getInstance().get_Table(leftTable));
+    System.out.println("right table:" + DBCatalog.getInstance().get_Table(rightTable));
+
     ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(rightTable);
     ArrayList<Column> leftSchema = DBCatalog.getInstance().get_Table(leftTable);
+
     String rightTablePath = DBCatalog.getInstance().getFileForTable(rightTable).getPath();
     String leftTablePath = DBCatalog.getInstance().getFileForTable(leftTable).getPath();
     Operator rightOperator = new ScanOperator(rightSchema, rightTablePath);
     Operator leftOperator = new ScanOperator(leftSchema, leftTablePath);
     if (rightExpression != null) {
-      //System.out.println("right:" + rightExpression.toString());
+      System.out.println("right:" + rightExpression.toString());
       rightOperator =
           new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
     }
