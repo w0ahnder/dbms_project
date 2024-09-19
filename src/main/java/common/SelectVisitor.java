@@ -15,11 +15,19 @@ public class SelectVisitor extends ExpressVisit {
     tuple = t;
   }
 
+  /**
+   * evaluates expression and returns result
+   * @return boolean value of the expression evaluated
+   */
   public boolean evaluate_expr() {
     expression.accept(this);
     return return_cond();
   }
 
+  /**
+   * gets the value of a column
+   * @param column Column to be visited
+   */
   public void visit(Column column) {
     String[] data = (column.toString()).split("\\.");
     String table = data[0];
