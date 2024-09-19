@@ -79,7 +79,7 @@ public class QueryPlanBuilder {
     try {
       result = new ScanOperator(schema, table_path);
       if (where != null) {
-        result = new SelectOperator(schema, result, where);
+        result = new SelectOperator(schema, (ScanOperator) result, where);
       }
       if (tables.size() > 1) {
         result = createJoinOperator(andExpressions, tables);
@@ -158,10 +158,10 @@ public class QueryPlanBuilder {
       Operator rightOperator = new ScanOperator(rightSchema, rightTablePath);
       Operator leftOperator = new ScanOperator(leftSchema, leftTablePath);
       if (rightExpression != null) {
-        rightOperator = new SelectOperator(rightSchema, rightOperator, rightExpression);
+        rightOperator = new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
       }
       if (leftExpression != null) {
-        leftOperator = new SelectOperator(leftSchema, leftOperator, leftExpression);
+        leftOperator = new SelectOperator(leftSchema, (ScanOperator) leftOperator, leftExpression);
       }
       joinSchema = new ArrayList<>();
       joinSchema.addAll(leftSchema);
@@ -176,7 +176,7 @@ public class QueryPlanBuilder {
       Operator rightOperator = new ScanOperator(rightSchema, rightTablePath);
       ;
       if (rightExpression != null) {
-        rightOperator = new SelectOperator(rightSchema, rightOperator, rightExpression);
+        rightOperator = new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
       }
 
       ArrayList<Column> leftSchema = leftOperator.getOutputSchema();
