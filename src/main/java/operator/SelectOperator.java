@@ -13,10 +13,6 @@ public class SelectOperator extends Operator {
 
   public SelectOperator(ArrayList<Column> outputSchema, ScanOperator sc, Expression expr) {
     super(outputSchema);
-    //    System.out.println("output schema name:" + outputSchema);
-    //    System.out.println("output schema name:" + outputSchema.get(0).getTable().getName());
-    //    System.out.println("output schema ALIAS:" +
-    // outputSchema.get(0).getTable().getSchemaName());
     expression = expr;
     scanOp = sc;
   }

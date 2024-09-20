@@ -94,7 +94,6 @@ public class DBCatalog {
     if (useAlias) {
       return aliasSchema.get(tableName);
     }
-    System.out.println("getting table ");
     return tables.get(tableName);
   }
 

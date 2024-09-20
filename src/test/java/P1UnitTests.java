@@ -48,9 +48,6 @@ public class P1UnitTests {
     Operator plan = queryPlanBuilder.buildPlan(statementList.get(0));
 
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    for (Tuple tuple : tuples) {
-      System.out.println(tuple);
-    }
 
     int expectedSize = 6;
     plan.dump(new PrintStream(System.out));

@@ -4,8 +4,6 @@ import common.Tuple;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SortOperator extends Operator {
   List<OrderByElement> orderByElements;
@@ -26,9 +24,7 @@ public class SortOperator extends Operator {
       result.add(tuple);
       tuple = sc.getNextTuple();
     }
-    System.out.println("before sorting" + result);
     result.sort(new TupleComparator(outputSchema));
-    System.out.println("after sorting" + result);
   }
 
   public void reset() {
@@ -56,8 +52,8 @@ public class SortOperator extends Operator {
     @Override
     public int compare(Tuple t1, Tuple t2) {
 
-      Logger logger = LogManager.getLogger();
-      logger.info("comparing " + t1.toString() + " and " + t2.toString());
+      // Logger logger = LogManager.getLogger();
+      // logger.info("comparing " + t1.toString() + " and " + t2.toString());
 
       if (!orderByElements.isEmpty()) {
         Map<String, Integer> columnToIndexMap = new HashMap<>();
@@ -66,7 +62,7 @@ public class SortOperator extends Operator {
         }
         for (OrderByElement orderByElement : orderByElements) {
           Column orderToCol = (Column) orderByElement.getExpression();
-          logger.info("current col is " + orderToCol.getFullyQualifiedName());
+          // logger.info("current col is " + orderToCol.getFullyQualifiedName());
           String col = orderToCol.getFullyQualifiedName();
           int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
           int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
@@ -78,10 +74,10 @@ public class SortOperator extends Operator {
           }
           columnToIndexMap.remove(col);
         }
-        logger.info("keys are " + columnToIndexMap.keySet().toString());
+        // logger.info("keys are " + columnToIndexMap.keySet().toString());
         for (Column col : outputSchema) {
           String col_str = col.getFullyQualifiedName();
-          logger.info("current key is " + col_str);
+          // logger.info("current key is " + col_str);
           if (columnToIndexMap.containsKey(col_str)) {
             int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col_str));
             int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col_str));

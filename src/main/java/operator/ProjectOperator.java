@@ -12,13 +12,18 @@ import net.sf.jsqlparser.statement.select.SelectItem;
 public class ProjectOperator extends Operator {
   Operator childOperator;
   List<SelectItem> selectItems;
+  ArrayList<Column> oldSchema;
 
   public ProjectOperator(
-      ArrayList<Column> outputSchema, Operator childOperator, List<SelectItem> selectItems)
+      ArrayList<Column> newSchema,
+      ArrayList<Column> oldSchema,
+      Operator childOperator,
+      List<SelectItem> selectItems)
       throws FileNotFoundException {
-    super(outputSchema);
+    super(newSchema);
     this.childOperator = childOperator;
     this.selectItems = selectItems;
+    this.oldSchema = oldSchema;
   }
 
   public void reset() {
@@ -74,8 +79,8 @@ public class ProjectOperator extends Operator {
   }
 
   public int getIndex(String column, String name) {
-    for (int i = 0; i < outputSchema.size(); i++) {
-      Column curr = outputSchema.get(i);
+    for (int i = 0; i < oldSchema.size(); i++) {
+      Column curr = oldSchema.get(i);
       String c = curr.getColumnName();
       String t = curr.getTable().getName();
 

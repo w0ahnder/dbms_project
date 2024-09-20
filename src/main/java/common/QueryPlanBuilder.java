@@ -59,8 +59,6 @@ public class QueryPlanBuilder {
     if (alias1 != null) {
       if_alias = true;
       // set alias boolean in DBCatalog
-      System.out.println("Alias1:" + alias1.toString().trim());
-      // set alias boolean in DBCatalog
       DBCatalog.getInstance().setUseAlias(if_alias);
       DBCatalog.getInstance().setTableAlias(tableName, alias1.toString().trim());
       aliases.add(alias1.toString().trim());
@@ -116,17 +114,17 @@ public class QueryPlanBuilder {
         else result = createJoinOperator(andExpressions, tables);
       }
       if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
-        result = new ProjectOperator(result.getOutputSchema(), result, selectItems);
+        ArrayList<Column> newSchema = new ArrayList<>();
+        for (SelectItem selectItem : selectItems) {
+          Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
+          newSchema.add(c);
+        }
+        result = new ProjectOperator(newSchema, result.getOutputSchema(), result, selectItems);
       }
       if (orderByElements != null) {
         result = new SortOperator(result.getOutputSchema(), orderByElements, result);
       }
       if (isDistinct) {
-        System.out.println(
-            "Is distinct"
-                + result.getOutputSchema().toString()
-                + " "
-                + result.getAllTuples().toString());
         SortOperator child = new SortOperator(result.getOutputSchema(), new ArrayList<>(), result);
         result = new DuplicateEliminationOperator(result.getOutputSchema(), child);
       }
