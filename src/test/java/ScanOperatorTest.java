@@ -93,6 +93,6 @@ public class ScanOperatorTest {
       Tuple actualTuple = plan.getNextTuple();
       Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
     }
-    PrintStream printStream = new PrintStream(System.out);
+
   }
 }

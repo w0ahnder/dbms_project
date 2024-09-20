@@ -112,8 +112,6 @@ public class JoinOperatorTest {
       plan.getNextTuple();
     }
     plan.reset();
-    PrintStream printStream = new PrintStream(System.out);
-    plan.dump(printStream);
     for (int i = 0; i < expectedTuples.length; i++) {
       Tuple expectedTuple = expectedTuples[i];
       Tuple actualTuple = plan.getNextTuple();
