@@ -24,28 +24,27 @@ public class ProjectOperator extends Operator {
     this.childOperator = childOperator;
     this.selectItems = selectItems;
     this.oldSchema = oldSchema;
-
   }
 
+  /** resets the child operator */
   public void reset() {
     childOperator.reset();
   }
 
+  /**
+   * Calls the childOperator's getNextTuple() and selects the appropriate entries corresponding to
+   * the columns and tables in the SELECT body
+   *
+   * @return Tuple that is the selected columns from the tuple returned by childOperator's
+   *     getNextTuple()
+   */
   public Tuple getNextTuple() {
     Tuple nextTuple = childOperator.getNextTuple();
     if (nextTuple == null) {
       reset();
       return nextTuple;
     }
-    /*Set<String> selectedColumnNames =
-       selectItems.stream()
-           .filter(item -> item instanceof SelectExpressionItem)
-           .map(item -> (Column) ((SelectExpressionItem) item).getExpression())
-           .map(Column::getColumnName)
-           .collect(Collectors.toSet());
-
-    */
-    // keep track of schema name and column name in two separate
+    // get all tables and columns reference in SELECT body
     ArrayList<String> tables = new ArrayList<>();
     ArrayList<String> columns = new ArrayList<>();
     for (SelectItem s : selectItems) {
@@ -59,26 +58,15 @@ public class ProjectOperator extends Operator {
       int index = getIndex(columns.get(i), tables.get(i));
       resTuple.add(nextTuple.getElementAtIndex(index));
     }
-
-    /*Map<String, Integer> schemaIndexMap = new HashMap<>();
-
-    //column name keeps duplicates for self join
-    for (int i = 0; i < this.outputSchema.size(); i++) {
-      schemaIndexMap.put(this.outputSchema.get(i).getColumnName(), i);
-    }
-    */
-
-    // Create the result tuple based on selected columns
-    /*ArrayList<Integer> returnTup =
-    selectedColumnNames.stream()
-        .map(columnName -> schemaIndexMap.getOrDefault(columnName, -1))
-        .filter(index -> index != -1)
-        .map(nextTuple::getElementAtIndex)
-        .collect(Collectors.toCollection(ArrayList::new));
-        */
     return new Tuple(resTuple);
   }
 
+  /**
+   * Given a column name and table/alias, looks for the index in oldSchema whose name.column matches
+   * the name of the table and column in the select body
+   *
+   * @return index of element to be retrieved for projection
+   */
   public int getIndex(String column, String name) {
     for (int i = 0; i < oldSchema.size(); i++) {
       Column curr = oldSchema.get(i);

@@ -1,3 +1,4 @@
+SELECT S1.A, S2.B, S3.C FROM Sailors S1, Sailors S2, Sailors S3 ORDER BY S1.A;
 SELECT S.A, B.E FROM Sailors S, Reserves R, Boats B WHERE S.A = R.G AND S.B>=200;
 SELECT * FROM Sailors S1, Sailors S2 WHERE  S1.B =S2.C;
 SELECT * FROM Sailors S, Boats B WHERE S.A = 1 AND B.E=1;

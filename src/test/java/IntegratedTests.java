@@ -7,8 +7,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import jdk.jshell.spi.ExecutionControl;
@@ -48,6 +46,7 @@ public class IntegratedTests {
           JSQLParserException,
           IOException,
           URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(0);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
@@ -57,7 +56,12 @@ public class IntegratedTests {
   }
 
   @Test
-  public void testQuery2() throws ExecutionControl.NotImplementedException {
+  public void testQuery2()
+      throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(1);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
@@ -75,7 +79,12 @@ public class IntegratedTests {
   }
 
   @Test
-  public void testQuery3() throws ExecutionControl.NotImplementedException {
+  public void testQuery3()
+      throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(2);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
@@ -95,7 +104,12 @@ public class IntegratedTests {
   }
 
   @Test
-  public void testQuery4() throws ExecutionControl.NotImplementedException {
+  public void testQuery4()
+      throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(3);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
@@ -105,7 +119,12 @@ public class IntegratedTests {
   }
 
   @Test
-  public void testQuery5() throws ExecutionControl.NotImplementedException {
+  public void testQuery5()
+      throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(4);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
@@ -115,7 +134,12 @@ public class IntegratedTests {
   }
 
   @Test
-  public void testQuery6() throws ExecutionControl.NotImplementedException {
+  public void testQuery6()
+      throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(5);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
@@ -125,7 +149,12 @@ public class IntegratedTests {
   }
 
   @Test
-  public void testQuery7() throws ExecutionControl.NotImplementedException {
+  public void testQueryNo7()
+      throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(6);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
@@ -141,51 +170,49 @@ public class IntegratedTests {
     // 1, 103
     // 2, 101
   }
+
   @Test
-  public void testQuery8() throws ExecutionControl.NotImplementedException {
+  public void testQueryNo8()
+      throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(7);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
     int expectedSize = 180;
     Assertions.assertEquals(expectedSize, tuples.size());
-
   }
+
   @Test
-  public void testQuery9() throws ExecutionControl.NotImplementedException {
+  public void testQueryNo9()
+      throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(8);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
     int expectedSize = 96;
     Assertions.assertEquals(expectedSize, tuples.size());
-
   }
 
   @Test
-  public void testQuery10() throws ExecutionControl.NotImplementedException {
+  public void testQueryNo10()
+      throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    setupBeforeAllTests();
     Statement stmt = statements.getStatements().get(9);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
     int expectedSize = 216;
     Assertions.assertEquals(expectedSize, tuples.size());
-
-    /*Tuple[] expectedTuples =
-            new Tuple[]{
-                    new Tuple(new ArrayList<>(Arrays.asList(1, 100, 50))),
-                    new Tuple(new ArrayList<>(Arrays.asList(1, 100, 200))),
-                    new Tuple(new ArrayList<>(Arrays.asList(1, 100, 105))),
-                    new Tuple(new ArrayList<>(Arrays.asList(1, 100, 50))),
-                    new Tuple(new ArrayList<>(Arrays.asList(1, 100, 500))),
-                    new Tuple(new ArrayList<>(Arrays.asList(1, 100, 400)))
-            };
-    for(int i =0; i<7; i++){
-      Tuple expectedTuple = expectedTuples[i];
-      Tuple actualTuple = tuples.get(i);
-      Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
-    }*/
-
   }
 }
-

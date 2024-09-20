@@ -12,8 +12,6 @@ import net.sf.jsqlparser.schema.Column;
  * what is difference between the two names construct a Scan operator for the table in the fromItem
  */
 public class ScanOperator extends Operator {
-  // table we're scanning
-  // private Table table;
   public DBCatalog db;
   public BufferedReader br;
   public String table_path;
@@ -23,12 +21,10 @@ public class ScanOperator extends Operator {
     super(outputSchema);
     db = DBCatalog.getInstance();
     table_path = path;
-    // get the table names from the outputSchema
-    // Table.setAlias(Alias alias)
-    // get path to schema and load table names and columns for all into hashmap
     br = new BufferedReader(new FileReader(table_path));
   }
 
+  /** close the Buffered Reader after we reach the end of the file */
   public void reset() {
     try {
       br.close();
@@ -38,9 +34,13 @@ public class ScanOperator extends Operator {
     }
   }
 
+  /**
+   * keeps the getting the next record from the file, until we reach the end
+   *
+   * @return Tuple that corresponds to the values in a record from the file at table_path
+   */
   public Tuple getNextTuple() {
     try {
-      // do we account for null or empty column values
       String line = br.readLine();
       return new Tuple(line);
     } catch (Exception e) {

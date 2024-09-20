@@ -17,16 +17,20 @@ public class SelectOperator extends Operator {
     scanOp = sc;
   }
 
+  /** resets the child operator, which is ScanOperator */
   public void reset() {
+
     scanOp.reset();
   }
 
+  /**
+   * Keeps calling the child's getNextTuple() and evaluates the expression. If the expression is
+   * true, we return the tuple. Otherwise, keep calling the child's getNextTuple() until there are
+   * none left
+   *
+   * @return Tuple statisfying Expression expression or null
+   */
   public Tuple getNextTuple() {
-    // query plan builder returns an operator for each statement and then dump is called on operator
-    // dump keeps calling getNextTuple until we get a null value, and operation is finished
-    // have to connect table names and columns to expressions
-    // keep getting tuples from scan until hit null
-    // get Tuple from scan ====> check if it passes condition
     Tuple curr = scanOp.getNextTuple();
     while (curr != null) {
       SelectVisitor sv = new SelectVisitor(curr, this.outputSchema, expression);

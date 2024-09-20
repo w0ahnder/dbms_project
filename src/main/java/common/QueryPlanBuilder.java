@@ -64,7 +64,7 @@ public class QueryPlanBuilder {
     } else {
       if_alias = false;
       DBCatalog.getInstance().setUseAlias(if_alias);
-      DBCatalog.getInstance().setTableAlias(tableName, null);
+      DBCatalog.getInstance().resetDB();
     }
 
     List<Join> joinTables =
@@ -133,10 +133,12 @@ public class QueryPlanBuilder {
         result = new SortOperator(result.getOutputSchema(), orderByElements, result);
       }
       if (isDistinct) {
-        if (orderByElements!=null){
-          result = new DuplicateEliminationOperator(result.getOutputSchema(), (SortOperator) result);
-        }else{
-          SortOperator child = new SortOperator(result.getOutputSchema(), new ArrayList<>(), result);
+        if (orderByElements != null) {
+          result =
+              new DuplicateEliminationOperator(result.getOutputSchema(), (SortOperator) result);
+        } else {
+          SortOperator child =
+              new SortOperator(result.getOutputSchema(), new ArrayList<>(), result);
           result = new DuplicateEliminationOperator(result.getOutputSchema(), child);
         }
       }
@@ -147,7 +149,7 @@ public class QueryPlanBuilder {
   }
 
   /**
-   * Creates a tree of all necessary operators and returns
+   * Creates a tree of all necessary operators and returns using recursion
    *
    * @param andExpressions List of all expressions in a statement
    * @param tableNames names of all tables to be joined

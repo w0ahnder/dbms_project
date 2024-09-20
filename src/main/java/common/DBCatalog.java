@@ -24,10 +24,9 @@ public class DBCatalog {
 
   private final HashMap<String, ArrayList<Column>> tables;
   private static DBCatalog db;
-  // key is alias, and value is table name
-  private final HashMap<String, String> aliasmap;
-  private final HashMap<String, ArrayList<Column>> aliasSchema;
-  private static boolean useAlias = false;
+  private HashMap<String, String> aliasmap;
+  private HashMap<String, ArrayList<Column>> aliasSchema;
+  private boolean useAlias = false;
 
   private String dbDirectory;
 
@@ -89,7 +88,14 @@ public class DBCatalog {
     return new File(dbDirectory + "/data/" + tableName);
   }
 
-  /** gives you the name of the table where tableName is either an alias or the actual table name */
+  /**
+   * Given tableName, get_Table Checks first if our query is using aliases and if so returns the
+   * schema of the table corresponding to the alias. Otherwise, returns the schema directly from
+   * tables
+   *
+   * @param tableName is an alias or actual table name
+   * @return schema for table corresponding to tableName
+   */
   public ArrayList<Column> get_Table(String tableName) {
     if (useAlias) {
       return aliasSchema.get(tableName);
@@ -97,11 +103,22 @@ public class DBCatalog {
     return tables.get(tableName);
   }
 
+  /**
+   * return the variable corresponding to if we are using aliases
+   *
+   * @return variable useAlias
+   */
   public boolean getUseAlias() {
     return useAlias;
   }
 
-  /** Adds (alias, tableName) to a hashmap, and updates schemaName for all columns in the table */
+  /**
+   * Adds the name of a table and its alias to aliasmap, and adds the alias name, with the schema of
+   * the corresponding table in aliasSchema
+   *
+   * @param tableName is actual table name
+   * @param alias is the alias for the table
+   */
   public void setTableAlias(String tableName, String alias) {
     // ArrayList<Column> columns =tables.get(tableName);
     aliasmap.put(alias, tableName);
@@ -112,10 +129,31 @@ public class DBCatalog {
     aliasSchema.put(alias, columns);
   }
 
+  /**
+   * Reinitializes the values of aliasmap and aliasSchema so that the next query can be read without
+   * having information from previous query
+   */
+  public void resetDB() {
+    aliasmap = new HashMap<>();
+    aliasSchema = new HashMap<>();
+  }
+
+  /**
+   * Sets useAlias if we are using aliases in the query
+   *
+   * @param is true when we use aliases, false otherwise
+   */
   public void setUseAlias(boolean is) {
     useAlias = is;
   }
 
+  /**
+   * If we are using aliases, getTableName treats name as an alias and returns the corresponding
+   * table's name. Otherwise, name is just the table's name itself.
+   *
+   * @param name is an alias or table name
+   * @return the name of the table
+   */
   public String getTableName(String name) {
     if (useAlias) {
       return aliasmap.get(name);
@@ -123,6 +161,3 @@ public class DBCatalog {
     return name;
   }
 }
-// get all aliases
-// to support self joins create function to take alias and return new table
-// with same schema as before

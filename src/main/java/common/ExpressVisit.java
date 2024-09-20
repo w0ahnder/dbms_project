@@ -27,7 +27,6 @@ public abstract class ExpressVisit implements ExpressionVisitor {
     // Sailors.A = Reserves.G AND SAILORS.A<500 AND Sailors.B>300 AND Sailors.B>200
     // left expression is Sailors.A = Reserves.G AND SAILORS.A<500 AND Sailors.B>300
     // right expression is Sailors.B>200
-
     andexpr.getLeftExpression().accept(this);
     boolean left = cond;
     andexpr.getRightExpression().accept(this);
