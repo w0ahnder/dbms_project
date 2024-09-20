@@ -48,7 +48,7 @@ public class P1UnitTests {
     Operator plan = queryPlanBuilder.buildPlan(statementList.get(0));
 
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    for(Tuple tuple: tuples) {
+    for (Tuple tuple : tuples) {
       System.out.println(tuple);
     }
 
@@ -226,10 +226,10 @@ public class P1UnitTests {
 
     Tuple[] expectedTuples =
         new Tuple[] {
-          new Tuple(new ArrayList<>(Arrays.asList(101))),
-          new Tuple(new ArrayList<>(Arrays.asList(102))),
-          new Tuple(new ArrayList<>(Arrays.asList(103))),
-          new Tuple(new ArrayList<>(Arrays.asList(104)))
+          new Tuple(new ArrayList<>(Arrays.asList(1))),
+          new Tuple(new ArrayList<>(Arrays.asList(2))),
+          new Tuple(new ArrayList<>(Arrays.asList(3))),
+          new Tuple(new ArrayList<>(Arrays.asList(4)))
         };
 
     for (int i = 0; i < expectedSize; i++) {

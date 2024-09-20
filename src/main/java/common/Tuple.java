@@ -1,8 +1,5 @@
 package common;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 
 /**
@@ -62,11 +59,10 @@ public class Tuple {
   public String toString() {
     StringBuilder stringRepresentation = new StringBuilder();
     for (int i = 0; i < tupleArray.size() - 1; i++) {
-     stringRepresentation.append(tupleArray.get(i)).append(",");
+      stringRepresentation.append(tupleArray.get(i)).append(",");
     }
     stringRepresentation.append(tupleArray.get(tupleArray.size() - 1));
     return stringRepresentation.toString();
-
   }
 
   /**

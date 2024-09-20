@@ -117,15 +117,18 @@ public class QueryPlanBuilder {
       }
       if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
         result = new ProjectOperator(result.getOutputSchema(), result, selectItems);
-
       }
-      if (orderByElements!=null) {
+      if (orderByElements != null) {
         result = new SortOperator(result.getOutputSchema(), orderByElements, result);
       }
-      if (isDistinct){
-        System.out.println("Is distinct" + result.getOutputSchema().toString() + " " + result.getAllTuples().toString());
-        SortOperator child = new SortOperator(result.getOutputSchema(), new ArrayList<>(), result );
-        result = new DuplicateEliminationOperator(result.getOutputSchema(), child );
+      if (isDistinct) {
+        System.out.println(
+            "Is distinct"
+                + result.getOutputSchema().toString()
+                + " "
+                + result.getAllTuples().toString());
+        SortOperator child = new SortOperator(result.getOutputSchema(), new ArrayList<>(), result);
+        result = new DuplicateEliminationOperator(result.getOutputSchema(), child);
       }
 
       return result;

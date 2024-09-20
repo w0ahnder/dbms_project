@@ -1,43 +1,38 @@
 package operator;
 
 import common.Tuple;
-import net.sf.jsqlparser.schema.Column;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
+import net.sf.jsqlparser.schema.Column;
 
-public class DuplicateEliminationOperator extends Operator{
+public class DuplicateEliminationOperator extends Operator {
 
-    SortOperator so;
+  SortOperator so;
 
-    Tuple curr;
+  Tuple curr;
 
-    public DuplicateEliminationOperator(ArrayList<Column> outputSchema, SortOperator sortOp){
-        super(outputSchema);
-        so = sortOp;
-        curr = null;
+  public DuplicateEliminationOperator(ArrayList<Column> outputSchema, SortOperator sortOp) {
+    super(outputSchema);
+    so = sortOp;
+    curr = null;
+  }
 
+  @Override
+  public void reset() {
+    curr = new Tuple(new ArrayList<>());
+    so.reset();
+  }
+
+  @Override
+  public Tuple getNextTuple() {
+    Tuple next = so.getNextTuple();
+    if (curr == null) {
+      curr = next;
+      return curr;
     }
-
-    @Override
-    public void reset() {
-        curr = new Tuple(new ArrayList<>());
-        so.reset();
+    while (curr.equals(next)) {
+      next = so.getNextTuple();
     }
-
-    @Override
-    public Tuple getNextTuple() {
-        Tuple next = so.getNextTuple();
-        if (curr == null){
-            curr = next;
-            return curr;
-        }
-        while (curr.equals(next)){
-            next = so.getNextTuple();
-        }
-        curr = next;
-        return next;
-
-    }
+    curr = next;
+    return next;
+  }
 }
