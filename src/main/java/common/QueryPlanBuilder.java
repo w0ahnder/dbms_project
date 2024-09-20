@@ -33,7 +33,6 @@ import operator.*;
  */
 public class QueryPlanBuilder {
   ArrayList<Expression> andExpressions = new ArrayList<>();
-  ArrayList<String> tableNames;
   ArrayList<String> aliases;
   Boolean if_alias = false;
 
@@ -52,8 +51,8 @@ public class QueryPlanBuilder {
     Select select = (Select) stmt;
     PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
     Table fromItemT = (Table) plainSelect.getFromItem();
-
     String tableName = fromItemT.getName().trim();
+
     Alias alias1 = plainSelect.getFromItem().getAlias();
     aliases = new ArrayList<>();
     if (alias1 != null) {
@@ -110,16 +109,25 @@ public class QueryPlanBuilder {
       }
 
       if (tables.size() > 1) {
-        if (if_alias) result = createJoinOperator(andExpressions, aliases);
-        else result = createJoinOperator(andExpressions, tables);
+        if (if_alias) result = createJoinOperator(andExpressions, copyList(aliases));
+        else result = createJoinOperator(andExpressions, copyList(tables));
       }
       if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
         ArrayList<Column> newSchema = new ArrayList<>();
         for (SelectItem selectItem : selectItems) {
-          Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
-          newSchema.add(c);
+            Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
+            newSchema.add(c);
         }
-        result = new ProjectOperator(newSchema, result.getOutputSchema(), result, selectItems);
+
+        ArrayList<Column> schem = new ArrayList<>();
+        ArrayList<String> schemaTables = new ArrayList<>();
+        if(if_alias) schemaTables = aliases;
+        else schemaTables = tables;
+        for(String t: schemaTables){
+          ArrayList<Column> p = DBCatalog.getInstance().get_Table(t);
+          schem.addAll(p);
+        }
+        result = new ProjectOperator(newSchema, schem, result, selectItems);
       }
       if (orderByElements != null) {
         result = new SortOperator(result.getOutputSchema(), orderByElements, result);
@@ -300,5 +308,11 @@ public class QueryPlanBuilder {
       expressions.remove(0);
     }
     return andExpression;
+  }
+
+  private ArrayList<String> copyList(ArrayList<String> l){
+    ArrayList<String> res = new ArrayList<>();
+    l.forEach(s -> res.add(s));
+    return res;
   }
 }

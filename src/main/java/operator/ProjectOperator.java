@@ -24,6 +24,7 @@ public class ProjectOperator extends Operator {
     this.childOperator = childOperator;
     this.selectItems = selectItems;
     this.oldSchema = oldSchema;
+
   }
 
   public void reset() {
