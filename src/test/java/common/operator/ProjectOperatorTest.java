@@ -62,7 +62,7 @@ public class ProjectOperatorTest {
 
   @Test
   public void TestMultipleColumnProjection() throws ExecutionControl.NotImplementedException {
-    ProjectOperator plan = (ProjectOperator) queryPlanBuilder.buildPlan(statementList.get(12));
+    ProjectOperator plan = (ProjectOperator) queryPlanBuilder.buildPlan(statementList.get(11));
     assertEquals(2, plan.getOutputSchema().size());
     Operator childOperator = plan.getChildOperator();
     Tuple childTuple = childOperator.getNextTuple();
@@ -76,7 +76,7 @@ public class ProjectOperatorTest {
 
   @Test
   public void TestAllColumnProjection() throws ExecutionControl.NotImplementedException {
-    ProjectOperator plan = (ProjectOperator) queryPlanBuilder.buildPlan(statementList.get(11));
+    ProjectOperator plan = (ProjectOperator) queryPlanBuilder.buildPlan(statementList.get(12));
     assertEquals(5, plan.getOutputSchema().size());
     Operator childOperator = plan.getChildOperator();
     Tuple childTuple = childOperator.getNextTuple();
