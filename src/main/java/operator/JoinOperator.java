@@ -6,7 +6,12 @@ import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
 
-/** Operator class that enables users to join outputs from more than one table */
+/**
+ * Operator class that enables users to join outputs from more than one table. Operator has left and
+ * right child where right child could only be a Scan/ Select Operator. Left Child could be a join
+ * operator too. Condition is the expressions that involves operands that contain Any of the tables
+ * in the left child and the right child
+ */
 public class JoinOperator extends Operator {
   Operator leftOperator;
   Operator rightOperator;
@@ -53,6 +58,11 @@ public class JoinOperator extends Operator {
   }
 
   /**
+   * Calls getNextTuple on left Operator if that is null, it returns null Calls getNextTuple on
+   * right Operator if that is null, it returns null If there is a valid response from left and
+   * right tuples, it evaluates condition and returns the concatenated tuple. if not, it goes back
+   * to check for any other valid tuple.
+   *
    * @return joint nextTuple or null if we are at the end
    */
   public Tuple getNextTuple() {

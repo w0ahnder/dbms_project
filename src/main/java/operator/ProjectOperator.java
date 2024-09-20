@@ -31,6 +31,11 @@ public class ProjectOperator extends Operator {
     childOperator.reset();
   }
 
+  /** returns the child operator of this operator */
+  public Operator getChildOperator() {
+    return this.childOperator;
+  }
+
   /**
    * Calls the childOperator's getNextTuple() and selects the appropriate entries corresponding to
    * the columns and tables in the SELECT body
@@ -44,6 +49,7 @@ public class ProjectOperator extends Operator {
       reset();
       return nextTuple;
     }
+
     // get all tables and columns reference in SELECT body
     ArrayList<String> tables = new ArrayList<>();
     ArrayList<String> columns = new ArrayList<>();
