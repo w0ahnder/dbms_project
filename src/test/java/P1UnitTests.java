@@ -261,31 +261,4 @@ public class P1UnitTests {
       Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
     }
   }
-
-  @Test
-  public void testQuery9() throws ExecutionControl.NotImplementedException {
-    Operator plan = queryPlanBuilder.buildPlan(statementList.get(8));
-    plan.dump(new PrintStream(System.out));
-
-    //    List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    //
-    //    int expectedSize = 6;
-    //
-    //    Assertions.assertEquals(expectedSize, tuples.size(), "Unexpected number of rows.");
-    //
-    //    Tuple[] expectedTuples =
-    //            new Tuple[] {
-    //                    new Tuple(new ArrayList<>(Arrays.asList(3, 100, 105))),
-    //                    new Tuple(new ArrayList<>(Arrays.asList(4, 100, 50))),
-    //                    new Tuple(new ArrayList<>(Arrays.asList(5, 100, 500))),
-    //                    new Tuple(new ArrayList<>(Arrays.asList(1, 200, 50))),
-    //                    new Tuple(new ArrayList<>(Arrays.asList(2, 200, 200))),
-    //                    new Tuple(new ArrayList<>(Arrays.asList(6, 300, 400)))
-    //            };
-    //    for (int i = 0; i < expectedSize; i++) {
-    //      Tuple expectedTuple = expectedTuples[i];
-    //      Tuple actualTuple = tuples.get(i);
-    //      Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
-    //    }
-  }
 }

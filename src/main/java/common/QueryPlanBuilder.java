@@ -82,19 +82,21 @@ public class QueryPlanBuilder {
             // set alias for the all the tables used in the join
             String alias = join.getRightItem().getAlias().toString().trim();
             aliases.add(alias);
-            // add alias, tablename to hashmap
+
             // add alias, tablename to hashmap
             DBCatalog.getInstance().setTableAlias(fromName, alias);
           }
         });
-    // String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
+
     if (if_alias) {
+      assert alias1 != null;
       tableName = alias1.toString().trim();
     }
     String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
     ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tableName);
     Expression where = plainSelect.getWhere();
-    // List of all and expressions
+
+    // List of all AND expressions
     if (where != null) {
       andExpressions = getAndExpressions(where);
     }
@@ -120,7 +122,7 @@ public class QueryPlanBuilder {
         }
 
         ArrayList<Column> schem = new ArrayList<>();
-        ArrayList<String> schemaTables = new ArrayList<>();
+        ArrayList<String> schemaTables;
         if (if_alias) schemaTables = aliases;
         else schemaTables = tables;
         for (String t : schemaTables) {
@@ -172,7 +174,7 @@ public class QueryPlanBuilder {
     List<String> tablesInExpression = new ArrayList<>();
 
     for (Expression expr : andExpressions) {
-      // GETS ALL TABLE ANEMS IN THE EXPRESSION
+      // GETS ALL TABLE NAMES IN THE EXPRESSION
       tablesInExpression = tablesNamesFinder.getTableList(expr);
       if (tablesInExpression.size() == 1
           && tablesInExpression.get(0).trim().equalsIgnoreCase(lastTable)) {
@@ -184,10 +186,9 @@ public class QueryPlanBuilder {
       }
     }
 
-    // sailors
     // expressions that do not mention the last table
     Expression leftExpression;
-    if (leftExpressions.size() == 0) {
+    if (leftExpressions.isEmpty()) {
       leftExpression = null;
     } else if (leftExpressions.size() == 1) {
       leftExpression = leftExpressions.get(0);
@@ -317,7 +318,7 @@ public class QueryPlanBuilder {
 
   private ArrayList<String> copyList(ArrayList<String> l) {
     ArrayList<String> res = new ArrayList<>();
-    l.forEach(s -> res.add(s));
+    res.addAll(l);
     return res;
   }
 }

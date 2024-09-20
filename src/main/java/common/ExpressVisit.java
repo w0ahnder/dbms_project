@@ -15,18 +15,26 @@ import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.SubSelect;
 
+/**
+ * Class that is responsible for evaluating conditions in WHERE expressions. Implements
+ * ExpressionVisitor
+ */
 public abstract class ExpressVisit implements ExpressionVisitor {
   protected long longValue = 0;
   private boolean cond;
 
+  /**
+   * returns final result of evaluated expression
+   *
+   * @return boolean value of the expression evaluated
+   */
   public boolean return_cond() {
     return cond;
   }
 
+  /** evaluates AND expressions and sets "cond" value to the result */
   public void visit(AndExpression andexpr) {
-    // Sailors.A = Reserves.G AND SAILORS.A<500 AND Sailors.B>300 AND Sailors.B>200
-    // left expression is Sailors.A = Reserves.G AND SAILORS.A<500 AND Sailors.B>300
-    // right expression is Sailors.B>200
+
     andexpr.getLeftExpression().accept(this);
     boolean left = cond;
     andexpr.getRightExpression().accept(this);
@@ -36,6 +44,7 @@ public abstract class ExpressVisit implements ExpressionVisitor {
 
   public void visit(Column column) {}
 
+  /** evaluates EQUALS TO expressions and sets "cond" value to the result */
   public void visit(EqualsTo equalsto) {
     equalsto.getLeftExpression().accept(this);
     long left = longValue;
@@ -48,6 +57,7 @@ public abstract class ExpressVisit implements ExpressionVisitor {
     longValue = longval.getValue();
   }
 
+  /** evaluates NOT EQUALS TO expressions and sets "cond" value to the result */
   public void visit(NotEqualsTo notequalsto) {
     notequalsto.getLeftExpression().accept(this);
     long left = longValue;
@@ -56,6 +66,7 @@ public abstract class ExpressVisit implements ExpressionVisitor {
     cond = left != right;
   }
 
+  /** evaluates GREATER THAN expressions and sets "cond" value to the result */
   public void visit(GreaterThan greaterThan) {
     long left = 0;
     long right = 0;
@@ -66,6 +77,7 @@ public abstract class ExpressVisit implements ExpressionVisitor {
     cond = left > right;
   }
 
+  /** evaluates GREATER THAN OR EQUAL TO expressions and sets "cond" value to the result */
   public void visit(GreaterThanEquals greaterEq) {
     long left = 0;
     long right = 0;
@@ -76,6 +88,7 @@ public abstract class ExpressVisit implements ExpressionVisitor {
     cond = left >= right;
   }
 
+  /** evaluates LESS THAN expressions and sets "cond" value to the result */
   public void visit(MinorThan minorThan) {
 
     minorThan.getLeftExpression().accept(this);
@@ -85,6 +98,7 @@ public abstract class ExpressVisit implements ExpressionVisitor {
     cond = left < right;
   }
 
+  /** evaluates LESS THAN OR EQUAL TO expressions and sets "cond" value to the result */
   public void visit(MinorThanEquals minorThanEq) {
     minorThanEq.getLeftExpression().accept(this);
     long left = longValue;

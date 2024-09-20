@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class SortOperatorTest {
+public class DuplicateEliminationOperatorTest {
   private static List<Statement> statementList;
   private static QueryPlanBuilder queryPlanBuilder;
   private static Statements statements;
@@ -43,21 +43,21 @@ public class SortOperatorTest {
 
   @Test
   public void getNextTupleTest() throws ExecutionControl.NotImplementedException {
-    Operator plan = queryPlanBuilder.buildPlan(statementList.get(6));
+    Operator plan = queryPlanBuilder.buildPlan(statementList.get(8));
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
-    int expectedSize = 180;
+    int expectedSize = 48;
     int trimSize = 6;
     Assertions.assertEquals(expectedSize, tuples.size(), "Unexpected number of rows.");
 
     Tuple[] expectedTuples =
         new Tuple[] {
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1)))
+          new Tuple(new ArrayList<>(List.of(1, 3, 1))),
+          new Tuple(new ArrayList<>(List.of(1, 104, 1))),
+          new Tuple(new ArrayList<>(List.of(2, 3, 1))),
+          new Tuple(new ArrayList<>(List.of(2, 104, 1))),
+          new Tuple(new ArrayList<>(List.of(3, 3, 1))),
+          new Tuple(new ArrayList<>(List.of(3, 104, 1)))
         };
 
     for (int i = 0; i < trimSize; i++) {
@@ -68,19 +68,19 @@ public class SortOperatorTest {
   }
 
   @Test
-  public void testReset() throws ExecutionControl.NotImplementedException {
-    Operator plan = queryPlanBuilder.buildPlan(statementList.get(6));
+  public void resetTest() throws ExecutionControl.NotImplementedException {
+    Operator plan = queryPlanBuilder.buildPlan(statementList.get(8));
 
     int resetIndex = 6;
 
     Tuple[] expectedTuples =
         new Tuple[] {
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1)))
+          new Tuple(new ArrayList<>(List.of(1, 3, 1))),
+          new Tuple(new ArrayList<>(List.of(1, 104, 1))),
+          new Tuple(new ArrayList<>(List.of(2, 3, 1))),
+          new Tuple(new ArrayList<>(List.of(2, 104, 1))),
+          new Tuple(new ArrayList<>(List.of(3, 3, 1))),
+          new Tuple(new ArrayList<>(List.of(3, 104, 1)))
         };
 
     for (int i = 0; i < resetIndex; i++) {
@@ -96,7 +96,7 @@ public class SortOperatorTest {
 
   @Test
   public void assertNullGetNextTuple() throws ExecutionControl.NotImplementedException {
-    Operator plan = queryPlanBuilder.buildPlan(statementList.get(7));
+    Operator plan = queryPlanBuilder.buildPlan(statementList.get(9));
 
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 

@@ -7,3 +7,5 @@ SELECT * FROM Sailors S1, Sailors S2 WHERE S1.A < S2.A;
 SELECT DISTINCT R.G FROM Reserves R;
 SELECT * FROM Sailors ORDER BY Sailors.B;
 SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G AND SAILORS.A<500
+
+

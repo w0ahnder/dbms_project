@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
 
+/**
+ * Class that is responsible for evaluating conditions in WHERE expressions that contains columns.
+ * Extends ExpressVisit
+ */
 public class SelectVisitor extends ExpressVisit {
   Expression expression;
   ArrayList<Column> schema;
