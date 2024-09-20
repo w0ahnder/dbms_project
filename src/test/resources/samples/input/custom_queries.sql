@@ -3,4 +3,8 @@ SELECT * FROM Sailors WHERE Sailors.A < 4;
 SELECT * FROM Sailors, Reserves;
 SELECT * FROM Sailors, Reserves WHERE Sailors.A < 0; 
 SELECT * FROM Reserves, Sailors WHERE Sailors.A < 0; 
-SELECT * FROM Reserves, Sailors WHERE Sailors.A = Reserves.H; 
+SELECT * FROM Reserves, Sailors WHERE Sailors.A = Reserves.H;
+SELECT S.A, B.E, R.G FROM Sailors S,Reserves R,Boats B ORDER BY R.G, S.A;
+SELECT S.A, B.E, R.G FROM Sailors S,Reserves R,Boats B WHERE B.E > 500 ORDER BY R.G, S.A;
+SELECT DISTINCT S.A, B.E, R.G FROM Sailors S,Reserves R,Boats B WHERE B.E > 2 ORDER BY R.G, S.A;
+SELECT * FROM Sailors WHERE Sailors.A > 7

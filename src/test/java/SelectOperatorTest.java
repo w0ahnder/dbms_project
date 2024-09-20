@@ -65,7 +65,19 @@ public class SelectOperatorTest {
       Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
     }
   }
+  @Test
+  public void assertNullGetNextTuple() throws ExecutionControl.NotImplementedException {
+    Operator plan = queryPlanBuilder.buildPlan(statementList.get(9));
 
+    List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+
+    int expectedSize = 0;
+    Assertions.assertEquals(expectedSize, tuples.size(), "Unexpected number of rows.");
+
+    Assertions.assertNull(plan.getNextTuple());
+
+
+  }
   @Test
   public void resetTest() throws ExecutionControl.NotImplementedException {
     Operator plan = queryPlanBuilder.buildPlan(statementList.get(1));

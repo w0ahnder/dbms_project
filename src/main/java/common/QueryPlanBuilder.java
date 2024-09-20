@@ -133,10 +133,13 @@ public class QueryPlanBuilder {
         result = new SortOperator(result.getOutputSchema(), orderByElements, result);
       }
       if (isDistinct) {
-        SortOperator child = new SortOperator(result.getOutputSchema(), new ArrayList<>(), result);
-        result = new DuplicateEliminationOperator(result.getOutputSchema(), child);
+        if (orderByElements!=null){
+          result = new DuplicateEliminationOperator(result.getOutputSchema(), (SortOperator) result);
+        }else{
+          SortOperator child = new SortOperator(result.getOutputSchema(), new ArrayList<>(), result);
+          result = new DuplicateEliminationOperator(result.getOutputSchema(), child);
+        }
       }
-
       return result;
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
