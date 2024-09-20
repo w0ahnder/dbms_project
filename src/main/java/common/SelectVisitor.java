@@ -35,7 +35,6 @@ public class SelectVisitor extends ExpressVisit {
     String[] data = (column.toString()).split("\\.");
     // could be an alias
     String table = data[0];
-    // System.out.println("Column column:" + column.toString());
     String col = data[1];
     String tablename = DBCatalog.getInstance().getTableName(table);
     int count = 0;

@@ -24,7 +24,6 @@ public class Compiler {
   private static final boolean outputToFiles = true; // true = output to
 
   // files, false = output
-  // to System.out
 
   /**
    * Reads statements from queriesFile one at a time, builds query plan and evaluates, dumping

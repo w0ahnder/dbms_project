@@ -10,7 +10,6 @@ public class HelperMethods {
     while ((tuple = operator.getNextTuple()) != null) {
       tuples.add(tuple);
     }
-
     return tuples;
   }
 }

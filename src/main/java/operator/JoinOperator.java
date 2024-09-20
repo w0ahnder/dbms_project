@@ -24,6 +24,18 @@ public class JoinOperator extends Operator {
     this.leftTuple = leftOperator.getNextTuple();
   }
 
+  public Operator getLeftOperator() {
+    return this.leftOperator;
+  }
+
+  public Operator getRightOperator() {
+    return this.rightOperator;
+  }
+
+  public Expression getCondition() {
+    return this.condition;
+  }
+
   public void reset() {
     this.leftOperator.reset();
     this.rightOperator.reset();
