@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 public class SortOperatorTest {
   private static List<Statement> statementList;
   private static QueryPlanBuilder queryPlanBuilder;
-  private static Statements statements;
 
   @BeforeAll
   static void setupBeforeAllTests() throws IOException, JSQLParserException, URISyntaxException {
+    Statements statements;
     ClassLoader classLoader = SortOperatorTest.class.getClassLoader();
     URI path = Objects.requireNonNull(classLoader.getResource("samples/input")).toURI();
     Path resourcePath = Paths.get(path);

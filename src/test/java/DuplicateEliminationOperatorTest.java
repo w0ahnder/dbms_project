@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 public class DuplicateEliminationOperatorTest {
   private static List<Statement> statementList;
   private static QueryPlanBuilder queryPlanBuilder;
-  private static Statements statements;
 
   @BeforeAll
   static void setupBeforeAllTests() throws IOException, JSQLParserException, URISyntaxException {
@@ -36,7 +35,7 @@ public class DuplicateEliminationOperatorTest {
     URI queriesFile =
         Objects.requireNonNull(classLoader.getResource("samples/input/custom_queries.sql")).toURI();
 
-    statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
+    Statements statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
     queryPlanBuilder = new QueryPlanBuilder();
     statementList = statements.getStatements();
   }

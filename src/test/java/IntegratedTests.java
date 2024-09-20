@@ -47,7 +47,7 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(0);
+    Statement stmt = statementList.get(0);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
@@ -62,20 +62,12 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(1);
+    Statement stmt = statementList.get(1);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
     int expectedSize = 20;
     Assertions.assertEquals(expectedSize, tuples.size());
-    // 1,200,50
-    // 2,200,200
-    // 6,300,400
-    // pair the below tuples with each Boat tupe=> 20 tuples in result
-    // 1, 200, 50, 1, 101
-    // 1, 200, 50, 1, 102
-    // 1, 200, 50, 1, 103
-    // 2, 200, 200, 2, 101
   }
 
   @Test
@@ -85,22 +77,12 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(2);
+    Statement stmt = statementList.get(2);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
     int expectedSize = 15;
     Assertions.assertEquals(expectedSize, tuples.size());
-    /*
-    // 1, 200, 50, 2, 200, 200
-    // 1,200, 50, 3, 100, 105...5
-    // 2,200,200, 3, 100, 105
-    // 2,200,200, 4, 100, 50 ..4
-    // 3, 100, 105, 4, 100, 50
-    // 3, 100, 105, 5, 100, 500 ...3
-    // 4, 100, 50, 5, 100, 500, ... 2
-    // 5, 100, 500, 6, 300, 400..1
-     */
   }
 
   @Test
@@ -110,12 +92,10 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(3);
+    Statement stmt = statementList.get(3);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
     Assertions.assertEquals(12, tuples.size());
-    // 1, 200, 50, 2, 200, 200, 1, 200, 50 ..6
-    // 2,200,200, 2, 200, 200, 1, 200, 50 ...6 12 total
   }
 
   @Test
@@ -125,7 +105,7 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(4);
+    Statement stmt = statementList.get(4);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
@@ -140,7 +120,7 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(5);
+    Statement stmt = statementList.get(5);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
@@ -155,20 +135,12 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(6);
+    Statement stmt = statementList.get(6);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
     int expectedSize = 20;
     Assertions.assertEquals(expectedSize, tuples.size());
-    // 1,200, 50, X [(1, 101), (1, 102), (1, 103)]
-    // 2, 200, 200 X [(2, 101)]
-    // 6, 300, 400
-    // 5 tuples crossed with entries in Boats =>20
-    // 1, 101
-    // 1, 102
-    // 1, 103
-    // 2, 101
   }
 
   @Test
@@ -178,7 +150,7 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(7);
+    Statement stmt = statementList.get(7);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
@@ -193,7 +165,7 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(8);
+    Statement stmt = statementList.get(8);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
@@ -208,7 +180,7 @@ public class IntegratedTests {
           IOException,
           URISyntaxException {
     setupBeforeAllTests();
-    Statement stmt = statements.getStatements().get(9);
+    Statement stmt = statementList.get(9);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
