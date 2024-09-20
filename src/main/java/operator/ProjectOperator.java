@@ -3,13 +3,8 @@ package operator;
 import common.DBCatalog;
 import common.Tuple;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
@@ -24,7 +19,6 @@ public class ProjectOperator extends Operator {
     super(outputSchema);
     this.childOperator = childOperator;
     this.selectItems = selectItems;
-
   }
 
   public void reset() {
@@ -38,24 +32,24 @@ public class ProjectOperator extends Operator {
       return nextTuple;
     }
     /*Set<String> selectedColumnNames =
-        selectItems.stream()
-            .filter(item -> item instanceof SelectExpressionItem)
-            .map(item -> (Column) ((SelectExpressionItem) item).getExpression())
-            .map(Column::getColumnName)
-            .collect(Collectors.toSet());
+       selectItems.stream()
+           .filter(item -> item instanceof SelectExpressionItem)
+           .map(item -> (Column) ((SelectExpressionItem) item).getExpression())
+           .map(Column::getColumnName)
+           .collect(Collectors.toSet());
 
-     */
-    //keep track of schema name and column name in two separate
-    ArrayList<String> tables= new ArrayList<>();
+    */
+    // keep track of schema name and column name in two separate
+    ArrayList<String> tables = new ArrayList<>();
     ArrayList<String> columns = new ArrayList<>();
-    for(SelectItem s: selectItems){
+    for (SelectItem s : selectItems) {
       Column c = (Column) ((SelectExpressionItem) s).getExpression();
       tables.add(c.getTable().getName());
       columns.add(c.getColumnName());
     }
-    ArrayList<Integer> resTuple= new ArrayList<>();
-    for(int i=0 ;i< tables.size();i++){
-      //get index of column in schema
+    ArrayList<Integer> resTuple = new ArrayList<>();
+    for (int i = 0; i < tables.size(); i++) {
+      // get index of column in schema
       int index = getIndex(columns.get(i), tables.get(i));
       resTuple.add(nextTuple.getElementAtIndex(index));
     }
@@ -68,26 +62,25 @@ public class ProjectOperator extends Operator {
     }
     */
 
-
     // Create the result tuple based on selected columns
     /*ArrayList<Integer> returnTup =
-        selectedColumnNames.stream()
-            .map(columnName -> schemaIndexMap.getOrDefault(columnName, -1))
-            .filter(index -> index != -1)
-            .map(nextTuple::getElementAtIndex)
-            .collect(Collectors.toCollection(ArrayList::new));
-            */
+    selectedColumnNames.stream()
+        .map(columnName -> schemaIndexMap.getOrDefault(columnName, -1))
+        .filter(index -> index != -1)
+        .map(nextTuple::getElementAtIndex)
+        .collect(Collectors.toCollection(ArrayList::new));
+        */
     return new Tuple(resTuple);
   }
-  public int getIndex(String column, String name){
-    for(int i=0;i<outputSchema.size();i++){
+
+  public int getIndex(String column, String name) {
+    for (int i = 0; i < outputSchema.size(); i++) {
       Column curr = outputSchema.get(i);
       String c = curr.getColumnName();
       String t = curr.getTable().getName();
 
-      if(DBCatalog.getInstance().getUseAlias())
-        t  =curr.getTable().getSchemaName();
-      if(c.equalsIgnoreCase(column) && t.equals(name)){
+      if (DBCatalog.getInstance().getUseAlias()) t = curr.getTable().getSchemaName();
+      if (c.equalsIgnoreCase(column) && t.equals(name)) {
         return i;
       }
     }

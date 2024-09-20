@@ -37,7 +37,6 @@ public class QueryPlanBuilder {
   ArrayList<String> aliases;
   Boolean if_alias = false;
 
-
   public QueryPlanBuilder() {}
 
   /**
@@ -49,6 +48,7 @@ public class QueryPlanBuilder {
    */
   @SuppressWarnings("unchecked")
   public Operator buildPlan(Statement stmt) throws ExecutionControl.NotImplementedException {
+    if_alias = false;
     Select select = (Select) stmt;
     PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
     Table fromItemT = (Table) plainSelect.getFromItem();
@@ -59,10 +59,14 @@ public class QueryPlanBuilder {
     if (alias1 != null) {
       if_alias = true;
       System.out.println("Alias1:" + alias1.toString().trim());
-      //set alias boolean in DBCatalog
+      // set alias boolean in DBCatalog
       DBCatalog.getInstance().setUseAlias(if_alias);
       DBCatalog.getInstance().setTableAlias(tableName, alias1.toString().trim());
       aliases.add(alias1.toString().trim());
+    }
+    else{
+      if_alias = false;
+      DBCatalog.getInstance().setUseAlias(false);
     }
 
     List<Join> joinTables =
@@ -82,12 +86,12 @@ public class QueryPlanBuilder {
             String alias = join.getRightItem().getAlias().toString().trim();
             System.out.println("Alias:" + alias);
             aliases.add(alias);
-            //add alias, tablename to hashmap
+            // add alias, tablename to hashmap
             DBCatalog.getInstance().setTableAlias(fromName, alias);
           }
         });
-    //String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
-    if(if_alias){
+    // String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
+    if (if_alias) {
       tableName = alias1.toString().trim();
     }
     String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
@@ -111,9 +115,8 @@ public class QueryPlanBuilder {
         else result = createJoinOperator(andExpressions, tables);
       }
       if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
-        System.out.println("output schema for projection:"  + result.getOutputSchema());
+        System.out.println("output schema for projection:" + result.getOutputSchema());
         result = new ProjectOperator(result.getOutputSchema(), result, selectItems);
-
       }
       return result;
     } catch (FileNotFoundException e) {
@@ -137,7 +140,7 @@ public class QueryPlanBuilder {
     if (tableNames.size() == 1) {
       return joinOperator;
     }
-    //System.out.println("all table name"+tableNames.toString());
+    // System.out.println("all table name"+tableNames.toString());
     String lastTable = tableNames.get(tableNames.size() - 1);
     TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
     ArrayList<Expression> leftExpressions = new ArrayList<>();
@@ -148,7 +151,7 @@ public class QueryPlanBuilder {
     for (Expression expr : andExpressions) {
       // GETS ALL TABLE ANEMS IN THE EXPRESSION
       tablesInExpression = tablesNamesFinder.getTableList(expr);
-      //System.out.println("TABLES IN EXPRESSION: " + tablesInExpression.toString());
+      // System.out.println("TABLES IN EXPRESSION: " + tablesInExpression.toString());
       if (tablesInExpression.size() == 1
           && tablesInExpression.get(0).trim().equalsIgnoreCase(lastTable)) {
         rightExpressions.add(expr);
@@ -160,7 +163,7 @@ public class QueryPlanBuilder {
     }
 
     // sailors
-    //System.out.println("left expressions: " + leftExpressions.toString());
+    // System.out.println("left expressions: " + leftExpressions.toString());
     // expressions that do not mention the last table
     Expression leftExpression;
     if (leftExpressions.size() == 0) {
@@ -198,8 +201,7 @@ public class QueryPlanBuilder {
       Operator leftOperator = createJoinOperator(getAndExpressions(leftExpression), tableNames);
 
       ArrayList<Column> rightSchema = DBCatalog.getInstance().get_Table(lastTable);
-      String rightTablePath =
-          DBCatalog.getInstance().getFileForTable(lastTable).getPath();
+      String rightTablePath = DBCatalog.getInstance().getFileForTable(lastTable).getPath();
       Operator rightOperator = new ScanOperator(rightSchema, rightTablePath);
       ;
       if (rightExpression != null) {
@@ -251,7 +253,7 @@ public class QueryPlanBuilder {
           new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
     }
     if (leftExpression != null) {
-      //System.out.println("left:" + leftExpression.toString());
+      // System.out.println("left:" + leftExpression.toString());
       leftOperator = new SelectOperator(leftSchema, (ScanOperator) leftOperator, leftExpression);
     }
     ArrayList<Column> joinSchema = new ArrayList<>();
