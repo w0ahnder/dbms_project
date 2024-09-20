@@ -102,6 +102,8 @@ public class QueryPlanBuilder {
       andExpressions = getAndExpressions(where);
     }
     List<SelectItem> selectItems = plainSelect.getSelectItems();
+    List<OrderByElement> orderByElements = plainSelect.getOrderByElements();
+    boolean isDistinct = plainSelect.getDistinct() != null;
     Operator result = null;
     try {
       result = new ScanOperator(schema, table_path);
@@ -115,7 +117,17 @@ public class QueryPlanBuilder {
       }
       if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
         result = new ProjectOperator(result.getOutputSchema(), result, selectItems);
+
       }
+      if (orderByElements!=null) {
+        result = new SortOperator(result.getOutputSchema(), orderByElements, result);
+      }
+      if (isDistinct){
+        System.out.println("Is distinct" + result.getOutputSchema().toString() + " " + result.getAllTuples().toString());
+        SortOperator child = new SortOperator(result.getOutputSchema(), new ArrayList<>(), result );
+        result = new DuplicateEliminationOperator(result.getOutputSchema(), child );
+      }
+
       return result;
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
@@ -170,7 +182,7 @@ public class QueryPlanBuilder {
     }
     // expressions that only mention the last table
     Expression rightExpression;
-    if (rightExpressions.size() == 0) {
+    if (rightExpressions.isEmpty()) {
       rightExpression = null;
     } else if (rightExpressions.size() == 1) {
       rightExpression = rightExpressions.get(0);
@@ -179,7 +191,7 @@ public class QueryPlanBuilder {
     }
     // expressions that mention the last table and another table
     Expression inExpression;
-    if (inExpressions.size() == 0) {
+    if (inExpressions.isEmpty()) {
       inExpression = null;
     } else if (inExpressions.size() == 1) {
       inExpression = inExpressions.get(0);
@@ -282,7 +294,7 @@ public class QueryPlanBuilder {
     AndExpression andExpression = new AndExpression(expressions.get(0), expressions.get(1));
     expressions.remove(0);
     expressions.remove(0);
-    while (expressions.size() > 0) {
+    while (!expressions.isEmpty()) {
       andExpression = new AndExpression(andExpression, expressions.get(0));
       expressions.remove(0);
     }

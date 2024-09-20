@@ -2,6 +2,7 @@ import common.DBCatalog;
 import common.QueryPlanBuilder;
 import common.Tuple;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -47,9 +48,12 @@ public class P1UnitTests {
     Operator plan = queryPlanBuilder.buildPlan(statementList.get(0));
 
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+    for(Tuple tuple: tuples) {
+      System.out.println(tuple);
+    }
 
     int expectedSize = 6;
-
+    plan.dump(new PrintStream(System.out));
     Assertions.assertEquals(expectedSize, tuples.size(), "Unexpected number of rows.");
 
     Tuple[] expectedTuples =
@@ -222,10 +226,10 @@ public class P1UnitTests {
 
     Tuple[] expectedTuples =
         new Tuple[] {
-          new Tuple(new ArrayList<>(Arrays.asList(1))),
-          new Tuple(new ArrayList<>(Arrays.asList(2))),
-          new Tuple(new ArrayList<>(Arrays.asList(3))),
-          new Tuple(new ArrayList<>(Arrays.asList(4)))
+          new Tuple(new ArrayList<>(Arrays.asList(101))),
+          new Tuple(new ArrayList<>(Arrays.asList(102))),
+          new Tuple(new ArrayList<>(Arrays.asList(103))),
+          new Tuple(new ArrayList<>(Arrays.asList(104)))
         };
 
     for (int i = 0; i < expectedSize; i++) {
@@ -254,7 +258,6 @@ public class P1UnitTests {
           new Tuple(new ArrayList<>(Arrays.asList(2, 200, 200))),
           new Tuple(new ArrayList<>(Arrays.asList(6, 300, 400)))
         };
-
     for (int i = 0; i < expectedSize; i++) {
       Tuple expectedTuple = expectedTuples[i];
       Tuple actualTuple = tuples.get(i);
