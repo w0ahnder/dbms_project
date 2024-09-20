@@ -2,7 +2,6 @@ import common.DBCatalog;
 import common.QueryPlanBuilder;
 import common.Tuple;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -36,7 +35,8 @@ public class ScanOperatorTest {
     URI queriesFile =
         Objects.requireNonNull(classLoader.getResource("samples/input/custom_queries.sql")).toURI();
 
-    Statements statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
+    Statements statements =
+        CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
     queryPlanBuilder = new QueryPlanBuilder();
     statementList = statements.getStatements();
   }
@@ -93,6 +93,5 @@ public class ScanOperatorTest {
       Tuple actualTuple = plan.getNextTuple();
       Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
     }
-
   }
 }

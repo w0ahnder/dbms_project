@@ -35,7 +35,8 @@ public class DuplicateEliminationOperatorTest {
     URI queriesFile =
         Objects.requireNonNull(classLoader.getResource("samples/input/custom_queries.sql")).toURI();
 
-    Statements statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
+    Statements statements =
+        CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
     queryPlanBuilder = new QueryPlanBuilder();
     statementList = statements.getStatements();
   }
