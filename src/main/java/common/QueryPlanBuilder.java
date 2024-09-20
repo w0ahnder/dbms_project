@@ -115,15 +115,15 @@ public class QueryPlanBuilder {
       if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
         ArrayList<Column> newSchema = new ArrayList<>();
         for (SelectItem selectItem : selectItems) {
-            Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
-            newSchema.add(c);
+          Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
+          newSchema.add(c);
         }
 
         ArrayList<Column> schem = new ArrayList<>();
         ArrayList<String> schemaTables = new ArrayList<>();
-        if(if_alias) schemaTables = aliases;
+        if (if_alias) schemaTables = aliases;
         else schemaTables = tables;
-        for(String t: schemaTables){
+        for (String t : schemaTables) {
           ArrayList<Column> p = DBCatalog.getInstance().get_Table(t);
           schem.addAll(p);
         }
@@ -310,7 +310,7 @@ public class QueryPlanBuilder {
     return andExpression;
   }
 
-  private ArrayList<String> copyList(ArrayList<String> l){
+  private ArrayList<String> copyList(ArrayList<String> l) {
     ArrayList<String> res = new ArrayList<>();
     l.forEach(s -> res.add(s));
     return res;

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
 
+/** Operator class that enables users to join outputs from more than one table */
 public class JoinOperator extends Operator {
   Operator leftOperator;
   Operator rightOperator;
@@ -24,23 +25,36 @@ public class JoinOperator extends Operator {
     this.leftTuple = leftOperator.getNextTuple();
   }
 
+  /**
+   * @return the leftOperator object
+   */
   public Operator getLeftOperator() {
     return this.leftOperator;
   }
 
+  /**
+   * @return the rightOperator object
+   */
   public Operator getRightOperator() {
     return this.rightOperator;
   }
 
+  /**
+   * @return the condition that joins left and right child
+   */
   public Expression getCondition() {
     return this.condition;
   }
 
+  /** Resets cursor on the operator to the beginning */
   public void reset() {
     this.leftOperator.reset();
     this.rightOperator.reset();
   }
 
+  /**
+   * @return joint nextTuple or null if we are at the end
+   */
   public Tuple getNextTuple() {
     while (leftTuple != null) {
       Tuple rightTuple = rightOperator.getNextTuple();
