@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="P1UnitTests" tests="8" skipped="0" failures="0" errors="0" timestamp="2024-09-20T00:48:47" hostname="dhcp-vl2041-27377.eduroam.cornell.edu" time="0.167">
+  <properties/>
+  <testcase name="testQuery1()" classname="P1UnitTests" time="0.036"/>
+  <testcase name="testQuery2()" classname="P1UnitTests" time="0.013"/>
+  <testcase name="testQuery3()" classname="P1UnitTests" time="0.012"/>
+  <testcase name="testQuery4()" classname="P1UnitTests" time="0.008"/>
+  <testcase name="testQuery5()" classname="P1UnitTests" time="0.026"/>
+  <testcase name="testQuery6()" classname="P1UnitTests" time="0.023"/>
+  <testcase name="testQuery7()" classname="P1UnitTests" time="0.022"/>
+  <testcase name="testQuery8()" classname="P1UnitTests" time="0.017"/>
+  <system-out><![CDATA[getting table 
+20:48:47.885 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+1,200,50
+20:48:47.887 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+2,200,200
+20:48:47.888 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+3,100,105
+20:48:47.889 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+4,100,50
+20:48:47.889 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+5,100,500
+20:48:47.890 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+6,300,400
+20:48:47.890 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+1,200,50
+20:48:47.891 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+2,200,200
+20:48:47.892 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+3,100,105
+20:48:47.892 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+4,100,50
+20:48:47.893 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+5,100,500
+20:48:47.893 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+6,300,400
+20:48:47.897 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:47.898 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:47.898 [Test worker] INFO  common.Tuple - before calling to string 1,200,50this 1,200,50
+20:48:47.898 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:47.898 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:47.899 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:47.899 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:47.899 [Test worker] INFO  common.Tuple - before calling to string 2,200,200this 2,200,200
+20:48:47.899 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:47.900 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:47.900 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:47.900 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:47.900 [Test worker] INFO  common.Tuple - before calling to string 3,100,105this 3,100,105
+20:48:47.901 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:47.901 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:47.901 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:47.901 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:47.902 [Test worker] INFO  common.Tuple - before calling to string 4,100,50this 4,100,50
+20:48:47.902 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:47.902 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:47.903 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:47.903 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:47.903 [Test worker] INFO  common.Tuple - before calling to string 5,100,500this 5,100,500
+20:48:47.903 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:47.903 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:47.904 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+20:48:47.904 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+20:48:47.904 [Test worker] INFO  common.Tuple - before calling to string 6,300,400this 6,300,400
+20:48:47.904 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+20:48:47.904 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+getting table 
+output schema for projection:[Sailors.A, Sailors.B, Sailors.C]
+20:48:47.916 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1]
+20:48:47.917 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1]
+20:48:47.917 [Test worker] INFO  common.Tuple - before calling to string 1this 1
+20:48:47.917 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1]
+20:48:47.917 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1]
+20:48:47.917 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2]
+20:48:47.918 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2]
+20:48:47.918 [Test worker] INFO  common.Tuple - before calling to string 2this 2
+20:48:47.918 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2]
+20:48:47.919 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2]
+20:48:47.919 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3]
+20:48:47.919 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3]
+20:48:47.919 [Test worker] INFO  common.Tuple - before calling to string 3this 3
+20:48:47.920 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3]
+20:48:47.920 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3]
+20:48:47.920 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4]
+20:48:47.920 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4]
+20:48:47.921 [Test worker] INFO  common.Tuple - before calling to string 4this 4
+20:48:47.921 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4]
+20:48:47.921 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4]
+20:48:47.921 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5]
+20:48:47.922 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5]
+20:48:47.922 [Test worker] INFO  common.Tuple - before calling to string 5this 5
+20:48:47.922 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5]
+20:48:47.923 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5]
+20:48:47.923 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6]
+20:48:47.923 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6]
+20:48:47.923 [Test worker] INFO  common.Tuple - before calling to string 6this 6
+20:48:47.924 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6]
+20:48:47.924 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6]
+Alias1:S
+output schema for projection:[S.Sailors.A, S.Sailors.B, S.Sailors.C]
+20:48:47.931 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1]
+20:48:47.931 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1]
+20:48:47.931 [Test worker] INFO  common.Tuple - before calling to string 1this 1
+20:48:47.932 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1]
+20:48:47.932 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1]
+20:48:47.932 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2]
+20:48:47.932 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2]
+20:48:47.933 [Test worker] INFO  common.Tuple - before calling to string 2this 2
+20:48:47.933 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2]
+20:48:47.933 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2]
+20:48:47.933 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3]
+20:48:47.933 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3]
+20:48:47.934 [Test worker] INFO  common.Tuple - before calling to string 3this 3
+20:48:47.934 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3]
+20:48:47.934 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3]
+20:48:47.934 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4]
+20:48:47.935 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4]
+20:48:47.935 [Test worker] INFO  common.Tuple - before calling to string 4this 4
+20:48:47.935 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4]
+20:48:47.936 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4]
+20:48:47.936 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5]
+20:48:47.936 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5]
+20:48:47.936 [Test worker] INFO  common.Tuple - before calling to string 5this 5
+20:48:47.937 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5]
+20:48:47.937 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5]
+20:48:47.937 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6]
+20:48:47.938 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6]
+20:48:47.938 [Test worker] INFO  common.Tuple - before calling to string 6this 6
+20:48:47.938 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6]
+20:48:47.938 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6]
+Alias1:S
+20:48:47.946 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:47.946 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:47.946 [Test worker] INFO  common.Tuple - before calling to string 1,200,50this 1,200,50
+20:48:47.946 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:47.947 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:47.947 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:47.947 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:47.947 [Test worker] INFO  common.Tuple - before calling to string 2,200,200this 2,200,200
+20:48:47.947 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:47.948 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+FROM NAME:Reserves
+getting table 
+Craeting JOIn
+joining two tables
+getting table 
+left table:[Sailors.A, Sailors.B, Sailors.C]
+getting table 
+right table:[Reserves.G, Reserves.H]
+getting table 
+getting table 
+20:48:47.968 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 101]
+20:48:47.969 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 101]
+20:48:47.969 [Test worker] INFO  common.Tuple - before calling to string 1,200,50,1,101this 1,200,50,1,101
+20:48:47.969 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 101]
+20:48:47.969 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 101]
+20:48:47.970 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 102]
+20:48:47.970 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 102]
+20:48:47.970 [Test worker] INFO  common.Tuple - before calling to string 1,200,50,1,102this 1,200,50,1,102
+20:48:47.970 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 102]
+20:48:47.970 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 102]
+20:48:47.970 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 103]
+20:48:47.971 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 103]
+20:48:47.971 [Test worker] INFO  common.Tuple - before calling to string 1,200,50,1,103this 1,200,50,1,103
+20:48:47.971 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 103]
+20:48:47.971 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 1, 103]
+20:48:47.972 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 2, 101]
+20:48:47.972 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 2, 101]
+20:48:47.973 [Test worker] INFO  common.Tuple - before calling to string 2,200,200,2,101this 2,200,200,2,101
+20:48:47.973 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 2, 101]
+20:48:47.974 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 2, 101]
+20:48:47.974 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 3, 102]
+20:48:47.974 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 3, 102]
+20:48:47.974 [Test worker] INFO  common.Tuple - before calling to string 3,100,105,3,102this 3,100,105,3,102
+20:48:47.974 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 3, 102]
+20:48:47.974 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 3, 102]
+20:48:47.974 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 4, 104]
+20:48:47.974 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 4, 104]
+20:48:47.975 [Test worker] INFO  common.Tuple - before calling to string 4,100,50,4,104this 4,100,50,4,104
+20:48:47.975 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 4, 104]
+20:48:47.975 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 4, 104]
+Alias1:S1
+FROM NAME:Sailors
+Alias:S2
+Craeting JOIn
+joining two tables
+left table:[S1.Sailors.A, S1.Sailors.B, S1.Sailors.C]
+right table:[S2.Sailors.A, S2.Sailors.B, S2.Sailors.C]
+20:48:47.987 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 2, 200, 200]
+20:48:47.988 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 2, 200, 200]
+20:48:47.988 [Test worker] INFO  common.Tuple - before calling to string 1,200,50,2,200,200this 1,200,50,2,200,200
+20:48:47.988 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 2, 200, 200]
+20:48:47.988 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 2, 200, 200]
+20:48:47.988 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 3, 100, 105]
+20:48:47.988 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 3, 100, 105]
+20:48:47.988 [Test worker] INFO  common.Tuple - before calling to string 1,200,50,3,100,105this 1,200,50,3,100,105
+20:48:47.989 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 3, 100, 105]
+20:48:47.989 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 3, 100, 105]
+20:48:47.990 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 4, 100, 50]
+20:48:47.990 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 4, 100, 50]
+20:48:47.990 [Test worker] INFO  common.Tuple - before calling to string 1,200,50,4,100,50this 1,200,50,4,100,50
+20:48:47.990 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 4, 100, 50]
+20:48:47.990 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 4, 100, 50]
+20:48:47.990 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 5, 100, 500]
+20:48:47.990 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 5, 100, 500]
+20:48:47.990 [Test worker] INFO  common.Tuple - before calling to string 1,200,50,5,100,500this 1,200,50,5,100,500
+20:48:47.991 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 5, 100, 500]
+20:48:47.991 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 5, 100, 500]
+20:48:47.991 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 6, 300, 400]
+20:48:47.991 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 6, 300, 400]
+20:48:47.991 [Test worker] INFO  common.Tuple - before calling to string 1,200,50,6,300,400this 1,200,50,6,300,400
+20:48:47.991 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 6, 300, 400]
+20:48:47.991 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50, 6, 300, 400]
+20:48:47.992 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 3, 100, 105]
+20:48:47.992 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 3, 100, 105]
+20:48:47.992 [Test worker] INFO  common.Tuple - before calling to string 2,200,200,3,100,105this 2,200,200,3,100,105
+20:48:47.992 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 3, 100, 105]
+20:48:47.992 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 3, 100, 105]
+20:48:47.993 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 4, 100, 50]
+20:48:47.993 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 4, 100, 50]
+20:48:47.993 [Test worker] INFO  common.Tuple - before calling to string 2,200,200,4,100,50this 2,200,200,4,100,50
+20:48:47.993 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 4, 100, 50]
+20:48:47.993 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 4, 100, 50]
+20:48:47.993 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 5, 100, 500]
+20:48:47.993 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 5, 100, 500]
+20:48:47.993 [Test worker] INFO  common.Tuple - before calling to string 2,200,200,5,100,500this 2,200,200,5,100,500
+20:48:47.993 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 5, 100, 500]
+20:48:47.994 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 5, 100, 500]
+20:48:47.994 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 6, 300, 400]
+20:48:47.994 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 6, 300, 400]
+20:48:47.994 [Test worker] INFO  common.Tuple - before calling to string 2,200,200,6,300,400this 2,200,200,6,300,400
+20:48:47.994 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 6, 300, 400]
+20:48:47.994 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200, 6, 300, 400]
+20:48:47.995 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 4, 100, 50]
+20:48:47.995 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 4, 100, 50]
+20:48:47.995 [Test worker] INFO  common.Tuple - before calling to string 3,100,105,4,100,50this 3,100,105,4,100,50
+20:48:47.995 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 4, 100, 50]
+20:48:47.995 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 4, 100, 50]
+20:48:47.996 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 5, 100, 500]
+20:48:47.996 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 5, 100, 500]
+20:48:47.996 [Test worker] INFO  common.Tuple - before calling to string 3,100,105,5,100,500this 3,100,105,5,100,500
+20:48:47.996 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 5, 100, 500]
+20:48:47.996 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 5, 100, 500]
+20:48:47.996 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 6, 300, 400]
+20:48:47.997 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 6, 300, 400]
+20:48:47.997 [Test worker] INFO  common.Tuple - before calling to string 3,100,105,6,300,400this 3,100,105,6,300,400
+20:48:47.997 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 6, 300, 400]
+20:48:47.997 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105, 6, 300, 400]
+20:48:47.997 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 5, 100, 500]
+20:48:47.997 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 5, 100, 500]
+20:48:47.998 [Test worker] INFO  common.Tuple - before calling to string 4,100,50,5,100,500this 4,100,50,5,100,500
+20:48:47.998 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 5, 100, 500]
+20:48:47.998 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 5, 100, 500]
+20:48:47.998 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 6, 300, 400]
+20:48:47.998 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 6, 300, 400]
+20:48:47.999 [Test worker] INFO  common.Tuple - before calling to string 4,100,50,6,300,400this 4,100,50,6,300,400
+20:48:47.999 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 6, 300, 400]
+20:48:47.999 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50, 6, 300, 400]
+20:48:47.999 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500, 6, 300, 400]
+20:48:47.999 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500, 6, 300, 400]
+20:48:48.000 [Test worker] INFO  common.Tuple - before calling to string 5,100,500,6,300,400this 5,100,500,6,300,400
+20:48:48.000 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500, 6, 300, 400]
+20:48:48.000 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500, 6, 300, 400]
+Alias1:R
+output schema for projection:[R.Reserves.G, R.Reserves.H]
+20:48:48.003 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.003 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.003 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.003 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.004 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.004 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+Is distinct[R.Reserves.G, R.Reserves.H] [101, 102, 103, 101, 102, 104]
+20:48:48.005 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.005 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.005 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.006 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.006 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.006 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+before sorting[101, 102, 103, 101, 102, 104]
+20:48:48.007 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.007 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.008 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 102 and 101
+20:48:48.008 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.008 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.008 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.008 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.009 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 103 and 102
+20:48:48.009 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.009 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.009 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.009 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.010 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 101 and 103
+20:48:48.010 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.010 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.010 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.010 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.010 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 101 and 102
+20:48:48.011 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.011 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.011 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.012 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.012 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 101 and 101
+20:48:48.012 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.012 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.013 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.013 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.014 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 102 and 102
+20:48:48.014 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.014 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.014 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.014 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.014 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 102 and 103
+20:48:48.014 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.014 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.015 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+20:48:48.015 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.015 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 104 and 102
+20:48:48.015 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+20:48:48.015 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.015 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+20:48:48.015 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.016 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 104 and 103
+20:48:48.016 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+20:48:48.016 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.016 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.016 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.016 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.016 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.016 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.017 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+after sorting[101, 101, 102, 102, 103, 104]
+20:48:48.017 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.017 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.017 [Test worker] INFO  common.Tuple - before calling to string 101this 101
+20:48:48.017 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.017 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.017 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.017 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.018 [Test worker] INFO  common.Tuple - before calling to string 102this 101
+20:48:48.018 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.018 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.018 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.018 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.018 [Test worker] INFO  common.Tuple - before calling to string 102this 102
+20:48:48.018 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.018 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.018 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.018 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.018 [Test worker] INFO  common.Tuple - before calling to string 103this 102
+20:48:48.019 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.019 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.019 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+20:48:48.019 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.019 [Test worker] INFO  common.Tuple - before calling to string 104this 103
+20:48:48.019 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+20:48:48.020 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.020 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.020 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.020 [Test worker] INFO  common.Tuple - before calling to string 101this 101
+20:48:48.020 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.020 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [101]
+20:48:48.020 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.021 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.021 [Test worker] INFO  common.Tuple - before calling to string 102this 102
+20:48:48.021 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.021 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [102]
+20:48:48.021 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.021 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.021 [Test worker] INFO  common.Tuple - before calling to string 103this 103
+20:48:48.021 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.021 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [103]
+20:48:48.022 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+20:48:48.022 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+20:48:48.022 [Test worker] INFO  common.Tuple - before calling to string 104this 104
+20:48:48.022 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+20:48:48.022 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [104]
+getting table 
+20:48:48.025 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.025 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.026 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.026 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:48.026 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:48.026 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+before sorting[1,200,50, 2,200,200, 3,100,105, 4,100,50, 5,100,500, 6,300,400]
+20:48:48.026 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.026 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.026 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 2,200,200 and 1,200,50
+20:48:48.027 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.027 [Test worker] INFO  operator.SortOperator.TupleComparator - keys are [Sailors.C, Sailors.A]
+20:48:48.027 [Test worker] INFO  operator.SortOperator.TupleComparator - current key is Sailors.A
+20:48:48.027 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.027 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.027 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 3,100,105 and 2,200,200
+20:48:48.027 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.028 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.028 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.028 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 3,100,105 and 2,200,200
+20:48:48.028 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.028 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.029 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.029 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 3,100,105 and 1,200,50
+20:48:48.029 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.029 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:48.029 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.029 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 4,100,50 and 1,200,50
+20:48:48.030 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.030 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:48.030 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.030 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 4,100,50 and 3,100,105
+20:48:48.030 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.030 [Test worker] INFO  operator.SortOperator.TupleComparator - keys are [Sailors.C, Sailors.A]
+20:48:48.030 [Test worker] INFO  operator.SortOperator.TupleComparator - current key is Sailors.A
+20:48:48.031 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:48.031 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.031 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 5,100,500 and 1,200,50
+20:48:48.031 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.031 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:48.031 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:48.031 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 5,100,500 and 4,100,50
+20:48:48.031 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.031 [Test worker] INFO  operator.SortOperator.TupleComparator - keys are [Sailors.C, Sailors.A]
+20:48:48.031 [Test worker] INFO  operator.SortOperator.TupleComparator - current key is Sailors.A
+20:48:48.031 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+20:48:48.032 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:48.032 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 6,300,400 and 5,100,500
+20:48:48.032 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.032 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+20:48:48.032 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.032 [Test worker] INFO  operator.SortOperator.TupleComparator - comparing 6,300,400 and 2,200,200
+20:48:48.032 [Test worker] INFO  operator.SortOperator.TupleComparator - current col is Sailors.B
+20:48:48.032 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.033 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:48.033 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:48.033 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.033 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.033 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+after sorting[3,100,105, 4,100,50, 5,100,500, 1,200,50, 2,200,200, 6,300,400]
+20:48:48.034 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+3,100,105
+20:48:48.036 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.036 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.036 [Test worker] INFO  common.Tuple - before calling to string 3,100,105this 3,100,105
+20:48:48.036 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.037 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [3, 100, 105]
+20:48:48.037 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+4,100,50
+20:48:48.037 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:48.037 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:48.037 [Test worker] INFO  common.Tuple - before calling to string 4,100,50this 4,100,50
+20:48:48.037 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:48.038 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [4, 100, 50]
+20:48:48.038 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+5,100,500
+20:48:48.038 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:48.038 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:48.039 [Test worker] INFO  common.Tuple - before calling to string 5,100,500this 5,100,500
+20:48:48.039 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:48.039 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [5, 100, 500]
+20:48:48.039 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+1,200,50
+20:48:48.039 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.039 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.039 [Test worker] INFO  common.Tuple - before calling to string 1,200,50this 1,200,50
+20:48:48.039 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.039 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [1, 200, 50]
+20:48:48.040 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+2,200,200
+20:48:48.040 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.040 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.040 [Test worker] INFO  common.Tuple - before calling to string 2,200,200this 2,200,200
+20:48:48.040 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.040 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [2, 200, 200]
+20:48:48.040 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+6,300,400
+20:48:48.040 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+20:48:48.040 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+20:48:48.040 [Test worker] INFO  common.Tuple - before calling to string 6,300,400this 6,300,400
+20:48:48.040 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+20:48:48.041 [Test worker] INFO  common.Tuple - the tuple looks like this in Tuple class toString [6, 300, 400]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
