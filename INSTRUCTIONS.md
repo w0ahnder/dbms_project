@@ -47,5 +47,11 @@ when getNextTuple is called:
 
 When adding unit tests for each file we ran into an issue where tests do not run 
 in sequence when using @BeforeAll declaration as in P1UnitTests.java but they were
-successful when running them individually or using @BeforeEach because of shared 
-resources, DBCatalog. 
+ successful when running them individually or using @BeforeEach because of shared 
+ resources, DBCatalog. 
+When running the command: 
+####    java -jar db_practicum_seo-1.jar inputdir output dir
+we got 
+#### Error: Unable to access jarfile db_practicum_seo-1.jar, 
+but the followung command works:
+#### java -jar db_practicum_seo-1.jar inputdir outputdir 
