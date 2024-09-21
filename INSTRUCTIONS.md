@@ -1,7 +1,8 @@
 
-### Instructions
+## Instructions
 
 Our top level harness class is named Compiler.java
+
 **PATH:**  src/main/java/compiler/Compiler.java
 
 **Logic for JoinOperator:**
