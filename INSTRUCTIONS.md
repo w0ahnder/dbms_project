@@ -1,4 +1,6 @@
-###Instructions
+
+### Instructions
+
 Our top level harness class is named Compiler.java
 **PATH:**  src/main/java/compiler/Compiler.java
 
@@ -20,6 +22,7 @@ We then create a tree, with its right being a leaf (Scan/Select Operator on the 
 And a JoinOperator on the remaining tables with the leftExpressions being the expressions
 
 **Base case:**
+
   When we only have two tables remaining, then we will have two leaves, Scan / Select Operator on each side
 
 **Evaluation:**
@@ -39,3 +42,9 @@ when getNextTuple is called:
       if it is null:
         it repeats back from line 2
 ```
+### Additional Information
+
+When adding unit tests for each file we ran into an issue where tests do not run 
+in sequence when using @BeforeAll declaration as in P1UnitTests.java but they were
+successful when running them individually or using @BeforeEach because of shared 
+resources, DBCatalog. 
