@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="P1UnitTests" tests="8" skipped="0" failures="0" errors="0" timestamp="2024-09-21T00:52:53" hostname="dhcp-vl2041-27801.eduroam.cornell.edu" time="0.019">
+  <properties/>
+  <testcase name="testQuery1()" classname="P1UnitTests" time="0.004"/>
+  <testcase name="testQuery2()" classname="P1UnitTests" time="0.001"/>
+  <testcase name="testQuery3()" classname="P1UnitTests" time="0.001"/>
+  <testcase name="testQuery4()" classname="P1UnitTests" time="0.001"/>
+  <testcase name="testQuery5()" classname="P1UnitTests" time="0.002"/>
+  <testcase name="testQuery6()" classname="P1UnitTests" time="0.003"/>
+  <testcase name="testQuery7()" classname="P1UnitTests" time="0.001"/>
+  <testcase name="testQuery8()" classname="P1UnitTests" time="0.001"/>
+  <system-out><![CDATA[1,200,50
+2,200,200
+3,100,105
+4,100,50
+5,100,500
+6,300,400
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

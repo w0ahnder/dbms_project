@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ParserExample" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-09-21T00:52:53" hostname="dhcp-vl2041-27801.eduroam.cornell.edu" time="0.015">
+  <properties/>
+  <testcase name="parserExampleTest()" classname="ParserExample" time="0.015"/>
+  <system-out><![CDATA[20:52:53.573 [Test worker] INFO  ParserExample - Read statement: SELECT * FROM Sailors
+20:52:53.575 [Test worker] INFO  ParserExample - Select body is SELECT * FROM Sailors
+20:52:53.575 [Test worker] INFO  ParserExample - From item is Sailors
+20:52:53.575 [Test worker] INFO  ParserExample - Alias: null
+20:52:53.575 [Test worker] INFO  ParserExample - Name: Sailors
+20:52:53.576 [Test worker] INFO  ParserExample - Read statement: SELECT Sailors.A FROM Sailors
+20:52:53.576 [Test worker] INFO  ParserExample - Select body is SELECT Sailors.A FROM Sailors
+20:52:53.576 [Test worker] INFO  ParserExample - From item is Sailors
+20:52:53.576 [Test worker] INFO  ParserExample - Alias: null
+20:52:53.576 [Test worker] INFO  ParserExample - Name: Sailors
+20:52:53.577 [Test worker] INFO  ParserExample - Read statement: SELECT S.A FROM Sailors S
+20:52:53.577 [Test worker] INFO  ParserExample - Select body is SELECT S.A FROM Sailors S
+20:52:53.577 [Test worker] INFO  ParserExample - From item is Sailors S
+20:52:53.577 [Test worker] INFO  ParserExample - Alias:  S
+20:52:53.577 [Test worker] INFO  ParserExample - Name: Sailors
+20:52:53.577 [Test worker] INFO  ParserExample - Read statement: SELECT * FROM Sailors S WHERE S.A < 3
+20:52:53.577 [Test worker] INFO  ParserExample - Select body is SELECT * FROM Sailors S WHERE S.A < 3
+20:52:53.577 [Test worker] INFO  ParserExample - From item is Sailors S
+20:52:53.578 [Test worker] INFO  ParserExample - Alias:  S
+20:52:53.578 [Test worker] INFO  ParserExample - Name: Sailors
+20:52:53.578 [Test worker] INFO  ParserExample - Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G
+20:52:53.578 [Test worker] INFO  ParserExample - Select body is SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G
+20:52:53.578 [Test worker] INFO  ParserExample - From item is Sailors
+20:52:53.578 [Test worker] INFO  ParserExample - Alias: null
+20:52:53.578 [Test worker] INFO  ParserExample - Name: Sailors
+20:52:53.579 [Test worker] INFO  ParserExample - Read statement: SELECT * FROM Sailors S1, Sailors S2 WHERE S1.A < S2.A
+20:52:53.579 [Test worker] INFO  ParserExample - Select body is SELECT * FROM Sailors S1, Sailors S2 WHERE S1.A < S2.A
+20:52:53.579 [Test worker] INFO  ParserExample - From item is Sailors S1
+20:52:53.579 [Test worker] INFO  ParserExample - Alias:  S1
+20:52:53.579 [Test worker] INFO  ParserExample - Name: Sailors
+20:52:53.579 [Test worker] INFO  ParserExample - Read statement: SELECT DISTINCT R.G FROM Reserves R
+20:52:53.579 [Test worker] INFO  ParserExample - Select body is SELECT DISTINCT R.G FROM Reserves R
+20:52:53.579 [Test worker] INFO  ParserExample - From item is Reserves R
+20:52:53.580 [Test worker] INFO  ParserExample - Alias:  R
+20:52:53.580 [Test worker] INFO  ParserExample - Name: Reserves
+20:52:53.580 [Test worker] INFO  ParserExample - Read statement: SELECT * FROM Sailors ORDER BY Sailors.B
+20:52:53.580 [Test worker] INFO  ParserExample - Select body is SELECT * FROM Sailors ORDER BY Sailors.B
+20:52:53.580 [Test worker] INFO  ParserExample - From item is Sailors
+20:52:53.580 [Test worker] INFO  ParserExample - Alias: null
+20:52:53.580 [Test worker] INFO  ParserExample - Name: Sailors
+20:52:53.580 [Test worker] INFO  ParserExample - Read statement: SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G AND SAILORS.A < 500
+20:52:53.580 [Test worker] INFO  ParserExample - Select body is SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G AND SAILORS.A < 500
+20:52:53.581 [Test worker] INFO  ParserExample - From item is Sailors
+20:52:53.581 [Test worker] INFO  ParserExample - Alias: null
+20:52:53.581 [Test worker] INFO  ParserExample - Name: Sailors
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
