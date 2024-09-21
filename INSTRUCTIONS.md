@@ -15,7 +15,9 @@ From the tables to be joined, we identify the right most table, the last table.
 We classify the list of expressions into:
 
 **RightExpressions:** expressions that only contain the last table
+
 **LeftExpressions:** expressions that do not contain the last table
+
 **InExpressions:** expressions that involve the last table and any table from the remaining
 
 We then create a tree, with its right being a leaf (Scan/Select Operator on the last table with rightExpressions being the condition)
