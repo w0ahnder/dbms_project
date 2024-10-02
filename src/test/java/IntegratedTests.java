@@ -30,7 +30,7 @@ public class IntegratedTests {
     URI path = Objects.requireNonNull(classLoader.getResource("samples/input")).toURI();
     Path resourcePath = Paths.get(path);
 
-    DBCatalog.getInstance().setDataDirectory(resourcePath.resolve("db").toString());
+    DBCatalog.getInstance().setDataDirectory(resourcePath.resolve("db2").toString());
 
     URI queriesFile =
         Objects.requireNonNull(classLoader.getResource("samples/input/testQueries.sql")).toURI();

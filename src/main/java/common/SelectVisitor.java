@@ -39,6 +39,7 @@ public class SelectVisitor extends ExpressVisit {
     String table = data[0];
     String col = data[1];
     String tablename = DBCatalog.getInstance().getTableName(table);
+    System.out.println("select schema:" + schema.toString());
     int count = 0;
     for (Column c : schema) {
       String colName = c.getColumnName();
@@ -48,6 +49,8 @@ public class SelectVisitor extends ExpressVisit {
       }
       if (colName.equalsIgnoreCase(col) && tablename.equalsIgnoreCase(table)) {
         longValue = tuple.getElementAtIndex(count);
+        System.out.println("col:" + col);
+        System.out.println("select value:" + longValue);
         return;
       }
       count++;

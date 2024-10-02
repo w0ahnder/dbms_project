@@ -48,8 +48,10 @@ public abstract class ExpressVisit implements ExpressionVisitor {
   public void visit(EqualsTo equalsto) {
     equalsto.getLeftExpression().accept(this);
     long left = longValue;
+    System.out.println("left:" + left);
     equalsto.getRightExpression().accept(this);
     long right = longValue;
+    System.out.println("right:"+right);
     cond = left == right;
   }
 

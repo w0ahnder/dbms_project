@@ -113,14 +113,18 @@ public class QueryPlanBuilder {
       if (tables.size() > 1) {
         if (if_alias) result = createJoinOperator(andExpressions, copyList(aliases));
         else result = createJoinOperator(andExpressions, copyList(tables));
-      }
-      if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
-        ArrayList<Column> newSchema = new ArrayList<>();
-        for (SelectItem selectItem : selectItems) {
-          Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
-          newSchema.add(c);
-        }
 
+      }
+
+      if (selectItems.size() >= 1 ){
+
+        ArrayList<Column> newSchema = new ArrayList<>();
+        if(!(selectItems.get(0) instanceof AllColumns)) {
+          for (SelectItem selectItem : selectItems) {
+            Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
+            newSchema.add(c);
+          }
+        }
         ArrayList<Column> schem = new ArrayList<>();
         ArrayList<String> schemaTables;
         if (if_alias) schemaTables = aliases;
@@ -129,7 +133,12 @@ public class QueryPlanBuilder {
           ArrayList<Column> p = DBCatalog.getInstance().get_Table(t);
           schem.addAll(p);
         }
-        result = new ProjectOperator(newSchema, schem, result, selectItems);
+        if(selectItems.get(0) instanceof AllColumns){
+          result = new ProjectOperator(schem, schem, result, selectItems);
+        }
+        else {
+          result = new ProjectOperator(newSchema, schem, result, selectItems);
+        }
       }
       if (orderByElements != null) {
         result = new SortOperator(result.getOutputSchema(), orderByElements, result);
