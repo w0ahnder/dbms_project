@@ -6,4 +6,4 @@ SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves
 SELECT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D ORDER BY Sailors.C, Boats.F, Boats.E;
 SELECT DISTINCT * FROM Sailors, Reserves, Boats WHERE Sailors.A = Reserves.G AND Reserves.H = Boats.D ORDER BY Sailors.C, Boats.F;
 SELECT * FROM Sailors S, Reserves R, Boats B WHERE S.A = R.G AND R.H = B.D ORDER BY S.C;
-
+SELECT * FROM TestTable2 T2A, TestTable2 T2B;

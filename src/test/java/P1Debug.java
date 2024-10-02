@@ -173,4 +173,21 @@ public class P1Debug {
         System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
+
+    @Test
+    public void testQuery30()
+            throws ExecutionControl.NotImplementedException,
+            JSQLParserException,
+            IOException,
+            URISyntaxException {
+
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(8);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query30");
+        System.out.println("dumping");
+        plan.dump(new PrintStream(outfile));
+    }
 }
