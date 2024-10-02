@@ -49,9 +49,9 @@ public class ProjectOperator extends Operator {
       reset();
       return nextTuple;
     }
-    System.out.println("Select item is:" + selectItems.get(0));
+    //System.out.println("Select item is:" + selectItems.get(0));
     if(selectItems.get(0).toString().equals("*")){
-      System.out.println("Tuple is:" + nextTuple.toString());
+      //System.out.println("Tuple is:" + nextTuple.toString());
       return nextTuple;
     }
     // get all tables and columns reference in SELECT body

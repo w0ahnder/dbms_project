@@ -4,6 +4,7 @@ import common.Tuple;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
+import common.DBCatalog;
 
 /** Class that extends Operator Class to handle SQL queries with the ORDER BY keyword. */
 public class SortOperator extends Operator {
@@ -78,14 +79,24 @@ public class SortOperator extends Operator {
      */
     @Override
     public int compare(Tuple t1, Tuple t2) {
+      System.out.println("Output schema: " + outputSchema.toString());
       if (!orderByElements.isEmpty()) {
         Map<String, Integer> columnToIndexMap = new HashMap<>();
         for (int i = 0; i < outputSchema.size(); i += 1) {
-          columnToIndexMap.put(outputSchema.get(i).getFullyQualifiedName(), i);
+          System.out.println("Fully qual name: " + outputSchema.get(i).getFullyQualifiedName());
+          String full = outputSchema.get(i).getFullyQualifiedName();
+          if(DBCatalog.getInstance().getUseAlias()){
+            String[] names = full.split("\\.");
+            full = names[0] + "." +names[2];
+            System.out.println("full:" + full);
+          }
+          columnToIndexMap.put(full, i);
         }
         for (OrderByElement orderByElement : orderByElements) {
           Column orderToCol = (Column) orderByElement.getExpression();
           String col = orderToCol.getFullyQualifiedName();
+          System.out.println("col:" + col);
+          System.out.println("col:" + columnToIndexMap.get(col));
           int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
           int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
 
@@ -98,6 +109,10 @@ public class SortOperator extends Operator {
         }
         for (Column col : outputSchema) {
           String col_str = col.getFullyQualifiedName();
+          if(DBCatalog.getInstance().getUseAlias()){
+            String[] names = col_str.split("\\.");
+            col_str = names[0] + names[2];
+          }
           if (columnToIndexMap.containsKey(col_str)) {
             int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col_str));
             int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col_str));

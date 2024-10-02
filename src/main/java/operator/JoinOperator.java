@@ -87,10 +87,10 @@ public class JoinOperator extends Operator {
           return curr;
         }
         SelectVisitor sv = new SelectVisitor(curr, concatSchema(), this.condition);
-        System.out.println("Condfiion:" + this.condition.toString());
-        System.out.println("join curr:" + curr.toString());
+        //System.out.println("Condfiion:" + this.condition.toString());
+        //System.out.println("join curr:" + curr.toString());
         if (sv.evaluate_expr()) {
-          System.out.println("Condfiion true");
+          //System.out.println("Condfiion true");
           System.out.println(curr.toString());
           return curr;
         }
