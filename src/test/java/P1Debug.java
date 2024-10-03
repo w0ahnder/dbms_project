@@ -55,7 +55,6 @@ public class P1Debug {
         //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
         String outputDir = "src/test/resources/samples/expected_output/p1debugout";
         File outfile = new File(outputDir + "/query8");
-        System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
 
@@ -72,7 +71,6 @@ public class P1Debug {
         //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
         String outputDir = "src/test/resources/samples/expected_output/p1debugout";
         File outfile = new File(outputDir + "/query14");
-        System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
     @Test
@@ -88,7 +86,6 @@ public class P1Debug {
         //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
         String outputDir = "src/test/resources/samples/expected_output/p1debugout";
         File outfile = new File(outputDir + "/query24");
-        System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
     @Test
@@ -104,7 +101,6 @@ public class P1Debug {
         //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
         String outputDir = "src/test/resources/samples/expected_output/p1debugout";
         File outfile = new File(outputDir + "/query21");
-        System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
 
@@ -121,7 +117,6 @@ public class P1Debug {
         //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
         String outputDir = "src/test/resources/samples/expected_output/p1debugout";
         File outfile = new File(outputDir + "/query35");
-        System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
     @Test
@@ -137,7 +132,6 @@ public class P1Debug {
         //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
         String outputDir = "src/test/resources/samples/expected_output/p1debugout";
         File outfile = new File(outputDir + "/query36");
-        System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
 
@@ -154,7 +148,6 @@ public class P1Debug {
         //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
         String outputDir = "src/test/resources/samples/expected_output/p1debugout";
         File outfile = new File(outputDir + "/query37");
-        System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
     @Test
@@ -170,7 +163,6 @@ public class P1Debug {
         //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
         String outputDir = "src/test/resources/samples/expected_output/p1debugout";
         File outfile = new File(outputDir + "/query39");
-        System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
 
@@ -187,7 +179,6 @@ public class P1Debug {
         //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
         String outputDir = "src/test/resources/samples/expected_output/p1debugout";
         File outfile = new File(outputDir + "/query30");
-        System.out.println("dumping");
         plan.dump(new PrintStream(outfile));
     }
 }

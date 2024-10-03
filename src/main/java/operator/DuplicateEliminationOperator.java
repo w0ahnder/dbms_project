@@ -43,6 +43,7 @@ public class DuplicateEliminationOperator extends Operator {
   @Override
   public Tuple getNextTuple() {
     Tuple next = so.getNextTuple();
+    //System.out.println("dup next: " + next.toString());
     if (curr == null) {
       curr = next;
       return curr;

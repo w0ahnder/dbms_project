@@ -1,7 +1,9 @@
 import common.DBCatalog;
 import common.QueryPlanBuilder;
 import common.Tuple;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -168,6 +170,9 @@ public class IntegratedTests {
     Statement stmt = statementList.get(8);
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+    String outputDir = "src/test/resources/samples/expected_output/outputs";
+    File outfile = new File(outputDir + "/query9");
+    plan.dump(new PrintStream(outfile));
 
     int expectedSize = 96;
     Assertions.assertEquals(expectedSize, tuples.size());

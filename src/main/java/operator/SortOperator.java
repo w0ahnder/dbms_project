@@ -79,25 +79,28 @@ public class SortOperator extends Operator {
      */
     @Override
     public int compare(Tuple t1, Tuple t2) {
-      System.out.println("Output schema: " + outputSchema.toString());
+      //System.out.println("order: " + orderByElements.toString());
+
       if (!orderByElements.isEmpty()) {
         Map<String, Integer> columnToIndexMap = new HashMap<>();
         for (int i = 0; i < outputSchema.size(); i += 1) {
-          System.out.println("Fully qual name: " + outputSchema.get(i).getFullyQualifiedName());
+          //System.out.println("Fully qual name: " + outputSchema.get(i).getFullyQualifiedName());
           String full = outputSchema.get(i).getFullyQualifiedName();
           if(DBCatalog.getInstance().getUseAlias()){
             String[] names = full.split("\\.");
-            full = names[0] + "." +names[2];
-            System.out.println("full:" + full);
+            full = names[0] + "." +names[names.length-1];
+            //System.out.println("full:" + full);
           }
           columnToIndexMap.put(full, i);
         }
+        //System.out.println("map size" + columnToIndexMap.size());
         for (OrderByElement orderByElement : orderByElements) {
           Column orderToCol = (Column) orderByElement.getExpression();
           String col = orderToCol.getFullyQualifiedName();
-          System.out.println("col:" + col);
-          System.out.println("col:" + columnToIndexMap.get(col));
+          //System.out.println("col:" + col);
+          //System.out.println("col:" + columnToIndexMap.get(col));
           int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
+
           int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
 
           if (t1_val > t2_val) {
@@ -105,13 +108,18 @@ public class SortOperator extends Operator {
           } else if (t1_val < t2_val) {
             return -1;
           }
+          //remove the columns you already sorted by
           columnToIndexMap.remove(col);
         }
+       // if(columnToIndexMap.size()==0) {
+        //  return 0;
+       // }
+
         for (Column col : outputSchema) {
           String col_str = col.getFullyQualifiedName();
           if(DBCatalog.getInstance().getUseAlias()){
             String[] names = col_str.split("\\.");
-            col_str = names[0] + names[2];
+            col_str = names[0] + "."+names[names.length-1];
           }
           if (columnToIndexMap.containsKey(col_str)) {
             int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col_str));
@@ -128,5 +136,8 @@ public class SortOperator extends Operator {
         return t1.toString().compareTo(t2.toString());
       }
     }
+
+
   }
 }
+

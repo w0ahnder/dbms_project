@@ -91,7 +91,7 @@ public class JoinOperator extends Operator {
         //System.out.println("join curr:" + curr.toString());
         if (sv.evaluate_expr()) {
           //System.out.println("Condfiion true");
-          System.out.println(curr.toString());
+          //System.out.println(curr.toString());
           return curr;
         }
         rightTuple = rightOperator.getNextTuple();
