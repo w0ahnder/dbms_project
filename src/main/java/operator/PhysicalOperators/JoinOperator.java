@@ -1,4 +1,4 @@
-package operator;
+package operator.PhysicalOperators;
 
 import common.SelectVisitor;
 import common.Tuple;
@@ -23,9 +23,9 @@ public class JoinOperator extends Operator {
       Operator leftOperator,
       Operator rightOperator,
       Expression condition) {
-    //have to make sure all the tables are represented
-    //when creating curr we concatenate the left and right tuples,
-    //but not the schemas so
+    // have to make sure all the tables are represented
+    // when creating curr we concatenate the left and right tuples,
+    // but not the schemas so
     super(outputSchema);
     this.leftOperator = leftOperator;
     this.rightOperator = rightOperator;
@@ -33,12 +33,13 @@ public class JoinOperator extends Operator {
     this.leftTuple = leftOperator.getNextTuple();
   }
 
-  public ArrayList<Column> concatSchema(){
+  public ArrayList<Column> concatSchema() {
     ArrayList<Column> conc = new ArrayList<Column>();
     conc.addAll(leftOperator.getOutputSchema());
     conc.addAll(rightOperator.getOutputSchema());
     return conc;
   }
+
   /**
    * @return the leftOperator object
    */
@@ -87,11 +88,7 @@ public class JoinOperator extends Operator {
           return curr;
         }
         SelectVisitor sv = new SelectVisitor(curr, concatSchema(), this.condition);
-        //System.out.println("Condfiion:" + this.condition.toString());
-        //System.out.println("join curr:" + curr.toString());
         if (sv.evaluate_expr()) {
-          //System.out.println("Condfiion true");
-          //System.out.println(curr.toString());
           return curr;
         }
         rightTuple = rightOperator.getNextTuple();

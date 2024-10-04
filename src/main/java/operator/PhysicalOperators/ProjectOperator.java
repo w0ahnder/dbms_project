@@ -1,4 +1,4 @@
-package operator;
+package operator.PhysicalOperators;
 
 import common.DBCatalog;
 import common.Tuple;
@@ -49,19 +49,18 @@ public class ProjectOperator extends Operator {
       reset();
       return nextTuple;
     }
-    //System.out.println("Select item is:" + selectItems);
-    if(selectItems.get(0).toString().equals("*")){
+    if (selectItems.get(0).toString().equals("*")) {
       return nextTuple;
     }
     // get all tables and columns reference in SELECT body
     ArrayList<String> tables = new ArrayList<>();
     ArrayList<String> columns = new ArrayList<>();
 
-      for (SelectItem s : selectItems) {
-        Column c = (Column) ((SelectExpressionItem) s).getExpression();
-        tables.add(c.getTable().getName());
-        columns.add(c.getColumnName());
-      }
+    for (SelectItem s : selectItems) {
+      Column c = (Column) ((SelectExpressionItem) s).getExpression();
+      tables.add(c.getTable().getName());
+      columns.add(c.getColumnName());
+    }
     ArrayList<Integer> resTuple = new ArrayList<>();
     for (int i = 0; i < tables.size(); i++) {
       // get index of column in schema

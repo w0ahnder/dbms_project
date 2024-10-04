@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
-import operator.Operator;
+import operator.PhysicalOperators.Operator;
 import org.apache.logging.log4j.*;
 
 /**
@@ -48,6 +48,9 @@ public class Compiler {
 
         try {
           Operator plan = queryPlanBuilder.buildPlan(statement);
+          // TODO: Convert Statement into logical query plan
+
+          // TODO: Convert Logical Query Plan into Physical Query plan
 
           if (outputToFiles) {
             File outfile = new File(outputDir + "/query" + counter);
