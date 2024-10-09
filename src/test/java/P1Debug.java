@@ -16,6 +16,8 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
 import operator.PhysicalOperators.Operator;
+import operator.Operator;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -47,14 +49,14 @@ public class P1Debug {
           IOException,
           URISyntaxException {
 
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(0);
-    Operator plan = queryPlanBuilder.buildPlan(stmt);
-    // List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    String outputDir = "src/test/resources/samples/expected_output/p1debugout";
-    File outfile = new File(outputDir + "/query8");
-    plan.dump(new PrintStream(outfile));
-  }
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(0);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        Assertions.assertEquals(30, HelperMethods.collectAllTuples(plan).size());
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query8");
+        plan.dump(new PrintStream(outfile));
+    }
 
   @Test
   public void testQuery14()
@@ -63,46 +65,46 @@ public class P1Debug {
           IOException,
           URISyntaxException {
 
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(1);
-    Operator plan = queryPlanBuilder.buildPlan(stmt);
-    // List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    String outputDir = "src/test/resources/samples/expected_output/p1debugout";
-    File outfile = new File(outputDir + "/query14");
-    plan.dump(new PrintStream(outfile));
-  }
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(1);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        Assertions.assertEquals(5, HelperMethods.collectAllTuples(plan).size());
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query14");
+        plan.dump(new PrintStream(outfile));
+    }
+    @Test
+    public void testQuery24()
+            throws ExecutionControl.NotImplementedException,
+            JSQLParserException,
+            IOException,
+            URISyntaxException {
 
-  @Test
-  public void testQuery24()
-      throws ExecutionControl.NotImplementedException,
-          JSQLParserException,
-          IOException,
-          URISyntaxException {
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(2);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+        Assertions.assertEquals(4, HelperMethods.collectAllTuples(plan).size());
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query24");
+        plan.dump(new PrintStream(outfile));
+    }
+    @Test
+    public void testQuery21()
+            throws ExecutionControl.NotImplementedException,
+            JSQLParserException,
+            IOException,
+            URISyntaxException {
 
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(2);
-    Operator plan = queryPlanBuilder.buildPlan(stmt);
-    // List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    String outputDir = "src/test/resources/samples/expected_output/p1debugout";
-    File outfile = new File(outputDir + "/query24");
-    plan.dump(new PrintStream(outfile));
-  }
-
-  @Test
-  public void testQuery21()
-      throws ExecutionControl.NotImplementedException,
-          JSQLParserException,
-          IOException,
-          URISyntaxException {
-
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(3);
-    Operator plan = queryPlanBuilder.buildPlan(stmt);
-    // List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    String outputDir = "src/test/resources/samples/expected_output/p1debugout";
-    File outfile = new File(outputDir + "/query21");
-    plan.dump(new PrintStream(outfile));
-  }
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(3);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+        Assertions.assertEquals(4, HelperMethods.collectAllTuples(plan).size());
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query21");
+        plan.dump(new PrintStream(outfile));
+    }
 
   @Test
   public void testQuery35()
@@ -111,30 +113,31 @@ public class P1Debug {
           IOException,
           URISyntaxException {
 
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(4);
-    Operator plan = queryPlanBuilder.buildPlan(stmt);
-    // List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    String outputDir = "src/test/resources/samples/expected_output/p1debugout";
-    File outfile = new File(outputDir + "/query35");
-    plan.dump(new PrintStream(outfile));
-  }
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(4);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        Assertions.assertEquals(6, HelperMethods.collectAllTuples(plan).size());
 
-  @Test
-  public void testQuery36()
-      throws ExecutionControl.NotImplementedException,
-          JSQLParserException,
-          IOException,
-          URISyntaxException {
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query35");
+        plan.dump(new PrintStream(outfile));
+    }
+    @Test
+    public void testQuery36()
+            throws ExecutionControl.NotImplementedException,
+            JSQLParserException,
+            IOException,
+            URISyntaxException {
 
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(5);
-    Operator plan = queryPlanBuilder.buildPlan(stmt);
-    // List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    String outputDir = "src/test/resources/samples/expected_output/p1debugout";
-    File outfile = new File(outputDir + "/query36");
-    plan.dump(new PrintStream(outfile));
-  }
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(5);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+        Assertions.assertEquals(6, HelperMethods.collectAllTuples(plan).size());
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query36");
+        plan.dump(new PrintStream(outfile));
+    }
 
   @Test
   public void testQuery37()
@@ -143,30 +146,30 @@ public class P1Debug {
           IOException,
           URISyntaxException {
 
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(6);
-    Operator plan = queryPlanBuilder.buildPlan(stmt);
-    // List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    String outputDir = "src/test/resources/samples/expected_output/p1debugout";
-    File outfile = new File(outputDir + "/query37");
-    plan.dump(new PrintStream(outfile));
-  }
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(6);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        Assertions.assertEquals(6, HelperMethods.collectAllTuples(plan).size());
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query37");
+        plan.dump(new PrintStream(outfile));
+    }
+    @Test
+    public void testQuery39()
+            throws ExecutionControl.NotImplementedException,
+            JSQLParserException,
+            IOException,
+            URISyntaxException {
 
-  @Test
-  public void testQuery39()
-      throws ExecutionControl.NotImplementedException,
-          JSQLParserException,
-          IOException,
-          URISyntaxException {
-
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(7);
-    Operator plan = queryPlanBuilder.buildPlan(stmt);
-    // List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    String outputDir = "src/test/resources/samples/expected_output/p1debugout";
-    File outfile = new File(outputDir + "/query39");
-    plan.dump(new PrintStream(outfile));
-  }
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(7);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+        Assertions.assertEquals(6, HelperMethods.collectAllTuples(plan).size());
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query39");
+        plan.dump(new PrintStream(outfile));
+    }
 
   @Test
   public void testQuery30()
@@ -175,12 +178,31 @@ public class P1Debug {
           IOException,
           URISyntaxException {
 
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(8);
-    Operator plan = queryPlanBuilder.buildPlan(stmt);
-    // List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-    String outputDir = "src/test/resources/samples/expected_output/p1debugout";
-    File outfile = new File(outputDir + "/query30");
-    plan.dump(new PrintStream(outfile));
-  }
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(8);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+        Assertions.assertEquals(100, HelperMethods.collectAllTuples(plan).size());
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        File outfile = new File(outputDir + "/query30");
+        plan.dump(new PrintStream(outfile));
+    }
+
+    @Test
+    public void testQuery11()
+            throws ExecutionControl.NotImplementedException,
+            JSQLParserException,
+            IOException,
+            URISyntaxException {
+
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(9);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        //List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
+        String outputDir = "src/test/resources/samples/expected_output/p1debugout";
+        Assertions.assertEquals(5, HelperMethods.collectAllTuples(plan).size());
+        File outfile = new File(outputDir + "/query11");
+        plan.dump(new PrintStream(outfile));
+
+    }
 }

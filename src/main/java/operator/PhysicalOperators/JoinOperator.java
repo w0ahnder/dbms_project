@@ -87,6 +87,9 @@ public class JoinOperator extends Operator {
         if (this.condition == null) {
           return curr;
         }
+        //concatSchema has to join the two schema because sometimes a table in the right tuple
+        //is not mentioned in the left schema so the long value is not updated
+        //in visit equals.
         SelectVisitor sv = new SelectVisitor(curr, concatSchema(), this.condition);
         if (sv.evaluate_expr()) {
           return curr;
