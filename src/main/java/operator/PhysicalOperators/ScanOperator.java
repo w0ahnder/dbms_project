@@ -4,6 +4,8 @@ import common.DBCatalog;
 import common.Tuple;
 import java.io.*;
 import java.util.ArrayList;
+
+import common.TupleReader;
 import net.sf.jsqlparser.schema.Column;
 
 /**
@@ -15,20 +17,22 @@ public class ScanOperator extends Operator {
   public DBCatalog db;
   public BufferedReader br;
   public String table_path;
+  public TupleReader reader;
 
   // path is path for table
   public ScanOperator(ArrayList<Column> outputSchema, String path) throws FileNotFoundException {
     super(outputSchema);
     db = DBCatalog.getInstance();
     table_path = path;
-    br = new BufferedReader(new FileReader(table_path));
+    //br = new BufferedReader(new FileReader(table_path));
+    System.out.println(path);
+    reader  = DBCatalog.getInstance().getReader(path);
   }
 
   /** close the Buffered Reader after we reach the end of the file */
   public void reset() {
     try {
-      br.close();
-      br = new BufferedReader(new FileReader(table_path));
+      reader.reset();
     } catch (Exception e) {
       return;
     }
@@ -41,8 +45,8 @@ public class ScanOperator extends Operator {
    */
   public Tuple getNextTuple() {
     try {
-      String line = br.readLine();
-      return new Tuple(line);
+      Tuple t  = reader.read();
+      return t;
     } catch (Exception e) {
       reset();
       return null;

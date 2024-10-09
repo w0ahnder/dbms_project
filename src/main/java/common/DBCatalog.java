@@ -2,6 +2,7 @@ package common;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -159,5 +160,15 @@ public class DBCatalog {
       return aliasmap.get(name);
     }
     return name;
+  }
+
+  /**
+   * Creates TupleReader for a table
+   * @param path is name/alias of table
+   * @return TupleReader for table
+   * @throws FileNotFoundException
+   */
+  public TupleReader getReader(String path) throws FileNotFoundException {
+    return new TupleReader(new File(path));
   }
 }

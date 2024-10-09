@@ -1,9 +1,13 @@
 package operator.PhysicalOperators;
 
 import common.Tuple;
+
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import common.TupleWriter;
 import net.sf.jsqlparser.schema.Column;
 
 /**
@@ -59,6 +63,14 @@ public abstract class Operator {
     while ((t = this.getNextTuple()) != null) {
 
       printStream.println(t);
+    }
+  }
+
+  public void dump(TupleWriter tw) throws IOException {
+    Tuple t = getNextTuple();
+    while(t!=null){
+      tw.write(t);
+      t=getNextTuple();
     }
   }
 }
