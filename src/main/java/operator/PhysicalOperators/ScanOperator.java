@@ -25,7 +25,6 @@ public class ScanOperator extends Operator {
     db = DBCatalog.getInstance();
     table_path = path;
     br = new BufferedReader(new FileReader(table_path));
-    System.out.println("scan:" + path);
     reader  = DBCatalog.getInstance().getReader(path);
   }
 
