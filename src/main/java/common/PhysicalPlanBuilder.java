@@ -33,7 +33,6 @@ public class PhysicalPlanBuilder {
         new SelectOperator(
             rootOperator.getOutputSchema(), (ScanOperator) rootOperator, selectLogOperator.where);
   }
-
   public void visit(JoinLogOperator joinLogOperator) throws FileNotFoundException {
     Operator[] child = new Operator[2];
     joinLogOperator.leftOperator.accept(this);

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="SortOperatorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2024-09-21T00:52:53" hostname="dhcp-vl2041-27801.eduroam.cornell.edu" time="0.028">
-  <properties/>
-  <testcase name="testReset()" classname="SortOperatorTest" time="0.008"/>
-  <testcase name="getNextTupleTest()" classname="SortOperatorTest" time="0.009"/>
-  <testcase name="assertNullGetNextTuple()" classname="SortOperatorTest" time="0.009"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
