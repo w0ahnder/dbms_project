@@ -24,8 +24,8 @@ public class ScanOperator extends Operator {
     super(outputSchema);
     db = DBCatalog.getInstance();
     table_path = path;
-    //br = new BufferedReader(new FileReader(table_path));
-    System.out.println(path);
+    br = new BufferedReader(new FileReader(table_path));
+    System.out.println("scan:" + path);
     reader  = DBCatalog.getInstance().getReader(path);
   }
 
@@ -33,6 +33,8 @@ public class ScanOperator extends Operator {
   public void reset() {
     try {
       reader.reset();
+      //br.close();
+      //br = new BufferedReader(new FileReader(table_path));
     } catch (Exception e) {
       return;
     }
@@ -45,7 +47,9 @@ public class ScanOperator extends Operator {
    */
   public Tuple getNextTuple() {
     try {
+
       Tuple t  = reader.read();
+      //return new Tuple (br.readLine());
       return t;
     } catch (Exception e) {
       reset();

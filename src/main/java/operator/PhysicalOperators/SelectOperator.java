@@ -32,6 +32,8 @@ public class SelectOperator extends Operator {
    */
   public Tuple getNextTuple() {
     Tuple curr = scanOp.getNextTuple();
+
+    System.out.println("select next tuple: " + curr.toString());
     while (curr != null) {
       SelectVisitor sv = new SelectVisitor(curr, this.outputSchema, expression);
       if (sv.evaluate_expr()) {

@@ -17,22 +17,25 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
 import operator.PhysicalOperators.Operator;
 import operator.Operator;
+import org.apache.logging.log4j.core.util.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.io.PrintStream;
 
 public class P1Debug {
   private static List<Statement> statementList;
   private static QueryPlanBuilder queryPlanBuilder;
   private static Statements statements;
 
-  @BeforeAll
-  static void setupBeforeAllTests() throws IOException, JSQLParserException, URISyntaxException {
-    ClassLoader classLoader = P1UnitTests.class.getClassLoader();
-    URI path = Objects.requireNonNull(classLoader.getResource("samples/input")).toURI();
-    Path resourcePath = Paths.get(path);
-
-    DBCatalog.getInstance().setDataDirectory(resourcePath.resolve("db2").toString());
+    @BeforeAll
+    static void setupBeforeAllTests() throws IOException, JSQLParserException, URISyntaxException {
+        ClassLoader classLoader = P1UnitTests.class.getClassLoader();
+        URI path = Objects.requireNonNull(classLoader.getResource("binary_samples/input")).toURI();
+        Path resourcePath = Paths.get(path);
+        //System.out.println("DB path" + resourcePath.resolve("db").toString());
+        DBCatalog.getInstance().setDataDirectory(resourcePath.resolve("db").toString());
 
     URI queriesFile =
         Objects.requireNonNull(classLoader.getResource("samples/input/P1debug.sql")).toURI();

@@ -99,7 +99,8 @@ public class TupleReader {
     }
 
     public void reset() throws IOException {
-        buff.clear();
+        //buff.clear();
+        bufferClear();
         fc.close();
         fc = (new FileInputStream(file)).getChannel();
         buff = ByteBuffer.allocate(4096);

@@ -29,13 +29,13 @@ public class IntegratedTests {
   @BeforeAll
   static void setupBeforeAllTests() throws IOException, JSQLParserException, URISyntaxException {
     ClassLoader classLoader = P1UnitTests.class.getClassLoader();
-    URI path = Objects.requireNonNull(classLoader.getResource("samples/input")).toURI();
+    URI path = Objects.requireNonNull(classLoader.getResource("binary_samples/input")).toURI();
     Path resourcePath = Paths.get(path);
 
     DBCatalog.getInstance().setDataDirectory(resourcePath.resolve("db2").toString());
 
     URI queriesFile =
-        Objects.requireNonNull(classLoader.getResource("samples/input/testQueries.sql")).toURI();
+        Objects.requireNonNull(classLoader.getResource("binary_samples/input/testQueries.sql")).toURI();
 
     statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
     queryPlanBuilder = new QueryPlanBuilder();
