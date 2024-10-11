@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import common.TupleWriter;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
@@ -48,13 +50,13 @@ public class Compiler {
 
         try {
           Operator plan = queryPlanBuilder.buildPlan(statement);
-          // TODO: Convert Statement into logical query plan
-
-          // TODO: Convert Logical Query Plan into Physical Query plan
-
           if (outputToFiles) {
-            File outfile = new File(outputDir + "/query" + counter);
-            plan.dump(new PrintStream(outfile));
+            TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
+            long start = System.currentTimeMillis();
+            plan.dump(tw);
+            long end = System.currentTimeMillis();
+            tw.close();
+            System.out.println("Elapsed time: " + (end-start));
           } else {
             plan.dump(System.out);
           }
