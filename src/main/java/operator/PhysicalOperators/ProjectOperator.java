@@ -81,9 +81,10 @@ public class ProjectOperator extends Operator {
       Column curr = oldSchema.get(i);
       String c = curr.getColumnName();
       String t = curr.getTable().getName();
+      String table_name = DBCatalog.getInstance().getTableName(name);
 
-      if (DBCatalog.getInstance().getUseAlias()) t = curr.getTable().getSchemaName();
-      if (c.equalsIgnoreCase(column) && t.equals(name)) {
+      //if (DBCatalog.getInstance().getUseAlias()) t = curr.getTable().getName();
+      if (c.equalsIgnoreCase(column) && table_name.equals(t)) {
         return i;
       }
     }

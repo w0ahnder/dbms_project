@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import org.apache.logging.log4j.LogManager;
@@ -25,8 +26,8 @@ public class DBCatalog {
 
   private final HashMap<String, ArrayList<Column>> tables;
   private static DBCatalog db;
-  private HashMap<String, String> aliasmap;
-  private HashMap<String, ArrayList<Column>> aliasSchema;
+  private final ConcurrentHashMap<String, String> aliasmap;
+  private final ConcurrentHashMap<String, ArrayList<Column>> aliasSchema;
   private boolean useAlias = false;
 
   private String dbDirectory;
@@ -34,8 +35,8 @@ public class DBCatalog {
   /** Reads schemaFile and populates schema information */
   private DBCatalog() {
     tables = new HashMap<>();
-    aliasmap = new HashMap<>();
-    aliasSchema = new HashMap<>();
+    aliasmap = new ConcurrentHashMap<>();
+    aliasSchema = new ConcurrentHashMap<>();
   }
 
   /**
@@ -135,8 +136,8 @@ public class DBCatalog {
    * having information from previous query
    */
   public void resetDB() {
-    aliasmap = new HashMap<>();
-    aliasSchema = new HashMap<>();
+    aliasmap.clear();
+    aliasSchema.clear();
   }
 
   /**

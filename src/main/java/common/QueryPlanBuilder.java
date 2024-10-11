@@ -58,7 +58,9 @@ public class QueryPlanBuilder {
   @SuppressWarnings("unchecked")
   public Operator buildPlan(Statement stmt) throws ExecutionControl.NotImplementedException {
     tables = new ArrayList<>();
+    andExpressions = new ArrayList<>();
     if_alias = false;
+    DBCatalog.getInstance().resetDB();
     Select select = (Select) stmt;
     PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
     Table fromItemT = (Table) plainSelect.getFromItem();
@@ -99,7 +101,8 @@ public class QueryPlanBuilder {
     }
 
     String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
-    ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tableName);
+    ArrayList<Column> schema = new ArrayList<>();
+    schema = copyColumn(DBCatalog.getInstance().get_Table(tableName));
 
     Expression where = plainSelect.getWhere();
 
@@ -151,7 +154,7 @@ public class QueryPlanBuilder {
     // SCAN, SELECT, AND JOIN
     for (String table : tables) {
       table_path = DBCatalog.getInstance().getFileForTable(table).getPath();
-      schema = DBCatalog.getInstance().get_Table(table);
+      schema = copyColumn(DBCatalog.getInstance().get_Table(table));
       LogicalOperator op = new ScanLogOperator(schema, table_path);
       ArrayList<Expression> selectExpr = selectExpressions.get(table);
 
@@ -250,6 +253,14 @@ public class QueryPlanBuilder {
   private ArrayList<String> copyList(ArrayList<String> l) {
     ArrayList<String> res = new ArrayList<>();
     res.addAll(l);
+    return res;
+  }
+
+  private ArrayList<Column> copyColumn(ArrayList<Column> columns){
+    ArrayList<Column> res = new ArrayList<>();
+    for(Column c: columns){
+      res.add(new Column(new Table(null, c.getTable().getName().toString()), c.getColumnName()));
+    }
     return res;
   }
 }

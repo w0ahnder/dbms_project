@@ -31,8 +31,10 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    inputDir = args[0];
-    outputDir = args[1];
+    // inputDir = args[0];
+    // outputDir = args[1];
+    inputDir = "src/test/resources/binary_samples/input";
+    outputDir = "/Users/savitta/Desktop/cs4320/p2_outs";
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");
     try {
       String str = Files.readString(Paths.get(inputDir + "/queries.sql"));
@@ -45,7 +47,6 @@ public class Compiler {
 
       int counter = 1; // for numbering output files
       for (Statement statement : statements.getStatements()) {
-
         try {
           Operator plan = queryPlanBuilder.buildPlan(statement);
           if (outputToFiles) {
@@ -56,6 +57,7 @@ public class Compiler {
             tw.close();
             System.out.println("Elapsed time: " + (end - start));
           } else {
+            System.out.println("fail");
             plan.dump(System.out);
           }
         } catch (Exception e) {
