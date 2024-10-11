@@ -164,6 +164,7 @@ public class DBCatalog {
 
   /**
    * Creates TupleReader for a table
+   *
    * @param path is name/alias of table
    * @return TupleReader for table
    * @throws FileNotFoundException

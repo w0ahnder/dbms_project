@@ -2,12 +2,10 @@ package compiler;
 
 import common.DBCatalog;
 import common.QueryPlanBuilder;
+import common.TupleWriter;
 import java.io.File;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import common.TupleWriter;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
@@ -56,7 +54,7 @@ public class Compiler {
             plan.dump(tw);
             long end = System.currentTimeMillis();
             tw.close();
-            System.out.println("Elapsed time: " + (end-start));
+            System.out.println("Elapsed time: " + (end - start));
           } else {
             plan.dump(System.out);
           }

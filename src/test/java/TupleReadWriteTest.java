@@ -27,7 +27,7 @@ public class TupleReadWriteTest{
 
     @BeforeAll
     static void setupBeforeAllTests() throws IOException, JSQLParserException, URISyntaxException {
-        ClassLoader classLoader = P1UnitTests.class.getClassLoader();
+        ClassLoader classLoader = TupleReadWriteTest.class.getClassLoader();
         URI path = Objects.requireNonNull(classLoader.getResource("binary_samples/input")).toURI();
         Path resourcePath = Paths.get(path);
 

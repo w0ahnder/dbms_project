@@ -2,10 +2,9 @@ package operator.PhysicalOperators;
 
 import common.DBCatalog;
 import common.Tuple;
+import common.TupleReader;
 import java.io.*;
 import java.util.ArrayList;
-
-import common.TupleReader;
 import net.sf.jsqlparser.schema.Column;
 
 /**
@@ -25,15 +24,15 @@ public class ScanOperator extends Operator {
     db = DBCatalog.getInstance();
     table_path = path;
     br = new BufferedReader(new FileReader(table_path));
-    reader  = DBCatalog.getInstance().getReader(path);
+    reader = DBCatalog.getInstance().getReader(path);
   }
 
   /** close the Buffered Reader after we reach the end of the file */
   public void reset() {
     try {
       reader.reset();
-      //br.close();
-      //br = new BufferedReader(new FileReader(table_path));
+      // br.close();
+      // br = new BufferedReader(new FileReader(table_path));
     } catch (Exception e) {
       return;
     }
@@ -47,8 +46,8 @@ public class ScanOperator extends Operator {
   public Tuple getNextTuple() {
     try {
 
-      Tuple t  = reader.read();
-      //return new Tuple (br.readLine());
+      Tuple t = reader.read();
+      // return new Tuple (br.readLine());
       return t;
     } catch (Exception e) {
       reset();
