@@ -1,7 +1,4 @@
-import common.DBCatalog;
-import common.QueryPlanBuilder;
-import common.Tuple;
-import common.TupleWriter;
+import common.*;
 import jdk.jshell.spi.ExecutionControl;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -250,9 +247,12 @@ public class P2CheckpointTest {
             Operator plan = queryPlanBuilder.buildPlan(stmt);
             //Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
             String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-        TupleWriter tw = new TupleWriter(outputDir + "/query11_read");
-        plan.dump(tw);
-        tw.close();
+            TupleWriter tw = new TupleWriter(outputDir + "/query11_read");
+            plan.dump(tw);
+            tw.close();
+            File outFile  = new File(outputDir + "/query11_human");
+            Convert c = new Convert(outputDir + "/query11_read", new PrintStream(outFile));
+            c.bin_to_human();
     }
     @Test
     public void testQuery12()
