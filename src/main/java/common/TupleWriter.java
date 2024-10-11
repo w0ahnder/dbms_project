@@ -80,8 +80,12 @@ public class TupleWriter {
     }
 
     public void close() throws IOException {
-        while(buff.hasRemaining()) buff.putInt(0);
+
+        while (buff.hasRemaining()) buff.putInt(0);
         buff.clear();
+        if(numTuples ==0){
+            buff = ByteBuffer.allocate(0);
+        }
         fc.write(buff);
         fc.close();
         fout.close();
