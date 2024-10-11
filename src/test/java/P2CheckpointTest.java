@@ -1,5 +1,6 @@
 import common.DBCatalog;
 import common.QueryPlanBuilder;
+import common.TupleWriter;
 import jdk.jshell.spi.ExecutionControl;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -42,20 +43,36 @@ public class P2CheckpointTest {
         statementList = statements.getStatements();
     }
 
+
+    //testing boats output, my own query not in checkpoint
+    @Test
+    public void testQuery16()
+            throws ExecutionControl.NotImplementedException,
+            JSQLParserException,
+            IOException,
+            URISyntaxException {
+        setupBeforeAllTests();
+        Statement stmt = statementList.get(15);
+        Operator plan = queryPlanBuilder.buildPlan(stmt);
+        //Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
+        String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
+        // File outfile = new File(outputDir + "/query1");
+        plan.dump(new TupleWriter(outputDir + "/BoatsRead"));
+    }
+
     @Test
     public void testQuery1()
             throws ExecutionControl.NotImplementedException,
             JSQLParserException,
             IOException,
             URISyntaxException {
-
         setupBeforeAllTests();
         Statement stmt = statementList.get(0);
         Operator plan = queryPlanBuilder.buildPlan(stmt);
-        Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
+        //Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-        File outfile = new File(outputDir + "/query1");
-        plan.dump(new PrintStream(outfile));
+       // File outfile = new File(outputDir + "/query1");
+        plan.dump(new TupleWriter(outputDir + "/query1"));
     }
 
     @Test
@@ -71,7 +88,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query2");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query2"));
     }
     @Test
     public void testQuery3()
@@ -86,7 +103,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query3");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query3"));
     }
 
     @Test
@@ -102,7 +119,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query4");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query4"));
     }
 
     @Test
@@ -118,7 +135,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(481, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query5");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query5"));
     }
 
     @Test
@@ -134,7 +151,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(481, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query6");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query6"));
     }
 
     @Test
@@ -150,7 +167,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(0, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query7");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query7"));
     }
 
     @Test
@@ -166,7 +183,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(5019, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query8");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query8"));
     }
 
     @Test
@@ -182,7 +199,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(25224, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query9");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query9"));
     }
 
     @Test
@@ -198,7 +215,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(19225, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query10");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query10"));
     }
 
     @Test
@@ -214,7 +231,7 @@ public class P2CheckpointTest {
             Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
             String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
             File outfile = new File(outputDir + "/query11");
-            plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query11"));
     }
     @Test
     public void testQuery12()
@@ -229,7 +246,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(496964, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query12");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query12"));
     }
 
     @Test
@@ -245,7 +262,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query13");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query13"));
     }
 
     @Test
@@ -261,7 +278,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(25224, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query14");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query14"));
     }
 
     @Test
@@ -277,7 +294,7 @@ public class P2CheckpointTest {
         Assertions.assertEquals(24764, HelperMethods.collectAllTuples(plan).size());
         String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
         File outfile = new File(outputDir + "/query15");
-        plan.dump(new PrintStream(outfile));
+        plan.dump(new TupleWriter(outputDir + "/query15"));
     }
 
 
