@@ -28,7 +28,7 @@ public class P2BinaryTest {
 
     @BeforeAll
     static void setupBeforeAllTests() throws IOException, JSQLParserException, URISyntaxException {
-        ClassLoader classLoader = P1UnitTests.class.getClassLoader();
+        ClassLoader classLoader = P2BinaryTest.class.getClassLoader();
         URI path = Objects.requireNonNull(classLoader.getResource("binary_samples/input")).toURI();
         Path resourcePath = Paths.get(path);
         //System.out.println("DB path" + resourcePath.resolve("db").toString());
