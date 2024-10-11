@@ -6,7 +6,7 @@
 The top level class is the Compiler class.
 
 
-The logical operators are located in the operator.LogicalOperators packaage, and the
+The logical operators are located in the operator.LogicalOperators package, and the
 physical operators are in the operator.PhysicalOperators package. 
 
 The PhysicalPlanBuilder 
