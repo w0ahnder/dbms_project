@@ -3,7 +3,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="java"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/db_practicum_team_name.main"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/db_practicum_seo.main"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: com.github.jsqlparser:jsqlparser:4.6"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: org.apache.logging.log4j:log4j-core:2.20.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Gradle: org.apache.logging.log4j:log4j-api:2.20.0"/>
