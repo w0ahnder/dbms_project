@@ -83,9 +83,15 @@ public class SortOperator extends Operator {
         Map<String, Integer> columnToIndexMap = new HashMap<>();
         for (int i = 0; i < outputSchema.size(); i += 1) {
           String full = outputSchema.get(i).getFullyQualifiedName();
+          //gives Sailors, and when alias=true, it tries to get Sailors from alias map
           if (DBCatalog.getInstance().getUseAlias()) {
             String[] names = full.split("\\.");
-            full = names[0] + "." + names[names.length - 1];
+            String name0 = DBCatalog.getInstance().getTableName(names[0]);
+            //not in alias map
+            if(name0 == null){
+              name0 = names[0];
+            }
+            full =name0 + "." + names[names.length - 1];
           }
           columnToIndexMap.put(full, i);
         }
@@ -114,7 +120,12 @@ public class SortOperator extends Operator {
           String col_str = col.getFullyQualifiedName();
           if (DBCatalog.getInstance().getUseAlias()) {
             String[] names = col_str.split("\\.");
-            col_str = names[0] + "." + names[names.length - 1];
+            String name0 = DBCatalog.getInstance().getTableName(names[0]);
+            //not in alias map
+            if(name0 == null){
+              name0 = names[0];
+            }
+            col_str = name0+ "." + names[names.length - 1];
           }
           if (columnToIndexMap.containsKey(col_str)) {
             int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col_str));
