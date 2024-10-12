@@ -82,16 +82,14 @@ public class SortOperator extends Operator {
       if (!orderByElements.isEmpty()) {
         Map<String, Integer> columnToIndexMap = new HashMap<>();
         for (int i = 0; i < outputSchema.size(); i += 1) {
-          String full = outputSchema.get(i).getFullyQualifiedName();
-          //gives Sailors, and when alias=true, it tries to get Sailors from alias map
+          String name = outputSchema.get(i).getTable().getName();
+          String ali = outputSchema.get(i).getTable().getSchemaName();
+          String col_name = outputSchema.get(i).getColumnName();
+          // gives Sailors, and when alias=true, it tries to get Sailors from alias map
+
+          String full = name + "." + col_name;
           if (DBCatalog.getInstance().getUseAlias()) {
-            String[] names = full.split("\\.");
-            String name0 = DBCatalog.getInstance().getTableName(names[0]);
-            //not in alias map
-            if(name0 == null){
-              name0 = names[0];
-            }
-            full =name0 + "." + names[names.length - 1];
+            full = ali + "." + col_name;
           }
           columnToIndexMap.put(full, i);
         }
@@ -100,10 +98,13 @@ public class SortOperator extends Operator {
           Column orderToCol = (Column) orderByElement.getExpression();
           String col = orderToCol.getFullyQualifiedName();
 
-          if(DBCatalog.getInstance().getUseAlias()){
-            String[] names = col.split("\\.");
-            col = DBCatalog.getInstance().getTableName(names[0]) + "." + names[names.length - 1];
-          }
+          // Sailors.C
+          /*if(DBCatalog.getInstance().getUseAlias()){
+                      String[] names = col.split("\\.");
+                      col = DBCatalog.getInstance().getTableName(names[0]) + "." + names[names.length - 1];
+                    }
+          */
+
           int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
 
           int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
@@ -117,16 +118,15 @@ public class SortOperator extends Operator {
         }
 
         for (Column col : outputSchema) {
-          String col_str = col.getFullyQualifiedName();
+
+          String name = col.getTable().getName();
+          String ali = col.getTable().getSchemaName();
+          String col_name = col.getColumnName();
+          String col_str = name + "." + col_name;
           if (DBCatalog.getInstance().getUseAlias()) {
-            String[] names = col_str.split("\\.");
-            String name0 = DBCatalog.getInstance().getTableName(names[0]);
-            //not in alias map
-            if(name0 == null){
-              name0 = names[0];
-            }
-            col_str = name0+ "." + names[names.length - 1];
+            col_str = ali + "." + col_name;
           }
+
           if (columnToIndexMap.containsKey(col_str)) {
             int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col_str));
             int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col_str));

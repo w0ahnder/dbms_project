@@ -266,6 +266,9 @@ public class P2CheckpointTest {
     // Assertions.assertEquals(496964, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query12read");
+
+    // File outFile = new File(outputDir + "/query12_human");
+    // plan.dump(new PrintStream(outFile));
     plan.dump(tw);
     tw.close();
   }

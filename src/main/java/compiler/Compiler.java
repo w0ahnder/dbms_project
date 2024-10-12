@@ -31,10 +31,9 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    // inputDir = args[0];
-    // outputDir = args[1];
-    inputDir = "src/test/resources/binary_samples/input";
-    outputDir = "/Users/savitta/Desktop/cs4320/p2_outs";
+    inputDir = args[0];
+    outputDir = args[1];
+
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");
     try {
       String str = Files.readString(Paths.get(inputDir + "/queries.sql"));

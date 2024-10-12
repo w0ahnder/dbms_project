@@ -58,7 +58,13 @@ public class ProjectOperator extends Operator {
 
     for (SelectItem s : selectItems) {
       Column c = (Column) ((SelectExpressionItem) s).getExpression();
-      tables.add(c.getTable().getName());
+      // if we use aliases, then this adds the alias instead like S.C adds S and Sailors.C adds
+      // Sailors
+      String t = c.getTable().getName();
+      if (DBCatalog.getInstance().getUseAlias()) {
+        t = c.getTable().getSchemaName();
+      }
+      tables.add(t);
       columns.add(c.getColumnName());
     }
     ArrayList<Integer> resTuple = new ArrayList<>();
@@ -80,11 +86,15 @@ public class ProjectOperator extends Operator {
     for (int i = 0; i < oldSchema.size(); i++) {
       Column curr = oldSchema.get(i);
       String c = curr.getColumnName();
-      String t = curr.getTable().getName();
+      // String t = curr.getTable().getName();
+      String al = curr.getTable().getSchemaName();
       String table_name = DBCatalog.getInstance().getTableName(name);
+      if (DBCatalog.getInstance().getUseAlias()) {
+        table_name = al;
+      }
 
-      //if (DBCatalog.getInstance().getUseAlias()) t = curr.getTable().getName();
-      if (c.equalsIgnoreCase(column) && table_name.equals(t)) {
+      // if (DBCatalog.getInstance().getUseAlias()) t = curr.getTable().getName();
+      if (c.equalsIgnoreCase(column) && table_name.equals(name)) {
         return i;
       }
     }

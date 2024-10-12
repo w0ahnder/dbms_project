@@ -102,7 +102,7 @@ public class QueryPlanBuilder {
 
     String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
     ArrayList<Column> schema = new ArrayList<>();
-    schema = copyColumn(DBCatalog.getInstance().get_Table(tableName));
+    schema = copyColumn(DBCatalog.getInstance().get_Table(tableName), tableName);
 
     Expression where = plainSelect.getWhere();
 
@@ -154,7 +154,7 @@ public class QueryPlanBuilder {
     // SCAN, SELECT, AND JOIN
     for (String table : tables) {
       table_path = DBCatalog.getInstance().getFileForTable(table).getPath();
-      schema = copyColumn(DBCatalog.getInstance().get_Table(table));
+      schema = copyColumn(DBCatalog.getInstance().get_Table(table), table);
       LogicalOperator op = new ScanLogOperator(schema, table_path);
       ArrayList<Expression> selectExpr = selectExpressions.get(table);
 
@@ -182,6 +182,11 @@ public class QueryPlanBuilder {
       if (!(selectItems.get(0) instanceof AllColumns)) {
         for (SelectItem selectItem : selectItems) {
           Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
+          if (if_alias) {
+            String al = c.getTable().getName();
+            c.getTable().setName(DBCatalog.getInstance().getTableName(al));
+            c.getTable().setSchemaName(al);
+          }
           newSchema.add(c);
         }
         result = new ProjectLogOperator(result, selectItems, newSchema);
@@ -256,10 +261,14 @@ public class QueryPlanBuilder {
     return res;
   }
 
-  private ArrayList<Column> copyColumn(ArrayList<Column> columns){
+  private ArrayList<Column> copyColumn(ArrayList<Column> columns, String table) {
     ArrayList<Column> res = new ArrayList<>();
-    for(Column c: columns){
-      res.add(new Column(new Table(null, c.getTable().getName().toString()), c.getColumnName()));
+    String al = null;
+    for (Column c : columns) {
+      if (if_alias) {
+        al = table;
+      }
+      res.add(new Column(new Table(al, c.getTable().getName().toString()), c.getColumnName()));
     }
     return res;
   }
