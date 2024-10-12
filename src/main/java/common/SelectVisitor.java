@@ -42,11 +42,10 @@ public class SelectVisitor extends ExpressVisit {
     int count = 0;
     for (Column c : schema) {
       String colName = c.getColumnName();
-      String alias = c.getTable().getSchemaName();
-      if (alias != null) {
-        tablename = alias;
-      }
-      if (colName.equalsIgnoreCase(col) && tablename.equalsIgnoreCase(table)) {
+      //String alias = c.getTable().getSchemaName();
+      String column_table = c.getTable().getName();
+
+      if (colName.equalsIgnoreCase(col) && tablename.equalsIgnoreCase(column_table)) {
         longValue = tuple.getElementAtIndex(count);
         return;
       }
