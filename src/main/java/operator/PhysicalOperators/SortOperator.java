@@ -93,6 +93,11 @@ public class SortOperator extends Operator {
         for (OrderByElement orderByElement : orderByElements) {
           Column orderToCol = (Column) orderByElement.getExpression();
           String col = orderToCol.getFullyQualifiedName();
+
+          if(DBCatalog.getInstance().getUseAlias()){
+            String[] names = col.split("\\.");
+            col = DBCatalog.getInstance().getTableName(names[0]) + "." + names[names.length - 1];
+          }
           int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
 
           int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
