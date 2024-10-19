@@ -30,6 +30,7 @@ public class P2CheckpointTest {
     Path resourcePath = Paths.get(path);
     // System.out.println("DB path" + resourcePath.resolve("db").toString());
     DBCatalog.getInstance().setDataDirectory(resourcePath.resolve("db").toString());
+    DBCatalog.getInstance().config_file(resourcePath.toString());
 
     URI queriesFile =
         Objects.requireNonNull(classLoader.getResource("binary_samples/input/queries.sql")).toURI();

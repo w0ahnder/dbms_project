@@ -1,9 +1,6 @@
 package common;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,7 +26,13 @@ public class DBCatalog {
   private final ConcurrentHashMap<String, String> aliasmap;
   private final ConcurrentHashMap<String, ArrayList<Column>> aliasSchema;
   private boolean useAlias = false;
+  private boolean BNLJ = false;
+  private boolean TNLJ=false;
+  private boolean SMJ = false;
+  private int BNLJ_buff;
 
+  private int sort_type; //0 if in memory
+  private int sort_buff;
   private String dbDirectory;
 
   /** Reads schemaFile and populates schema information */
@@ -173,4 +176,48 @@ public class DBCatalog {
   public TupleReader getReader(String path) throws FileNotFoundException {
     return new TupleReader(new File(path));
   }
+
+  public void config_file(String input_dir)  {
+    try {
+      String txt = "/plan_builder_config.txt";
+      String config = input_dir + txt;
+      BufferedReader br = new BufferedReader(new FileReader(config));
+      String l1 = br.readLine();
+      String l2 = br.readLine();
+      //first line is join method; 0 for TNLJ, 1 for BNLJ, 2 for SMJ
+      //if BNL, second number on line is number of buffer pages
+      String[] line1 = l1.split("\\s");
+      int join = Integer.parseInt(line1[0]);
+      TNLJ = join == 0;
+      BNLJ = join == 1;
+      SMJ = join == 2;
+      if (BNLJ) {
+        BNLJ_buff = Integer.parseInt(line1[1]);
+      }
+
+      //0 for in-memory, 1 for external
+      // if external, second int is number of buffer pages >=3
+      String[] line2 = l2.split("\\s");
+      int sort = Integer.parseInt(line2[0]);
+      sort_type = sort;
+      if (sort_type == 1)
+        sort_buff = Integer.parseInt(line2[1]);
+      br.close();
+
+    }
+    catch (Exception e){
+      logger.error(e.getMessage());
+    }
+  }
+
+  public boolean if_BNLJ(){
+    return BNLJ;
+  }
+  public boolean if_TNLJ(){
+    return TNLJ;
+  }
+  public int blockSize(){
+    return BNLJ_buff;
+  }
+
 }
