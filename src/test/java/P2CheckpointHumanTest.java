@@ -65,6 +65,11 @@ public class P2CheckpointHumanTest {
   /**diff -qr <(sort src/test/resources/binary_samples/expected_human/query15_humanreadable)
   <(sort src/test/resources/binary_samples/p2human/query15_human)
   **/
+
+  /** queries 13,14,15 order by is good
+   * diff -qr src/test/resources/binary_samples/expected_human/query15_humanreadable
+   * src/test/resources/binary_samples/p2human/query15_human
+   */
   @Test
   public void testQuery1()
       throws ExecutionControl.NotImplementedException,
