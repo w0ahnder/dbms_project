@@ -71,7 +71,7 @@ public class BNLOperator extends Operator{
     // 3.           FOR each r in B
     //what happens when right is BNL???????????
     public Tuple getNextTuple(){
-        System.out.println(condition.toString());
+        //System.out.println(condition.toString());
         if(!filled)
             fill();
         //keep same s until we exit 3. =>> (when reads>=tot_elements, we then get the next s)

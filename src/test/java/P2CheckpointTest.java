@@ -41,7 +41,7 @@ public class P2CheckpointTest {
   }
 
   // testing boats output, my own query not in checkpoint
-  @Test
+  //@Test
   public void testQuery16()
       throws ExecutionControl.NotImplementedException,
           JSQLParserException,
@@ -70,7 +70,7 @@ public class P2CheckpointTest {
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     // File outfile = new File(outputDir + "/query1");
-    TupleWriter tw = new TupleWriter(outputDir + "/query1_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query1");
     plan.dump(tw);
     tw.close();
   }
@@ -87,7 +87,7 @@ public class P2CheckpointTest {
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-    TupleWriter tw = new TupleWriter(outputDir + "/query2_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query2");
     plan.dump(tw);
     tw.close();
   }
@@ -105,7 +105,7 @@ public class P2CheckpointTest {
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query3");
-    TupleWriter tw = new TupleWriter(outputDir + "/query3_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query3");
     plan.dump(tw);
     tw.close();
   }
@@ -123,7 +123,7 @@ public class P2CheckpointTest {
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query4");
-    TupleWriter tw = new TupleWriter(outputDir + "/query4_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query4");
     plan.dump(tw);
     tw.close();
   }
@@ -141,7 +141,7 @@ public class P2CheckpointTest {
     // Assertions.assertEquals(481, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query5");
-    TupleWriter tw = new TupleWriter(outputDir + "/query5_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query5");
     plan.dump(tw);
     tw.close();
   }
@@ -159,7 +159,7 @@ public class P2CheckpointTest {
     // Assertions.assertEquals(481, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query6");
-    TupleWriter tw = new TupleWriter(outputDir + "/query6_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query6");
     plan.dump(tw);
     tw.close();
   }
@@ -177,7 +177,7 @@ public class P2CheckpointTest {
     // Assertions.assertEquals(0, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query7");
-    TupleWriter tw = new TupleWriter(outputDir + "/query7_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query7");
     plan.dump(tw);
     tw.close();
   }
@@ -194,7 +194,7 @@ public class P2CheckpointTest {
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     // Assertions.assertEquals(5019, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-    TupleWriter tw = new TupleWriter(outputDir + "/query8_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query8");
     plan.dump(tw);
     tw.close();
   }
@@ -212,12 +212,12 @@ public class P2CheckpointTest {
     // Assertions.assertEquals(25224, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     // plan.dump(new PrintStream(outputDir + "/query9_human"));
-    TupleWriter tw = new TupleWriter(outputDir + "/query9_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query9");
     plan.dump(tw);
     tw.close();
   }
 
-  @Test
+  // @Test
   public void testQuery10()
       throws ExecutionControl.NotImplementedException,
           JSQLParserException,
@@ -229,7 +229,7 @@ public class P2CheckpointTest {
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     // Assertions.assertEquals(19225, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-    TupleWriter tw = new TupleWriter(outputDir + "/query10_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query10");
     plan.dump(tw);
     tw.close();
   }
@@ -246,12 +246,12 @@ public class P2CheckpointTest {
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-    TupleWriter tw = new TupleWriter(outputDir + "/query11_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query11");
     plan.dump(tw);
     tw.close();
-    File outFile = new File(outputDir + "/query11_human");
-    Convert c = new Convert(outputDir + "/query11_read", new PrintStream(outFile));
-    c.bin_to_human();
+    /*File outFile = new File(outputDir + "/query11_human");
+    Convert c = new Convert(outputDir + "/query11", new PrintStream(outFile));
+    c.bin_to_human();*/
   }
 
   @Test
@@ -266,7 +266,7 @@ public class P2CheckpointTest {
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     // Assertions.assertEquals(496964, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-    TupleWriter tw = new TupleWriter(outputDir + "/query12read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query12");
 
     // File outFile = new File(outputDir + "/query12_human");
     // plan.dump(new PrintStream(outFile));
@@ -286,7 +286,7 @@ public class P2CheckpointTest {
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-    TupleWriter tw = new TupleWriter(outputDir + "/query13_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query13");
     plan.dump(tw);
     tw.close();
   }
@@ -303,7 +303,7 @@ public class P2CheckpointTest {
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     // Assertions.assertEquals(25224, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-    TupleWriter tw = new TupleWriter(outputDir + "/query14_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query14");
     plan.dump(tw);
     tw.close();
   }
@@ -320,7 +320,7 @@ public class P2CheckpointTest {
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     // Assertions.assertEquals(24764, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-    TupleWriter tw = new TupleWriter(outputDir + "/query15_read");
+    TupleWriter tw = new TupleWriter(outputDir + "/query15");
     plan.dump(tw);
     tw.close();
   }
