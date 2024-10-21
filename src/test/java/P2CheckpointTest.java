@@ -58,6 +58,9 @@ public class P2CheckpointTest {
     tw.close();
   }
 
+  //have to maybe handle project operator using reset in the getNextTuple function?
+  //should be that a function calls getNextTuple and if that is false, then we reset
+
   @Test
   public void testQuery1()
       throws ExecutionControl.NotImplementedException,
