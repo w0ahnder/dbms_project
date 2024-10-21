@@ -233,7 +233,6 @@ public class P2CheckpointTest {
     // Assertions.assertEquals(19225, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query10");
-    System.out.println("dumping query 10");
     plan.dump(tw);
     tw.close();
   }
