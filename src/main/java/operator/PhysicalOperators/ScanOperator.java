@@ -23,7 +23,7 @@ public class ScanOperator extends Operator {
     super(outputSchema);
     db = DBCatalog.getInstance();
     table_path = path;
-    br = new BufferedReader(new FileReader(table_path));
+    //br = new BufferedReader(new FileReader(table_path));
     reader = DBCatalog.getInstance().getReader(path);
   }
 

@@ -43,7 +43,7 @@ public class BNLOperator extends Operator{
         filled=false;
         left.reset();
         right.reset();
-        fill();
+        fill2();
     }
 
     //get the total number of elements that can fit in the buffer where each page is 4096 bytes
@@ -64,13 +64,68 @@ public class BNLOperator extends Operator{
         filled = tot_elements>0; //if any elements were read
     }
 
+    //when we reach the end of all the blocks and left.getNextTuple is called, it starts reading from the begining
+    //again
+    public void fill2(){
+        reads = 0;
+        tot_elements = 0;
+        buffer.clear();
+        Tuple t;
+        //keeps reading tuples until left is null, but then the select op resets it already, so next set is
+        //fresh remove reset from select next tuple
+        while( (tot_elements<num_tup) && (t = left.getNextTuple())!=null){
+            buffer.add(t);
+            tot_elements++;
+            check_t = t;
+        }
+        filled = tot_elements>0; //if any elements were read
+    }
+
+    public Tuple getNextTuple(){
+        if(!filled)
+            fill2();
+        //if not filled, fill it; and if filled is still false, there are no more tuples in
+        //Tuple reader, so we return null
+        if(!filled) {
+            //reset();
+            return null;
+        }
+        while(reads<tot_elements){
+            Tuple r = buffer.get(reads);
+            s = right.getNextTuple();
+            while(s!=null){
+                ArrayList<Integer> elements = new ArrayList<>();
+                elements.addAll(r.getAllElements());
+                elements.addAll(s.getAllElements());
+                Tuple curr = new Tuple(elements);
+                //s = right.getNextTuple();
+                if (this.condition == null) {
+                    return curr;
+                }
+                SelectVisitor sv = new SelectVisitor(curr, concatSchema(), this.condition);
+                if (sv.evaluate_expr()) {
+                    return curr;
+                }
+                //condiitons not met, so get next s Tuple
+                s = right.getNextTuple();
+            }
+            //s = null, so now we get next element in block
+            right.reset();
+            reads++;
+        }
+        //all elements in block were read, get next block
+        right.reset();
+        fill2();
+        return this.getNextTuple();
+    }
+
 
     //if 2 is another BNL, then when we reset, we want to get the next block of pages, not
     // 1. FOR each B
     // 2.     For each s in INNER
     // 3.           FOR each r in B
     //what happens when right is BNL???????????
-    public Tuple getNextTuple(){
+    public Tuple getNextTuple2(){
         //System.out.println(condition.toString());
         if(!filled)
             fill();

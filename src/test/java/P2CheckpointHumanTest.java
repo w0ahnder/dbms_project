@@ -234,7 +234,7 @@ public class P2CheckpointHumanTest {
     c.bin_to_human();
   }
 
-  // @Test
+  @Test
   public void testQuery10()
       throws ExecutionControl.NotImplementedException,
           JSQLParserException,
@@ -246,7 +246,10 @@ public class P2CheckpointHumanTest {
     Operator plan = queryPlanBuilder.buildPlan(stmt);
     // Assertions.assertEquals(19225, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2human";
-
+    String out2  = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query10_human");
+    Convert c = new Convert(out2+ "/query10", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
