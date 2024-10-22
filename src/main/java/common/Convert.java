@@ -10,7 +10,7 @@ public class Convert {
 
   public Convert(String path, PrintStream ps) throws FileNotFoundException {
     this.path = path;
-    reader = new TupleReader(new File(path));
+    reader = new TupleReader(new File(this.path));
     printStream = ps;
   }
 

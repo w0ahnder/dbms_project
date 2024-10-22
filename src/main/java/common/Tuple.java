@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 public class Tuple {
   ArrayList<Integer> tupleArray;
+  public TupleReader tupleReader = null;
 
   /**
    * Creates a tuple using string representation of the tuple. Delimiter between the columns is a

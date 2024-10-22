@@ -3,9 +3,14 @@ package compiler;
 import common.DBCatalog;
 import common.QueryPlanBuilder;
 import common.TupleWriter;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
@@ -21,6 +26,7 @@ public class Compiler {
 
   private static String outputDir;
   private static String inputDir;
+  private static String tempDir;
   private static final boolean outputToFiles = true;
 
   /**
@@ -33,27 +39,35 @@ public class Compiler {
 
     inputDir = args[0];
     outputDir = args[1];
+    tempDir = args[2];
+
+    // TODO: Get the join and sort methods from the configuration file
+    // TODO: get the location of the tmepDir
 
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");
     try {
       String str = Files.readString(Paths.get(inputDir + "/queries.sql"));
       Statements statements = CCJSqlParserUtil.parseStatements(str);
       QueryPlanBuilder queryPlanBuilder = new QueryPlanBuilder();
-
+      List<List<Integer>> planConfig = readNumbersFromFile(inputDir + "/plan_builder_config.txt");
       if (outputToFiles) {
+        for (File file : (new File(tempDir).listFiles())) file.delete();
         for (File file : (new File(outputDir).listFiles())) file.delete(); // clean output directory
       }
 
       int counter = 1; // for numbering output files
       for (Statement statement : statements.getStatements()) {
         try {
-          Operator plan = queryPlanBuilder.buildPlan(statement);
+          Operator plan = queryPlanBuilder.buildPlan(statement, tempDir, planConfig);
           if (outputToFiles) {
+            // TODO: change to Binary format
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
+            // File outfile = new File(outputDir + "/query" + counter);
             long start = System.currentTimeMillis();
             plan.dump(tw);
+            // plan.dump(new PrintStream(outfile));
             long end = System.currentTimeMillis();
-            tw.close();
+            // tw.close();
             System.out.println("Elapsed time: " + (end - start));
           } else {
             System.out.println("fail");
@@ -69,5 +83,29 @@ public class Compiler {
       System.err.println("Exception occurred in interpreter");
       logger.error(e.getMessage());
     }
+  }
+
+  public static List<List<Integer>> readNumbersFromFile(String filePath) {
+    List<List<Integer>> numbers = new ArrayList<>();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        String[] tokens = line.split("\\s+");
+        List<Integer> lines = new ArrayList<>();
+        for (String token : tokens) {
+          try {
+            int number = Integer.parseInt(token);
+            lines.add(number);
+          } catch (NumberFormatException e) {
+            System.out.println("Error parsing number: " + token);
+          }
+        }
+        numbers.add(lines);
+      }
+    } catch (IOException e) {
+      System.err.println("Error reading the file: " + e.getMessage());
+    }
+    return numbers;
   }
 }

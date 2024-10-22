@@ -2,18 +2,20 @@ package operator.PhysicalOperators;
 
 import common.DBCatalog;
 import common.Tuple;
+import common.TupleWriter;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 
 /** Class that extends Operator Class to handle SQL queries with the ORDER BY keyword. */
-public class SortOperator extends Operator {
+public class InMemorySortOperator extends SortOperator {
   List<OrderByElement> orderByElements;
   Operator op;
 
   ArrayList<Tuple> result = new ArrayList<>();
 
   Integer curr;
+  TupleWriter tw;
 
   /**
    * Creates a SortOperator Object
@@ -22,48 +24,27 @@ public class SortOperator extends Operator {
    * @param orderElements a list of the columns which should be used to sort the tuples
    * @param sc the child operator
    */
-  public SortOperator(
-      ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
-    super(outputSchema);
+  public InMemorySortOperator(
+      ArrayList<Column> outputSchema,
+      List<OrderByElement> orderElements,
+      Operator sc,
+      ArrayList<Tuple> result,
+      TupleWriter tw) {
+    super(outputSchema, orderElements, sc);
     this.orderByElements = orderElements;
-    this.op = sc;
-    this.curr = 0;
-    Tuple tuple = sc.getNextTuple();
-    while (tuple != null) {
-      result.add(tuple);
-      tuple = sc.getNextTuple();
-    }
-
-    result.sort(new TupleComparator());
-  }
-
-  /**
-   * Resets pointer on the operator object to the beginning. Achieves this by resetting its child
-   * operator and resetting its "curr" field
-   */
-  public void reset() {
+    this.result = result;
+    this.tw = tw;
     curr = 0;
-    op.reset();
+    this.op = sc;
   }
 
-  /**
-   * Get next tuple from operator
-   *
-   * @return Tuple, or null if we are at the end. Retrieves next tuple by indexing with "curr" into
-   *     "result" which is a sorted list of all the tuples from its child operator.
-   */
-  public Tuple getNextTuple() {
-
-    if (curr == result.size()) {
-      this.reset();
-      return null;
-    }
-    curr += 1;
-    return result.get(curr - 1);
+  public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
+    result.sort(new TupleComparator());
+    return result;
   }
 
   /** Custom Comparator class to compare two tuples based on columns */
-  public class TupleComparator implements Comparator<Tuple> {
+  private class TupleComparator implements Comparator<Tuple> {
     public TupleComparator() {}
 
     /**

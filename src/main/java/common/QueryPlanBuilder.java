@@ -56,7 +56,12 @@ public class QueryPlanBuilder {
    * @precondition stmt is a Select having a body that is a PlainSelect
    */
   @SuppressWarnings("unchecked")
-  public Operator buildPlan(Statement stmt) throws ExecutionControl.NotImplementedException {
+  public Operator buildPlan(Statement stmt, String tempDir, List<List<Integer>> planConfList)
+      throws ExecutionControl.NotImplementedException {
+
+    // List<Integer> joinConfig = planConfList.get(0);
+    List<Integer> sortConfig = planConfList.get(1);
+
     tables = new ArrayList<>();
     andExpressions = new ArrayList<>();
     if_alias = false;
@@ -195,7 +200,12 @@ public class QueryPlanBuilder {
 
     // ORDER BY
     if (orderByElements != null) {
-      result = new SortLogOperator(orderByElements, result);
+      // TODO: change this with the actual bufferPages
+      if (sortConfig.get(0).equals(0)) {
+        result = new SortLogOperator(orderByElements, result);
+      } else {
+        result = new SortLogOperator(orderByElements, result, sortConfig.get(1), tempDir);
+      }
     }
 
     // DISTINCT
