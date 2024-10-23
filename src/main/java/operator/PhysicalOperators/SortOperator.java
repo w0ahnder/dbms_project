@@ -4,6 +4,7 @@ import common.DBCatalog;
 import common.Tuple;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 
 /** Class that extends Operator Class to handle SQL queries with the ORDER BY keyword. */
@@ -25,9 +26,27 @@ public class SortOperator extends Operator {
   public SortOperator(
       ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
     super(outputSchema);
-    this.orderByElements = orderElements;
+    this.orderByElements = new ArrayList<>();
     this.op = sc;
     this.curr = 0;
+    if(orderElements.size() ==0) {
+      for (Column c : outputSchema) {
+
+        OrderByElement ob = new OrderByElement();
+        Column newc = new Column();
+        String table_name = DBCatalog.getInstance().getUseAlias() ? c.getTable().getSchemaName() : c.getTable().getName();
+        Table t = new Table(table_name);
+        newc.setTable(t);
+        newc.setColumnName(c.getColumnName());
+        ob.setExpression(c);
+        this.orderByElements.add(ob);
+      }
+    }
+      else{
+        this.orderByElements = orderElements;
+      }
+
+    }
     // Tuple tuple = sc.getNextTuple();
     // while (tuple != null) {
     //   result.add(tuple);
@@ -35,7 +54,6 @@ public class SortOperator extends Operator {
     // }
 
     // result.sort(new TupleComparator());
-  }
 
   public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
     result.sort(new TupleComparator());
@@ -82,7 +100,7 @@ public class SortOperator extends Operator {
      */
     @Override
     public int compare(Tuple t1, Tuple t2) {
-      if (!orderByElements.isEmpty()) {
+
         Map<String, Integer> columnToIndexMap = new HashMap<>();
         for (int i = 0; i < outputSchema.size(); i += 1) {
           String name = outputSchema.get(i).getTable().getName();
@@ -141,9 +159,7 @@ public class SortOperator extends Operator {
           }
         }
         return 0;
-      } else {
-        return t1.toString().compareTo(t2.toString());
-      }
+
     }
   }
 }

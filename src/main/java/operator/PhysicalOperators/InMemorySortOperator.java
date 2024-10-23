@@ -4,6 +4,7 @@ import common.DBCatalog;
 import common.Tuple;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 
 /** Class that extends Operator Class to handle SQL queries with the ORDER BY keyword. */
@@ -25,7 +26,24 @@ public class InMemorySortOperator extends SortOperator {
   public InMemorySortOperator(
       ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
     super(outputSchema, orderElements, sc);
-    this.orderByElements = orderElements;
+
+    if(orderElements.size() ==0) {
+      for (Column c : outputSchema) {
+
+        OrderByElement ob = new OrderByElement();
+        Column newc = new Column();
+        String table_name = DBCatalog.getInstance().getUseAlias() ? c.getTable().getSchemaName() : c.getTable().getName();
+        Table t = new Table(table_name);
+        newc.setTable(t);
+        newc.setColumnName(c.getColumnName());
+        ob.setExpression(c);
+        this.orderByElements.add(ob);
+      }
+    }
+    else{
+      this.orderByElements = orderElements;
+    }
+
     curr = 0;
     this.op = sc;
     Tuple tuple = sc.getNextTuple();
@@ -58,7 +76,6 @@ public class InMemorySortOperator extends SortOperator {
      */
     @Override
     public int compare(Tuple t1, Tuple t2) {
-      if (!orderByElements.isEmpty()) {
         Map<String, Integer> columnToIndexMap = new HashMap<>();
         for (int i = 0; i < outputSchema.size(); i += 1) {
           String name = outputSchema.get(i).getTable().getName();
@@ -117,9 +134,7 @@ public class InMemorySortOperator extends SortOperator {
           }
         }
         return 0;
-      } else {
-        return t1.toString().compareTo(t2.toString());
-      }
+
     }
   }
 }
