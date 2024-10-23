@@ -29,31 +29,33 @@ public class SortOperator extends Operator {
     this.orderByElements = new ArrayList<>();
     this.op = sc;
     this.curr = 0;
-    if(orderElements.size() ==0) {
+    if (orderElements.size() == 0) {
       for (Column c : outputSchema) {
 
         OrderByElement ob = new OrderByElement();
         Column newc = new Column();
-        String table_name = DBCatalog.getInstance().getUseAlias() ? c.getTable().getSchemaName() : c.getTable().getName();
+        String table_name =
+            DBCatalog.getInstance().getUseAlias()
+                ? c.getTable().getSchemaName()
+                : c.getTable().getName();
         Table t = new Table(table_name);
         newc.setTable(t);
         newc.setColumnName(c.getColumnName());
         ob.setExpression(c);
         this.orderByElements.add(ob);
       }
+    } else {
+      this.orderByElements = orderElements;
     }
-      else{
-        this.orderByElements = orderElements;
-      }
+  }
 
-    }
-    // Tuple tuple = sc.getNextTuple();
-    // while (tuple != null) {
-    //   result.add(tuple);
-    //   tuple = sc.getNextTuple();
-    // }
+  // Tuple tuple = sc.getNextTuple();
+  // while (tuple != null) {
+  //   result.add(tuple);
+  //   tuple = sc.getNextTuple();
+  // }
 
-    // result.sort(new TupleComparator());
+  // result.sort(new TupleComparator());
 
   public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
     result.sort(new TupleComparator());
@@ -101,65 +103,64 @@ public class SortOperator extends Operator {
     @Override
     public int compare(Tuple t1, Tuple t2) {
 
-        Map<String, Integer> columnToIndexMap = new HashMap<>();
-        for (int i = 0; i < outputSchema.size(); i += 1) {
-          String name = outputSchema.get(i).getTable().getName();
-          String ali = outputSchema.get(i).getTable().getSchemaName();
-          String col_name = outputSchema.get(i).getColumnName();
-          // gives Sailors, and when alias=true, it tries to get Sailors from alias map
+      Map<String, Integer> columnToIndexMap = new HashMap<>();
+      for (int i = 0; i < outputSchema.size(); i += 1) {
+        String name = outputSchema.get(i).getTable().getName();
+        String ali = outputSchema.get(i).getTable().getSchemaName();
+        String col_name = outputSchema.get(i).getColumnName();
+        // gives Sailors, and when alias=true, it tries to get Sailors from alias map
 
-          String full = name + "." + col_name;
-          if (DBCatalog.getInstance().getUseAlias()) {
-            full = ali + "." + col_name;
-          }
-          columnToIndexMap.put(full, i);
+        String full = name + "." + col_name;
+        if (DBCatalog.getInstance().getUseAlias()) {
+          full = ali + "." + col_name;
+        }
+        columnToIndexMap.put(full, i);
+      }
+
+      for (OrderByElement orderByElement : orderByElements) {
+        Column orderToCol = (Column) orderByElement.getExpression();
+        String col = orderToCol.getFullyQualifiedName();
+
+        // Sailors.C
+        /*if(DBCatalog.getInstance().getUseAlias()){
+                    String[] names = col.split("\\.");
+                    col = DBCatalog.getInstance().getTableName(names[0]) + "." + names[names.length - 1];
+                  }
+        */
+
+        int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
+
+        int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
+
+        if (t1_val > t2_val) {
+          return 1;
+        } else if (t1_val < t2_val) {
+          return -1;
+        }
+        columnToIndexMap.remove(col);
+      }
+
+      for (Column col : outputSchema) {
+
+        String name = col.getTable().getName();
+        String ali = col.getTable().getSchemaName();
+        String col_name = col.getColumnName();
+        String col_str = name + "." + col_name;
+        if (DBCatalog.getInstance().getUseAlias()) {
+          col_str = ali + "." + col_name;
         }
 
-        for (OrderByElement orderByElement : orderByElements) {
-          Column orderToCol = (Column) orderByElement.getExpression();
-          String col = orderToCol.getFullyQualifiedName();
-
-          // Sailors.C
-          /*if(DBCatalog.getInstance().getUseAlias()){
-                      String[] names = col.split("\\.");
-                      col = DBCatalog.getInstance().getTableName(names[0]) + "." + names[names.length - 1];
-                    }
-          */
-
-          int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
-
-          int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
-
+        if (columnToIndexMap.containsKey(col_str)) {
+          int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col_str));
+          int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col_str));
           if (t1_val > t2_val) {
             return 1;
           } else if (t1_val < t2_val) {
             return -1;
           }
-          columnToIndexMap.remove(col);
         }
-
-        for (Column col : outputSchema) {
-
-          String name = col.getTable().getName();
-          String ali = col.getTable().getSchemaName();
-          String col_name = col.getColumnName();
-          String col_str = name + "." + col_name;
-          if (DBCatalog.getInstance().getUseAlias()) {
-            col_str = ali + "." + col_name;
-          }
-
-          if (columnToIndexMap.containsKey(col_str)) {
-            int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col_str));
-            int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col_str));
-            if (t1_val > t2_val) {
-              return 1;
-            } else if (t1_val < t2_val) {
-              return -1;
-            }
-          }
-        }
-        return 0;
-
+      }
+      return 0;
     }
   }
 }
