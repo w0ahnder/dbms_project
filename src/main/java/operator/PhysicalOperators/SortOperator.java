@@ -2,6 +2,8 @@ package operator.PhysicalOperators;
 
 import common.DBCatalog;
 import common.Tuple;
+
+import java.io.IOException;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -49,6 +51,11 @@ public class SortOperator extends Operator {
   public void reset() {
     curr = 0;
     op.reset();
+  }
+
+  @Override
+  public void reset(int index) throws IOException {
+
   }
 
   /**

@@ -2,6 +2,8 @@ package operator.PhysicalOperators;
 
 import common.SelectVisitor;
 import common.Tuple;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
@@ -65,6 +67,11 @@ public class JoinOperator extends Operator {
   public void reset() {
     this.leftOperator.reset();
     this.rightOperator.reset();
+  }
+
+  @Override
+  public void reset(int index) throws IOException {
+
   }
 
   /**

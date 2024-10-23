@@ -29,6 +29,10 @@ public abstract class Operator {
   /** Resets cursor on the operator to the beginning */
   public abstract void reset();
 
+
+  /** Resets cursor on the operator to a specific point */
+  public abstract void reset(int index) throws IOException;
+
   /**
    * Get next tuple from operator
    *

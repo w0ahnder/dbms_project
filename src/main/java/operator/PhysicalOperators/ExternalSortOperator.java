@@ -157,6 +157,10 @@ public class ExternalSortOperator extends SortOperator {
   }
 
   @Override
+  public void reset(int index) throws IOException {
+    reader.reset(index);
+  }
+  @Override
   public Tuple getNextTuple() {
     if (reader == null) {
       return null;

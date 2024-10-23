@@ -3,6 +3,8 @@ package operator.PhysicalOperators;
 import common.DBCatalog;
 import common.SelectVisitor;
 import common.Tuple;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
@@ -45,6 +47,11 @@ public class BNLOperator extends Operator {
     left.reset();
     right.reset();
     fill();
+  }
+
+  @Override
+  public void reset(int index) throws IOException {
+
   }
 
   // get the total number of elements that can fit in the buffer where each page is 4096 bytes
