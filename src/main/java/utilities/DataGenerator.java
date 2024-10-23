@@ -1,6 +1,11 @@
 package utilities;
 
 import common.Tuple;
+import common.TupleWriter;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,27 +22,34 @@ public class DataGenerator {
   // all the generated tuple
   ArrayList<Tuple> data;
   Random random;
+  public String out;
 
-  public DataGenerator(int range, int size, int tupleSize) {
+  public DataGenerator(int range, int size, int tupleSize, String out) throws IOException {
     this.range = range;
     this.total = size;
     this.tupleSize = tupleSize;
     this.random = new Random();
+    this.out   = out;
     generateTuples();
   }
 
-  public void generateTuples() {
-    for (int i = 0; i < total; i += 1) {
+  public void generateTuples() throws IOException {
+    TupleWriter tw = new TupleWriter(out);
+    for (int i = 0; i < total; i ++) {
       ArrayList<Integer> elements = new ArrayList<>();
 
-      for (int j = 0; i < tupleSize; i++) {
+      for (int j = 0; j < tupleSize; j++) {
         int num = random.nextInt(range) + 1;
         elements.add(num);
       }
-      data.add(new Tuple(elements));
+      Tuple t = new Tuple(elements);
+      tw.write(t);
       elements.clear();
     }
+    tw.close();
+
   }
+
 
   public ArrayList<Tuple> allTuples() {
     return data;

@@ -219,4 +219,18 @@ public class DBCatalog {
   public int blockSize() {
     return BNLJ_buff;
   }
+  /*************************   Benchmarking Functions    *************/
+
+  public void setLoop(int jointype){
+    TNLJ= jointype==0;
+    BNLJ = jointype==1;
+    SMJ = jointype ==2;
+  }
+  public void setBNLbuff(int b){
+    BNLJ_buff =b;
+  }
+
+  public void setSortBuff(int b){
+    sort_buff  =b;
+  }
 }
