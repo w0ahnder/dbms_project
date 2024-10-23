@@ -66,12 +66,18 @@ public class PhysicalPlanBuilder {
 
   public void visit(SortLogOperator sortLogOperator) throws FileNotFoundException {
     sortLogOperator.child.accept(this);
-    rootOperator =
-        new ExternalSortOperator(
-            rootOperator.getOutputSchema(),
-            sortLogOperator.orderByElements,
-            rootOperator,
-            sortLogOperator.bufferPages,
-            sortLogOperator.tempDir);
+    if (sortLogOperator.bufferPages == null) {
+      rootOperator =
+          new InMemorySortOperator(
+              rootOperator.getOutputSchema(), sortLogOperator.orderByElements, rootOperator);
+    } else {
+      rootOperator =
+          new ExternalSortOperator(
+              rootOperator.getOutputSchema(),
+              sortLogOperator.orderByElements,
+              rootOperator,
+              sortLogOperator.bufferPages,
+              sortLogOperator.tempDir);
+    }
   }
 }

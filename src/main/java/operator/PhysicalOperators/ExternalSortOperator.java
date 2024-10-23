@@ -1,10 +1,12 @@
 package operator.PhysicalOperators;
 
+import common.Convert;
 import common.Tuple;
 import common.TupleReader;
 import common.TupleWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -16,12 +18,14 @@ public class ExternalSortOperator extends SortOperator {
   ArrayList<Tuple> result = new ArrayList<>();
   private int bufferSize;
   TupleWriter tw;
-  InMemorySortOperator sortOperator;
+  SortOperator sortOperator;
   private static final Logger logger = LogManager.getLogger();
   String tempDir;
   Integer bufferPages;
   int numTuples;
   public TupleReader reader = null;
+  Operator op;
+  List<OrderByElement> orderElements;
 
   TupleComparator comparator;
 
@@ -33,29 +37,28 @@ public class ExternalSortOperator extends SortOperator {
       String tempDir) {
     super(outputSchema, orderElements, sc);
     this.tempDir = tempDir;
+    this.op = sc;
     this.comparator = new TupleComparator();
     this.bufferPages = bufferPages;
     this.bufferSize = bufferPages * 4096;
     int tupleSize = op.outputSchema.size() * 4;
     this.numTuples = this.bufferSize / tupleSize;
-
+    this.orderByElements = orderElements;
     sort();
   }
 
   private void sort() {
+    System.out.println("Sorting");
     int run = 0;
     int tupleSize = op.outputSchema.size() * 4;
     int numTuples = this.bufferSize / tupleSize;
     // numTuples = 2; // remove after testing
     ArrayList<Tuple> tuples = new ArrayList<>(numTuples);
-    sortOperator = new InMemorySortOperator(outputSchema, this.orderByElements, op, tuples, tw);
+    sortOperator = new SortOperator(outputSchema, this.orderByElements, op);
 
-    System.out.println("calling next tuple");
     Tuple next = op.getNextTuple();
-    System.out.println("back");
     try {
       while (next != null) {
-        System.out.println("Next was not null");
         while (numTuples > 0) {
           if (next == null) {
             break;
@@ -85,6 +88,7 @@ public class ExternalSortOperator extends SortOperator {
 
   /** Merge sep in External Sort Algoritms */
   private void merge(int Pass) {
+    System.out.println("Entering merge");
     int num = 0;
     int pass = Pass;
 
@@ -95,7 +99,6 @@ public class ExternalSortOperator extends SortOperator {
 
     while (num < pass - 1) {
       try {
-        // numTuples = 2; // remove after testing
         for (int i = num; i < num + numTuples; i++) {
           if (i < pass) {
             buffer.add(new TupleReader(new File(tempDir + "/run" + i)));
@@ -128,16 +131,36 @@ public class ExternalSortOperator extends SortOperator {
         e.printStackTrace();
       }
     }
+    printhuman();
+  }
+
+  private void printhuman() {
+    for (int i = 0; i < 4; i++) {
+      Convert conv;
+      try {
+        conv = new Convert(tempDir + "/run" + i, new PrintStream(tempDir + "/run" + i + "human"));
+        conv.bin_to_human();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   @Override
   public void reset() {
-    super.reset();
+    if (reader == null) return;
+    try {
+      reader.reset();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
   public Tuple getNextTuple() {
-    if (reader == null) return null;
+    if (reader == null) {
+      return null;
+    }
     try {
       Tuple tp = reader.read();
       return tp;
