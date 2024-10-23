@@ -95,6 +95,14 @@ public class ExternalSortOperator extends SortOperator {
     // int totalPass = Pass;
     List<TupleReader> buffer = new ArrayList<>();
 
+    if (pass == 1) {
+      try {
+        reader = new TupleReader(new File(tempDir + "/run" + num));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     while (num < pass - 1) {
       try {
         for (int i = num; i < num + numTuples; i++) {

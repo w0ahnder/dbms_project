@@ -180,23 +180,6 @@ public class QueryPlanBuilder {
       }
     }
 
-    // PROJECT
-    if (selectItems.size() >= 1) {
-      ArrayList<Column> newSchema = new ArrayList<>();
-      if (!(selectItems.get(0) instanceof AllColumns)) {
-        for (SelectItem selectItem : selectItems) {
-          Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
-          if (if_alias) {
-            String al = c.getTable().getName();
-            c.getTable().setName(DBCatalog.getInstance().getTableName(al));
-            c.getTable().setSchemaName(al);
-          }
-          newSchema.add(c);
-        }
-        result = new ProjectLogOperator(result, selectItems, newSchema);
-      }
-    }
-
     // ORDER BY
     if (orderByElements != null) {
       if (sortConfig.get(0).equals(0)) {
@@ -218,6 +201,23 @@ public class QueryPlanBuilder {
           child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
         }
         result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
+      }
+    }
+
+    // PROJECT
+    if (selectItems.size() >= 1) {
+      ArrayList<Column> newSchema = new ArrayList<>();
+      if (!(selectItems.get(0) instanceof AllColumns)) {
+        for (SelectItem selectItem : selectItems) {
+          Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
+          if (if_alias) {
+            String al = c.getTable().getName();
+            c.getTable().setName(DBCatalog.getInstance().getTableName(al));
+            c.getTable().setSchemaName(al);
+          }
+          newSchema.add(c);
+        }
+        result = new ProjectLogOperator(result, selectItems, newSchema);
       }
     }
 
