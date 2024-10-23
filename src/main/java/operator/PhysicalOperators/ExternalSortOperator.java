@@ -36,7 +36,9 @@ public class ExternalSortOperator extends SortOperator {
       Integer bufferPages,
       String tempDir) {
     super(outputSchema, orderElements, sc);
-    this.tempDir = tempDir;
+    this.tempDir = tempDir + "/" + "test" + UUID.randomUUID();
+    File tmp = new File(this.tempDir);
+    tmp.mkdir();
     this.op = sc;
     this.comparator = new TupleComparator();
     this.bufferPages = bufferPages;
