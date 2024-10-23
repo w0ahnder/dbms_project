@@ -7,14 +7,7 @@ import operator.LogicalOperators.ProjectLogOperator;
 import operator.LogicalOperators.ScanLogOperator;
 import operator.LogicalOperators.SelectLogOperator;
 import operator.LogicalOperators.SortLogOperator;
-import operator.PhysicalOperators.DuplicateEliminationOperator;
-import operator.PhysicalOperators.ExternalSortOperator;
-import operator.PhysicalOperators.JoinOperator;
-import operator.PhysicalOperators.Operator;
-import operator.PhysicalOperators.ProjectOperator;
-import operator.PhysicalOperators.ScanOperator;
-import operator.PhysicalOperators.SelectOperator;
-import operator.PhysicalOperators.SortOperator;
+import operator.PhysicalOperators.*;
 
 public class PhysicalPlanBuilder {
 
@@ -41,9 +34,17 @@ public class PhysicalPlanBuilder {
     child[0] = rootOperator;
     joinLogOperator.rightOperator.accept(this);
     child[1] = rootOperator;
-    rootOperator =
-        new JoinOperator(
-            joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
+
+    if(DBCatalog.getInstance().if_TNLJ()) {
+      rootOperator =
+              new JoinOperator(
+                      joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
+    } else if (DBCatalog.getInstance().if_BNLJ()) {
+      rootOperator =
+              new BNLOperator(
+                      joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
+    }
+
   }
 
   public void visit(DuplicateEliminationLogOperator duplicateEliminationLogOperator)
