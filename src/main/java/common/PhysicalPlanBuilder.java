@@ -46,7 +46,7 @@ public class PhysicalPlanBuilder {
           new BNLOperator(
               joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
     }else if(DBCatalog.getInstance().if_SMJ()){
-      rootOperator = new SortMergeJoinOperator(joinLogOperator.outputSchema, (SortOperator)child[0], (SortOperator)child[1]);
+      rootOperator = new SortMergeJoinOperator(joinLogOperator.outputSchema, (SortOperator)child[0], (SortOperator)child[1], joinLogOperator.tempDir);
     }
   }
 

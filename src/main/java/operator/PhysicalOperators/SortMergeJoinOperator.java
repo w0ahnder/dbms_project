@@ -39,12 +39,15 @@ public class SortMergeJoinOperator extends Operator{
     TupleWriter tw;
 
     TupleReader reader;
-    public SortMergeJoinOperator(ArrayList<Column> schema, SortOperator table_1, SortOperator table_2){
+    public SortMergeJoinOperator(ArrayList<Column> schema, SortOperator table_1, SortOperator table_2, String tempDir){
         super(schema);
         this.left = table_1;
         this.right = table_2;
         this.orderElements_left = table_1.orderByElements;
         this.orderElements_right = table_2.orderByElements;
+        this.tempDir = tempDir + "/join" + UUID.randomUUID();
+        File tmp = new File(this.tempDir);
+        tmp.mkdir();
         join();
 
     }

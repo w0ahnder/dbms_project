@@ -173,9 +173,9 @@ public class QueryPlanBuilder {
         outputSchema.addAll(op.getOutputSchema());
         ArrayList<Expression> joinExpr = joinExpressions.get(table);
         if (joinExpr.size() == 0) {
-          result = new JoinLogOperator(outputSchema, result, op, null);
+          result = new JoinLogOperator(outputSchema, result, op, null, null);
         } else {
-          result = new JoinLogOperator(outputSchema, result, op, createAndExpression(joinExpr));
+          result = new JoinLogOperator(outputSchema, result, op, createAndExpression(joinExpr), tempDir);
         }
       }
     }
