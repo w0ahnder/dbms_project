@@ -22,4 +22,16 @@ public class Convert {
     }
     reader.reset();
   }
+
+  public void bin_to_human_reset(int i) throws IOException {
+    int count = 0;
+    Tuple t = reader.read();
+    while(count<i){
+      t = reader.read();
+      count++;
+    }
+    reader.reset(i);
+    t = reader.read();
+    printStream.println(t);
+  }
 }

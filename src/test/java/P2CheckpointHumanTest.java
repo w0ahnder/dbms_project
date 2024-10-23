@@ -83,8 +83,10 @@ public class P2CheckpointHumanTest {
     String outputDir = "src/test/resources/binary_samples/p2human";
     String out2  = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query1_human");
-    Convert c = new Convert(out2 + "/query1", new PrintStream(outFile));
-    c.bin_to_human();
+    File outFilereset = new File(outputDir + "/query1_human2");
+
+    Convert c = new Convert(out2 + "/query1", new PrintStream(outFilereset));
+    c.bin_to_human_reset(999);
   }
 
   @Test
@@ -248,8 +250,10 @@ public class P2CheckpointHumanTest {
     String outputDir = "src/test/resources/binary_samples/p2human";
     String out2  = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query10_human");
-    Convert c = new Convert(out2+ "/query10", new PrintStream(outFile));
-    c.bin_to_human();
+    File outFilereset = new File(outputDir + "/query1_human2");
+
+    Convert c = new Convert(out2+ "/query10", new PrintStream(outFilereset));
+    c.bin_to_human_reset(5);
   }
 
   @Test
