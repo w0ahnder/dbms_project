@@ -43,30 +43,16 @@ public class BNLOperator extends Operator{
         filled=false;
         left.reset();
         right.reset();
-        fill2();
+        fill();
     }
 
     //get the total number of elements that can fit in the buffer where each page is 4096 bytes
     // (4096/ (num of col * 4) ) * block = total number of tuples we should have in the block B
     //intiialize the block
-    public void fill(){
-        s = right.getNextTuple();
-        reads = 0;
-        tot_elements = 0;
-        buffer.clear();
-        //left.reset();
-        Tuple t;
-        while( (tot_elements<num_tup) && (t = left.getNextTuple())!=null){
-            buffer.add(t);
-            tot_elements++;
-            check_t = t;
-        }
-        filled = tot_elements>0; //if any elements were read
-    }
 
     //when we reach the end of all the blocks and left.getNextTuple is called, it starts reading from the begining
     //again
-    public void fill2(){
+    public void fill(){
         reads = 0;
         tot_elements = 0;
         buffer.clear();
@@ -83,7 +69,7 @@ public class BNLOperator extends Operator{
 
     public Tuple getNextTuple(){
         if(!filled)
-            fill2();
+            fill();
         //if not filled, fill it; and if filled is still false, there are no more tuples in
         //Tuple reader, so we return null
         if(!filled) {
@@ -115,7 +101,7 @@ public class BNLOperator extends Operator{
         }
         //all elements in block were read, get next block
         right.reset();
-        fill2();
+        fill();
         return this.getNextTuple();
     }
 
@@ -125,46 +111,6 @@ public class BNLOperator extends Operator{
     // 2.     For each s in INNER
     // 3.           FOR each r in B
     //what happens when right is BNL???????????
-    public Tuple getNextTuple2(){
-        //System.out.println(condition.toString());
-        if(!filled)
-            fill();
-        //keep same s until we exit 3. =>> (when reads>=tot_elements, we then get the next s)
-        //when s= null, we exit 2; get the next set of tuples worth B pages (do we consider the metadata as part of the block size)
-        while(s!=null){
-            if(filled){
-                if(reads < tot_elements) { //still have more elements in block to read
-                    Tuple r = buffer.get(reads);
-                    ArrayList<Integer> elements = new ArrayList<>();
-                    elements.addAll(r.getAllElements());
-                    elements.addAll(s.getAllElements());
-                    Tuple curr = new Tuple(elements);
-                    reads++;
-                    if (this.condition == null) {
-                        return curr;
-                    }
-                    SelectVisitor sv = new SelectVisitor(curr, concatSchema(), this.condition);
-                    if (sv.evaluate_expr()) {
-                        return curr;
-                    }
-
-                }
-                //all tuples in the block were read, now get next s and keep going through same block
-                else{
-                    check = s;
-                    s = right.getNextTuple();
-                    reads=0;
-                }
-            }//filled = false means Tuple reader doesn't return any tuples; exhausted all of them
-            else{
-                return null;
-            }
-        }
-        //when s is null, we get the next block and go again
-        right.reset();
-        fill();
-        return this.getNextTuple();
-    }
 
 
     public ArrayList<Column> concatSchema() {
