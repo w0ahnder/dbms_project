@@ -35,16 +35,15 @@ public class PhysicalPlanBuilder {
     joinLogOperator.rightOperator.accept(this);
     child[1] = rootOperator;
 
-    if(DBCatalog.getInstance().if_TNLJ()) {
+    if (DBCatalog.getInstance().if_TNLJ()) {
       rootOperator =
-              new JoinOperator(
-                      joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
+          new JoinOperator(
+              joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
     } else if (DBCatalog.getInstance().if_BNLJ()) {
       rootOperator =
-              new BNLOperator(
-                      joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
+          new BNLOperator(
+              joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
     }
-
   }
 
   public void visit(DuplicateEliminationLogOperator duplicateEliminationLogOperator)

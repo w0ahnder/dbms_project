@@ -213,7 +213,12 @@ public class QueryPlanBuilder {
       if (orderByElements != null) {
         result = new DuplicateEliminationLogOperator(schema, result);
       } else {
-        SortLogOperator child = new SortLogOperator(new ArrayList<>(), result);
+        SortLogOperator child;
+        if (sortConfig.get(0).equals(0)) {
+          child = new SortLogOperator(new ArrayList<>(), result);
+        } else {
+          child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
+        }
         result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
       }
     }
