@@ -28,18 +28,17 @@ public class DataGenerator {
 
   public void generateTuples() {
     for (int i = 0; i < total; i += 1) {
-      StringBuilder tup = new StringBuilder();
+      ArrayList<Integer> elements = new ArrayList<>();
 
       for (int j = 0; i < tupleSize; i++) {
         int num = random.nextInt(range) + 1;
-        tup.append(num);
+        elements.add(num);
 
-        if (j < tupleSize - 1) {
-          tup.append(",");
-        }
       }
-      data.add(new Tuple(tup.toString()));
+      data.add(new Tuple(elements));
+      elements.clear();
     }
+
   }
 
   public ArrayList<Tuple> allTuples() {
