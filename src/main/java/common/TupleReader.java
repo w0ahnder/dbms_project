@@ -108,4 +108,45 @@ public class TupleReader {
     numAttr = 0;
     numTuples = 0;
   }
+  public void reset(int index) throws IOException {
+    //index is the number of tuples we have read so far?
+    //file channel position function counts the number of bytes from the beginning of the file
+    // to the current position
+    //each page of the file is 4096 bytes
+    //we want tuple at index
+
+    //byte position of tuple at index
+    //number of tuples to fit on a page: (4088/(numcol*4))
+    // tuple index/ tuples per page = page tuple is on
+    //number of bytes is 4096 * page tuple is on
+    //have to calculate offset
+    // =>>>>>>>>> (index  - tuple index on previous page)*4*numcol + 8
+    int tuplesperpage = (4088) / (numAttr * 4);
+    //find page index would be on
+    //say i want page for tuple 9, and i can put 2 tuples per page
+    //i want page 5 (0 index is 4)
+    int pageforindex = (int) Math.ceil((double) index / (double) tuplesperpage);// 5
+    //now calculate offset into the page
+    //=>calculate index of first tuple on this page
+    int first_indx = pageforindex == 0 ? 0 : (pageforindex - 1) * tuplesperpage;// (4*2) = 8 first tuple index on the page we want
+    int offset = 8 + (index - first_indx) * (numAttr * 4); //offset into page, 8 for metadata
+
+
+    int total_bytes = 4096 * (pageforindex == 0 ? 0 : (pageforindex - 1));//total page offset from beginning of file
+
+    fc.position(total_bytes);//set file scan to location of tuple
+    bufferClear();//clear out all elements from buffer
+    page_start = true;
+    done = false;
+    //have to set position of buffer so that the buffer only reads this page's tuples; dont go onto next
+    //put zeros in front of buffer to simulate reading all the previous tuples and metadata before reaching tuple at index
+    buff.clear(); //position is at 0, limit is at capacity
+    int reads = fc.read(buff);
+
+    if (reads >= 0) { //we can read from from channel
+      newPage();//fill it full of 0's get metadata
+      buff.position(offset);//byte to start reading at on this page
+      page_start = false;
+    }
+  }
 }
