@@ -51,7 +51,12 @@ public class SortMergeJoinOperator extends Operator{
     }
     @Override
     public void reset() {
-
+        if (reader == null) return;
+        try {
+            reader.reset();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
