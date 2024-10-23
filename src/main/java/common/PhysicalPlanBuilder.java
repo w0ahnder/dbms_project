@@ -1,6 +1,8 @@
 package common;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import operator.LogicalOperators.DuplicateEliminationLogOperator;
 import operator.LogicalOperators.JoinLogOperator;
 import operator.LogicalOperators.ProjectLogOperator;
@@ -43,6 +45,8 @@ public class PhysicalPlanBuilder {
       rootOperator =
           new BNLOperator(
               joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
+    }else if(DBCatalog.getInstance().if_SMJ()){
+      rootOperator = new SortMergeJoinOperator(joinLogOperator.outputSchema, (SortOperator)child[0], (SortOperator)child[1]);
     }
   }
 

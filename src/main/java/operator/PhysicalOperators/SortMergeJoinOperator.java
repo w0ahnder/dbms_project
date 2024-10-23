@@ -19,7 +19,6 @@ public class SortMergeJoinOperator extends Operator{
 
     SortOperator right;
 
-    Expression cond;
 
     List<OrderByElement> orderElements_left;
 
@@ -37,17 +36,17 @@ public class SortMergeJoinOperator extends Operator{
 
     String tempDir;
 
-    TupleWriter tw = new TupleWriter(tempDir + "/joins");
+    TupleWriter tw;
 
     TupleReader reader;
-    public SortMergeJoinOperator(ArrayList<Column> schema, SortOperator table_1, SortOperator table_2, Expression condition, List<OrderByElement> order_1, List<OrderByElement> order_2 ) throws IOException {
+    public SortMergeJoinOperator(ArrayList<Column> schema, SortOperator table_1, SortOperator table_2){
         super(schema);
         this.left = table_1;
         this.right = table_2;
-        this.cond = condition;
-        this.orderElements_left = order_1;
-        this.orderElements_right = order_2;
+        this.orderElements_left = table_1.orderByElements;
+        this.orderElements_right = table_2.orderByElements;
         join();
+
     }
     @Override
     public void reset() {
@@ -77,38 +76,45 @@ public class SortMergeJoinOperator extends Operator{
         return null;
     }
 
-    public void join() throws IOException {
-        left_curr = left.getNextTuple();
-        right_curr = right.getNextTuple();
-        right_partition = right_curr;
-        tuple_count_right += 1;
-        while (left_curr!= null && right_partition!= null){
-            while (comparator.compare(left_curr, right_partition) < 0){
-                left_curr = left.getNextTuple();
-                if (left_curr == null) tw.close();
-            }
-            while (comparator.compare(left_curr, right_partition) > 0){
-                right_partition = right.getNextTuple();
-                if (right_partition == null) tw.close();
-                tuple_count_right += 1;
-            }
-
-            while (comparator.compare(left_curr, right_partition) == 0) {
+    public void join(){
+        try{
+            tw = new TupleWriter(tempDir + "/joins");
+            left_curr = left.getNextTuple();
+            right_curr = right.getNextTuple();
+            right_partition = right_curr;
+            tuple_count_right += 1;
+            while (left_curr!= null && right_partition!= null){
+                while (comparator.compare(left_curr, right_partition) < 0){
+                    left_curr = left.getNextTuple();
+                    if (left_curr == null) tw.close();
+                }
+                while (comparator.compare(left_curr, right_partition) > 0){
+                    right_partition = right.getNextTuple();
+                    if (right_partition == null) tw.close();
+                    tuple_count_right += 1;
+                }
                 right.reset(tuple_count_right);
                 right_curr = right.getNextTuple();
-                while(comparator.compare(left_curr, right_curr) == 0){
-                    ArrayList<Integer> elements = new ArrayList<>();
-                    elements.addAll(left_curr.getAllElements());
-                    elements.addAll(right_curr.getAllElements());
-                    Tuple result = new Tuple(elements);
-                    tw.write(result);
+                while (comparator.compare(left_curr, right_partition) == 0) {
+                    right.reset(tuple_count_right);
                     right_curr = right.getNextTuple();
-                }left_curr = left.getNextTuple();
+                    while(comparator.compare(left_curr, right_curr) == 0){
+                        ArrayList<Integer> elements = new ArrayList<>();
+                        elements.addAll(left_curr.getAllElements());
+                        elements.addAll(right_curr.getAllElements());
+                        Tuple result = new Tuple(elements);
+                        tw.write(result);
+                        right_curr = right.getNextTuple();
+                    }left_curr = left.getNextTuple();
 
-            }right_partition = right_curr;
+                }right_partition = right_curr;
+            }
+            tw.close();
+            reader = new TupleReader(new File(tempDir + "/joins"));
+        }catch (IOException e){
+            e.printStackTrace();
         }
-        tw.close();
-        reader = new TupleReader(new File(tempDir + "/joins"));
+
     }
 
     public ArrayList<Column> concatSchema() {
@@ -154,9 +160,7 @@ public class SortMergeJoinOperator extends Operator{
                     } else if (t1_val < t2_val) {
                         return -1;
                     }
-
                 }
-
                 return 0;
             } else {
                 return t1.toString().compareTo(t2.toString());
