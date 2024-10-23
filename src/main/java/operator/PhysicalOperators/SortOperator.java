@@ -28,13 +28,18 @@ public class SortOperator extends Operator {
     this.orderByElements = orderElements;
     this.op = sc;
     this.curr = 0;
-    Tuple tuple = sc.getNextTuple();
-    while (tuple != null) {
-      result.add(tuple);
-      tuple = sc.getNextTuple();
-    }
+    // Tuple tuple = sc.getNextTuple();
+    // while (tuple != null) {
+    //   result.add(tuple);
+    //   tuple = sc.getNextTuple();
+    // }
 
+    // result.sort(new TupleComparator());
+  }
+
+  public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
     result.sort(new TupleComparator());
+    return result;
   }
 
   /**
@@ -55,7 +60,6 @@ public class SortOperator extends Operator {
   public Tuple getNextTuple() {
 
     if (curr == result.size()) {
-      this.reset();
       return null;
     }
     curr += 1;

@@ -46,12 +46,9 @@ public class ScanOperator extends Operator {
   public Tuple getNextTuple() {
     try {
       Tuple t = reader.read();
-      System.out.println("scan output");
-      System.out.println(t.getAllElements());
       // return new Tuple (br.readLine());
       return t;
     } catch (Exception e) {
-      e.printStackTrace();
       return null;
     }
   }

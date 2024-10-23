@@ -162,7 +162,6 @@ public class QueryPlanBuilder {
       schema = copyColumn(DBCatalog.getInstance().get_Table(table), table);
       LogicalOperator op = new ScanLogOperator(schema, table_path);
       ArrayList<Expression> selectExpr = selectExpressions.get(table);
-
       if (selectExpr.size() > 0) {
         op = new SelectLogOperator(createAndExpression(selectExpressions.get(table)), op);
       }
@@ -200,7 +199,6 @@ public class QueryPlanBuilder {
 
     // ORDER BY
     if (orderByElements != null) {
-      // TODO: change this with the actual bufferPages
       if (sortConfig.get(0).equals(0)) {
         result = new SortLogOperator(orderByElements, result);
       } else {
