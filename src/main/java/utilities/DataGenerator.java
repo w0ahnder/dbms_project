@@ -33,12 +33,10 @@ public class DataGenerator {
       for (int j = 0; i < tupleSize; i++) {
         int num = random.nextInt(range) + 1;
         elements.add(num);
-
       }
       data.add(new Tuple(elements));
       elements.clear();
     }
-
   }
 
   public ArrayList<Tuple> allTuples() {

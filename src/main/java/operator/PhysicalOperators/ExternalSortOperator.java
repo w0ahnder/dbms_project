@@ -48,7 +48,6 @@ public class ExternalSortOperator extends SortOperator {
   }
 
   private void sort() {
-    System.out.println("Sorting");
     int run = 0;
     int tupleSize = op.outputSchema.size() * 4;
     int numTuples = this.bufferSize / tupleSize;
@@ -88,7 +87,6 @@ public class ExternalSortOperator extends SortOperator {
 
   /** Merge sep in External Sort Algoritms */
   private void merge(int Pass) {
-    System.out.println("Entering merge");
     int num = 0;
     int pass = Pass;
 
@@ -131,7 +129,7 @@ public class ExternalSortOperator extends SortOperator {
         e.printStackTrace();
       }
     }
-    printhuman();
+    // printhuman();
   }
 
   private void printhuman() {
@@ -159,6 +157,7 @@ public class ExternalSortOperator extends SortOperator {
   @Override
   public Tuple getNextTuple() {
     if (reader == null) {
+      System.out.println("Reader is null");
       return null;
     }
     try {

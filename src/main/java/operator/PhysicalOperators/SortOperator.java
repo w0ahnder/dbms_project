@@ -58,7 +58,6 @@ public class SortOperator extends Operator {
    *     "result" which is a sorted list of all the tuples from its child operator.
    */
   public Tuple getNextTuple() {
-
     if (curr == result.size()) {
       return null;
     }
