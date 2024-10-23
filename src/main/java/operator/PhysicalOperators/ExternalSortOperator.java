@@ -141,7 +141,6 @@ public class ExternalSortOperator extends SortOperator {
         conv = new Convert(tempDir + "/run" + i, new PrintStream(tempDir + "/run" + i + "human"));
         conv.bin_to_human();
       } catch (IOException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }

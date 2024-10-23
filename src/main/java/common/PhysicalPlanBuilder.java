@@ -9,6 +9,7 @@ import operator.LogicalOperators.SelectLogOperator;
 import operator.LogicalOperators.SortLogOperator;
 import operator.PhysicalOperators.DuplicateEliminationOperator;
 import operator.PhysicalOperators.ExternalSortOperator;
+import operator.PhysicalOperators.InMemorySortOperator;
 import operator.PhysicalOperators.JoinOperator;
 import operator.PhysicalOperators.Operator;
 import operator.PhysicalOperators.ProjectOperator;
@@ -66,12 +67,18 @@ public class PhysicalPlanBuilder {
 
   public void visit(SortLogOperator sortLogOperator) throws FileNotFoundException {
     sortLogOperator.child.accept(this);
-    rootOperator =
-        new ExternalSortOperator(
-            rootOperator.getOutputSchema(),
-            sortLogOperator.orderByElements,
-            rootOperator,
-            sortLogOperator.bufferPages,
-            sortLogOperator.tempDir);
+    if (sortLogOperator.bufferPages == null) {
+      rootOperator =
+          new InMemorySortOperator(
+              rootOperator.getOutputSchema(), sortLogOperator.orderByElements, rootOperator);
+    } else {
+      rootOperator =
+          new ExternalSortOperator(
+              rootOperator.getOutputSchema(),
+              sortLogOperator.orderByElements,
+              rootOperator,
+              sortLogOperator.bufferPages,
+              sortLogOperator.tempDir);
+    }
   }
 }

@@ -2,7 +2,6 @@ package operator.PhysicalOperators;
 
 import common.DBCatalog;
 import common.Tuple;
-import common.TupleWriter;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -15,7 +14,6 @@ public class InMemorySortOperator extends SortOperator {
   ArrayList<Tuple> result = new ArrayList<>();
 
   Integer curr;
-  TupleWriter tw;
 
   /**
    * Creates a SortOperator Object
@@ -25,17 +23,17 @@ public class InMemorySortOperator extends SortOperator {
    * @param sc the child operator
    */
   public InMemorySortOperator(
-      ArrayList<Column> outputSchema,
-      List<OrderByElement> orderElements,
-      Operator sc,
-      ArrayList<Tuple> result,
-      TupleWriter tw) {
+      ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
     super(outputSchema, orderElements, sc);
     this.orderByElements = orderElements;
-    this.result = result;
-    this.tw = tw;
     curr = 0;
     this.op = sc;
+    Tuple tuple = sc.getNextTuple();
+    while (tuple != null) {
+      result.add(tuple);
+      tuple = sc.getNextTuple();
+    }
+    sort(result);
   }
 
   public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
