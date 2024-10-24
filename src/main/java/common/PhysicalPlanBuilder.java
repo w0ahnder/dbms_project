@@ -50,13 +50,17 @@ public class PhysicalPlanBuilder {
     } else if (DBCatalog.getInstance().if_SMJ()) {
       ColumnProcessor cp = new ColumnProcessor();
       List<OrderByElement> leftCond = cp.getOrderByElements(child[0], joinLogOperator.condition);
-      System.out.println(leftCond);
+      System.out.println("leftorder by" + leftCond);
       List<OrderByElement> rightCond = cp.getOrderByElements(child[1], joinLogOperator.condition);
-      System.out.println(rightCond);
+      System.out.println("right orderby:" + rightCond);
       //  TODO: change buffer pages to accurate one
+
       SortOperator left =
           new ExternalSortOperator(
               child[0].getOutputSchema(), leftCond, child[0], 3, joinLogOperator.tempDir);
+      System.out.println("child zero :" + child[0].getOutputSchema());
+
+      System.out.println("child one :" + child[1].getOutputSchema());
       SortOperator right =
           new ExternalSortOperator(
               child[1].getOutputSchema(), rightCond, child[1], 3, joinLogOperator.tempDir);

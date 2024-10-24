@@ -37,6 +37,7 @@ public class SortMergeJoinOperator extends Operator {
   TupleWriter tw;
 
   TupleReader reader;
+  public int partition_indx;
 
   public SortMergeJoinOperator(
       ArrayList<Column> schema,
@@ -53,24 +54,31 @@ public class SortMergeJoinOperator extends Operator {
     this.orderElements_right = orderElements_right;
     this.tempDir = tempDir + "/join" + UUID.randomUUID();
     File tmp = new File(this.tempDir);
+    partition_indx = 0;
+    tuple_count_right = 0;
+    left_curr = left.getNextTuple();
+    right_curr = right.getNextTuple();
     tmp.mkdir();
-    join();
   }
 
   @Override
   public void reset() {
-    if (reader == null) return;
+    right.reset();
+    left.reset();
+    /*if (reader == null) return;
     try {
       reader.reset();
     } catch (IOException e) {
       e.printStackTrace();
     }
+    */
+
   }
 
   @Override
   public void reset(int index) throws IOException {}
 
-  public Tuple getNextTuple() {
+  public Tuple getNextTuple2() {
     if (reader == null) {
       return null;
     }
@@ -83,6 +91,44 @@ public class SortMergeJoinOperator extends Operator {
     return null;
   }
 
+
+  public Tuple getNextTuple(){
+    try {
+      while (left_curr != null && right_curr != null) {
+        if (comparator.compare(left_curr, right_curr) < 0) {
+          left_curr = left.getNextTuple();
+        } else if (comparator.compare(left_curr, right_curr) > 0) {
+          right_curr = right.getNextTuple();
+          tuple_count_right++;
+          partition_indx = tuple_count_right;
+        } else {
+          //means that they are = ?
+          ArrayList<Integer> elements = new ArrayList<>();
+          elements.addAll(left_curr.getAllElements());
+          elements.addAll(right_curr.getAllElements());
+          Tuple result = new Tuple(elements);
+
+          right_curr = right.getNextTuple();//increment position now
+          tuple_count_right++;
+          //now compare this next tuple with left; if they are not equal
+          //then we get the next left tuple, and reset the partition for right relation
+          left_curr = left.getNextTuple();
+          right.reset(partition_indx);
+          //now we change our current location to be same as partition
+          tuple_count_right = partition_indx;
+          //read tuple at this index
+          right_curr = right.getNextTuple();
+
+          if(result!=null) return result;
+        }
+        return null;
+      }
+    }
+      catch(IOException e){
+      return null;
+      }
+    return null;
+  }
   public void join() {
     try {
       tw = new TupleWriter(tempDir + "/joins");

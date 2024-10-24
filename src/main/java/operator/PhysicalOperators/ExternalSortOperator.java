@@ -144,7 +144,7 @@ public class ExternalSortOperator extends SortOperator {
         e.printStackTrace();
       }
     }
-    printhuman();
+   // printhuman();
   }
 
   private void printhuman() {
@@ -169,6 +169,9 @@ public class ExternalSortOperator extends SortOperator {
     }
   }
 
+  public void reset(int index) throws IOException {
+    reader.reset(index);
+  }
   @Override
   public Tuple getNextTuple() {
     if (reader == null) {
