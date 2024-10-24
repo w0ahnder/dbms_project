@@ -122,7 +122,6 @@ public class SortOperator extends Operator {
       for (OrderByElement orderByElement : orderByElements) {
         Column orderToCol = (Column) orderByElement.getExpression();
         String col = orderToCol.getFullyQualifiedName();
-
         int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
 
         int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
@@ -132,7 +131,7 @@ public class SortOperator extends Operator {
         } else if (t1_val < t2_val) {
           return -1;
         }
-        columnToIndexMap.remove(col);
+//        columnToIndexMap.remove(col);
       }
 
       for (Column col : outputSchema) {
