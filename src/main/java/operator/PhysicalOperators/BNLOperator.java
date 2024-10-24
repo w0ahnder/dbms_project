@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
 
+/** Class that extends Operator Class to handle join SQL queries using Block Nested Loop Join. */
 public class BNLOperator extends Operator {
   public Operator left;
   public Operator right;
@@ -22,6 +23,14 @@ public class BNLOperator extends Operator {
   public Tuple check;
   public Tuple check_t;
 
+
+  /**
+   * Creates a BNLOperator Object
+   *
+   * @param schema the Schema of the output which becomes its child.
+   * @param left the child operator which is the outer table and is of type Operator
+   * @param right the child operator which is the inner table and is of type Operator
+   */
   public BNLOperator(ArrayList<Column> schema, Operator left, Operator right, Expression cond) {
     super(schema);
     this.left = left;
@@ -37,7 +46,10 @@ public class BNLOperator extends Operator {
     // fill();//get block B from left operators
 
   }
-
+  /**
+   * Resets pointer on the operator object to the beginning. Achieves this by resetting its left and right children
+   * and resetting some tracking fields
+   */
   public void reset() {
     reads = 0;
     tot_elements = 0;
@@ -47,14 +59,16 @@ public class BNLOperator extends Operator {
     fill();
   }
 
-  // get the total number of elements that can fit in the buffer where each page is 4096 bytes
-  // (4096/ (num of col * 4) ) * block = total number of tuples we should have in the block B
-  // intiialize the block
-
-  // when we reach the end of all the blocks and left.getNextTuple is called, it starts reading from
-  // the begining
-  // again
+  /**
+   * Fills the buffer with the correct amount of tuples from the outer table that can fit on the buffer
+   */
   public void fill() {
+    // get the total number of elements that can fit in the buffer where each page is 4096 bytes
+    // (4096/ (num of col * 4) ) * block = total number of tuples we should have in the block B
+    // initialize the block
+
+    // when we reach the end of all the blocks and left.getNextTuple is called, it starts reading from
+    // the beginning again
     reads = 0;
     tot_elements = 0;
     buffer.clear();
@@ -70,6 +84,12 @@ public class BNLOperator extends Operator {
     filled = tot_elements > 0; // if any elements were read
   }
 
+  /**
+   * Get next tuple from operator
+   *
+   * @return Tuple, or null if we are at the end. Retrieves next tuple by calling getNextTuple() on
+   * its left and right child operator and checking that those tuples satisfy the condition in the expression
+   */
   public Tuple getNextTuple() {
     if (!filled) fill();
     // if not filled, fill it; and if filled is still false, there are no more tuples in
@@ -107,12 +127,9 @@ public class BNLOperator extends Operator {
     return this.getNextTuple();
   }
 
-  // if 2 is another BNL, then when we reset, we want to get the next block of pages, not
-  // 1. FOR each B
-  // 2.     For each s in INNER
-  // 3.           FOR each r in B
-  // what happens when right is BNL???????????
-
+  /**
+   * Concatenates the schema of the two tuples
+   */
   public ArrayList<Column> concatSchema() {
     ArrayList<Column> conc = new ArrayList<Column>();
     conc.addAll(left.getOutputSchema());

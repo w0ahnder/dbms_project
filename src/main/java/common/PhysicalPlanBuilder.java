@@ -73,7 +73,6 @@ public class PhysicalPlanBuilder {
               joinLogOperator.outputSchema,
               left,
               right,
-              joinLogOperator.tempDir,
               leftCond,
               rightCond);
     }

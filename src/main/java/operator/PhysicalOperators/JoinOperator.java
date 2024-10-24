@@ -18,6 +18,13 @@ public class JoinOperator extends Operator {
   Expression condition;
   Tuple leftTuple;
 
+  /**
+   * Creates a JoinOperator Object
+   *
+   * @param outputSchema the Schema of the output which becomes its child.
+   * @param leftOperator the left child to be joined, should be an Operator
+   * @param rightOperator the right child to be joined, should be an Operator
+   */
   public JoinOperator(
       ArrayList<Column> outputSchema,
       Operator leftOperator,

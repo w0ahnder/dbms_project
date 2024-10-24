@@ -123,13 +123,6 @@ public class SortOperator extends Operator {
         Column orderToCol = (Column) orderByElement.getExpression();
         String col = orderToCol.getFullyQualifiedName();
 
-        // Sailors.C
-        /*if(DBCatalog.getInstance().getUseAlias()){
-                    String[] names = col.split("\\.");
-                    col = DBCatalog.getInstance().getTableName(names[0]) + "." + names[names.length - 1];
-                  }
-        */
-
         int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
 
         int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));

@@ -9,6 +9,7 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
 
+/** Class that extends Operator Class to handle SQL queries that selects specific columns. */
 public class ProjectOperator extends Operator {
   Operator childOperator;
   List<SelectItem> selectItems;

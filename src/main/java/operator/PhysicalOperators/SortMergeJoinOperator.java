@@ -12,6 +12,7 @@ import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 
+/** Class that extends Operator Class to handle join SQL queries using Sort Merge. */
 public class SortMergeJoinOperator extends Operator {
 
   SortOperator left;
@@ -28,23 +29,24 @@ public class SortMergeJoinOperator extends Operator {
 
   Tuple right_curr;
 
-  Tuple right_partition;
-
   TupleComparator comparator = new TupleComparator();
 
-  String tempDir;
 
-  TupleWriter tw;
-
-  TupleReader reader;
   public int partition_indx;
-  public boolean care = false;
 
+  /**
+   * Creates a SortMergeJoinOperator Object
+   *
+   * @param schema the Schema of the output which becomes its child.
+   * @param table_1 the child operator which is the outer table and is of type Operator
+   * @param table_2 the child operator which is the inner table and is of type Operator
+   * @param orderElements_left the list of columns for which we perform the join on table 1
+   * @param orderElements_right the list of columns for which we perform the join on table 2
+   */
   public SortMergeJoinOperator(
       ArrayList<Column> schema,
       SortOperator table_1,
       SortOperator table_2,
-      String tempDir,
       List<OrderByElement> orderElements_left,
       List<OrderByElement> orderElements_right) {
     super(schema);
@@ -53,44 +55,30 @@ public class SortMergeJoinOperator extends Operator {
     this.right = table_2;
     this.orderElements_left = orderElements_left;
     this.orderElements_right = orderElements_right;
-    this.tempDir = tempDir + "/join" + UUID.randomUUID();
-    File tmp = new File(this.tempDir);
     partition_indx = -1;
     tuple_count_right = 0;
     left_curr = left.getNextTuple();
     right_curr = right.getNextTuple();
-    tmp.mkdir();
   }
 
+  /**
+   * Resets pointer on the operator object to the beginning. Achieves this by resetting its left and right children
+   */
   @Override
   public void reset() {
     right.reset();
     left.reset();
-    /*if (reader == null) return;
-    try {
-      reader.reset();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    */
-
   }
 
   public void reset(int index) throws IOException {}
 
-  public Tuple getNextTuple2() {
-    if (reader == null) {
-      return null;
-    }
-    try {
-      Tuple tp = reader.read();
-      return tp;
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
 
+  /**
+   * Get next tuple from operator
+   *
+   * @return Tuple, or null if we are at the end. Retrieves next tuple by calling getNextTuple() on
+   * its left and right child operator and checking that the values at the required column match each other
+   */
   public Tuple getNextTuple() {
     try {
       while (left_curr != null) {
@@ -140,75 +128,15 @@ public class SortMergeJoinOperator extends Operator {
     return null;
   }
 
-  public void join() {
-    try {
-      tw = new TupleWriter(tempDir + "/joins");
-      left_curr = left.getNextTuple();
-      System.out.println(left_curr);
-      right_curr = right.getNextTuple();
-      System.out.println(right_curr);
-      right_partition = right_curr;
-      tuple_count_right += 1;
-      while (left_curr != null && right_partition != null) {
-        while (comparator.compare(left_curr, right_partition) < 0) {
-          left_curr = left.getNextTuple();
-          if (left_curr == null) tw.close();
-        }
-        while (comparator.compare(left_curr, right_partition) > 0) {
-          right_partition = right.getNextTuple();
-          if (right_partition == null) tw.close();
-          tuple_count_right += 1;
-        }
-        right.reset(tuple_count_right);
-        right_curr = right.getNextTuple();
-        while (left_curr != null && comparator.compare(left_curr, right_partition) == 0) {
-          right.reset(tuple_count_right);
-          right_curr = right.getNextTuple();
-          while (right_curr != null && comparator.compare(left_curr, right_curr) == 0) {
-            ArrayList<Integer> elements = new ArrayList<>();
-            elements.addAll(left_curr.getAllElements());
-            elements.addAll(right_curr.getAllElements());
-            Tuple result = new Tuple(elements);
-            tw.write(result);
-            right_curr = right.getNextTuple();
-          }
-          right.reset();
-          left_curr = left.getNextTuple();
-        }
-        right_partition = right_curr;
-      }
-      tw.close();
-      reader = new TupleReader(new File(tempDir + "/joins"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // remove
-    try {
-      Convert conv = new Convert(tempDir + "/joins", new PrintStream(tempDir + "/joinshuman"));
-      conv.bin_to_human();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public ArrayList<Column> concatSchema() {
-    ArrayList<Column> conc = new ArrayList<Column>();
-    conc.addAll(left.getOutputSchema());
-    conc.addAll(right.getOutputSchema());
-    return conc;
-  }
-
+  /**
+   * Custom Comparator class to compare to tuples two tuples to determine if to move to the next tuple
+   * on the left(outer) table or on the right(inner) table.
+   * <p>
+   */
   private class TupleComparator implements Comparator<Tuple> {
     public TupleComparator() {}
 
     /**
-     * Custom Comparator class to compare to tuples when sorting them. If there is a list of
-     * OrderByElements, it compares first with the columns in the list and then with the remaining
-     * columns not in the list but in the output schema in the order of its appearance
-     *
-     * <p>
-     *
      * @param t1 the first tuple to compare
      * @param t2 the second tuple being compared to t1
      * @return a number which is either 1, 0 or -1

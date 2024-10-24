@@ -12,6 +12,7 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 import org.apache.logging.log4j.*;
 
+/** Class that extends SortOperator Class to sort tables in preparation for SMJ. */
 public class ExternalSortOperator extends SortOperator {
   // every page is 4096 bytes
 
@@ -29,6 +30,15 @@ public class ExternalSortOperator extends SortOperator {
 
   TupleComparator comparator;
 
+  /**
+   * Creates a ExternalSortOperator Object
+   *
+   * @param outputSchema the Schema of the output which becomes its child.
+   * @param orderElements a list of the columns which should be used to sort the tuples
+   * @param sc the child operator
+   * @param bufferPages the number of pages we can load into memory at once
+   * @param tempDir the directory to dump the sorted tuples for each run
+   */
   public ExternalSortOperator(
       ArrayList<Column> outputSchema,
       List<OrderByElement> orderElements,
@@ -49,6 +59,7 @@ public class ExternalSortOperator extends SortOperator {
     sort();
   }
 
+  /** Sorts the tuples loaded into memory. */
   private void sort() {
     System.out.println("Sorting");
     System.out.println(op);
@@ -144,21 +155,10 @@ public class ExternalSortOperator extends SortOperator {
         e.printStackTrace();
       }
     }
-    // printhuman();
+
   }
 
-  private void printhuman() {
-    for (int i = 0; i < 1; i++) {
-      Convert conv;
-      try {
-        conv = new Convert(tempDir + "/run" + i, new PrintStream(tempDir + "/run" + i + "human"));
-        conv.bin_to_human();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
+  /** Resets the operator to the beginning. */
   @Override
   public void reset() {
     if (reader == null) return;
@@ -169,6 +169,7 @@ public class ExternalSortOperator extends SortOperator {
     }
   }
 
+  /** Resets the operator to the to a particular position, not the beginning. */
   @Override
   public void reset(int index) {
     try {
@@ -178,6 +179,8 @@ public class ExternalSortOperator extends SortOperator {
     }
   }
 
+  /** returns the next tuple from the sorted files
+   * @return Tuple or null if we are at the end of the file*/
   @Override
   public Tuple getNextTuple() {
     if (reader == null) {
