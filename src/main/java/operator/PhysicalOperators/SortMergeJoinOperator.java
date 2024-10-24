@@ -38,6 +38,7 @@ public class SortMergeJoinOperator extends Operator {
 
   TupleReader reader;
   public int partition_indx;
+  public boolean care = false;
 
   public SortMergeJoinOperator(
       ArrayList<Column> schema,
@@ -97,10 +98,12 @@ public class SortMergeJoinOperator extends Operator {
       while (left_curr != null && right_curr != null) {
         if (comparator.compare(left_curr, right_curr) < 0) {
           left_curr = left.getNextTuple();
+          care=false;
         } else if (comparator.compare(left_curr, right_curr) > 0) {
           right_curr = right.getNextTuple();
           tuple_count_right++;
           partition_indx = tuple_count_right;
+          care = false;
         } else {
           //means that they are = ?
           ArrayList<Integer> elements = new ArrayList<>();
@@ -108,18 +111,26 @@ public class SortMergeJoinOperator extends Operator {
           elements.addAll(right_curr.getAllElements());
           Tuple result = new Tuple(elements);
 
+          if(care==false){
+            care=true;//we care about the partition
+            partition_indx = tuple_count_right;
+          }
           right_curr = right.getNextTuple();//increment position now
           tuple_count_right++;
+
           //now compare this next tuple with left; if they are not equal
           //then we get the next left tuple, and reset the partition for right relation
-          left_curr = left.getNextTuple();
-          right.reset(partition_indx);
-          //now we change our current location to be same as partition
-          tuple_count_right = partition_indx;
-          //read tuple at this index
-          right_curr = right.getNextTuple();
-
           if(result!=null) return result;
+        }
+
+        if(care){
+          if(comparator.compare(left_curr,right_curr)!=0) {
+            left_curr = left.getNextTuple();
+            tuple_count_right = partition_indx;
+            //read tuple at this index
+            right.reset(partition_indx);
+          }
+
         }
         //right_curr = right.getNextTuple();
         //tuple_count_right ++;
