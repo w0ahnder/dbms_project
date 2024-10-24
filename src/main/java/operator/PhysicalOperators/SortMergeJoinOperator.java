@@ -55,7 +55,7 @@ public class SortMergeJoinOperator extends Operator {
     this.orderElements_right = orderElements_right;
     this.tempDir = tempDir + "/join" + UUID.randomUUID();
     File tmp = new File(this.tempDir);
-    partition_indx = 0;
+    partition_indx = -1;
     tuple_count_right = 0;
     left_curr = left.getNextTuple();
     right_curr = right.getNextTuple();
@@ -92,56 +92,67 @@ public class SortMergeJoinOperator extends Operator {
     return null;
   }
 
-
-  public Tuple getNextTuple(){
+  public Tuple getNextTuple() {
     try {
-      while (left_curr != null && right_curr != null) {
-        if (comparator.compare(left_curr, right_curr) < 0) {
+      while (left_curr != null) {
+        if (right_curr == null) {
+          if (partition_indx != -1) {
+            right.reset(partition_indx);
+            tuple_count_right = partition_indx;
+            right_curr = right.getNextTuple();
+            tuple_count_right++;
+          } else {
+            return null;
+          }
           left_curr = left.getNextTuple();
-          care=false;
+        } else if (comparator.compare(left_curr, right_curr) < 0) {
+          if (partition_indx != -1) {
+            right.reset(partition_indx);
+            tuple_count_right = partition_indx;
+            right_curr = right.getNextTuple();
+            tuple_count_right++;
+          }
+          left_curr = left.getNextTuple();
         } else if (comparator.compare(left_curr, right_curr) > 0) {
           right_curr = right.getNextTuple();
           tuple_count_right++;
-          partition_indx = tuple_count_right;
-          care = false;
+          // partition_indx = tuple_count_right;
         } else {
-          //means that they are = ?
+          // means that they are = ?
           ArrayList<Integer> elements = new ArrayList<>();
           elements.addAll(left_curr.getAllElements());
           elements.addAll(right_curr.getAllElements());
           Tuple result = new Tuple(elements);
 
-          if(care==false){
-            care=true;//we care about the partition
+          if (partition_indx == -1) {
             partition_indx = tuple_count_right;
           }
-          right_curr = right.getNextTuple();//increment position now
+          right_curr = right.getNextTuple(); // increment position now
           tuple_count_right++;
 
-          //now compare this next tuple with left; if they are not equal
-          //then we get the next left tuple, and reset the partition for right relation
-          if(result!=null) return result;
+          // now compare this next tuple with left; if they are not equal
+          // then we get the next left tuple, and reset the partition for right relation
+          if (result != null) return result;
         }
 
-        if(care){
-          if(comparator.compare(left_curr,right_curr)!=0) {
-            left_curr = left.getNextTuple();
-            tuple_count_right = partition_indx;
-            //read tuple at this index
-            right.reset(partition_indx);
-          }
-
-        }
-        //right_curr = right.getNextTuple();
-        //tuple_count_right ++;
-        //return null;
+        // if (care) {
+        //   if (comparator.compare(left_curr, right_curr) != 0) {
+        //     left_curr = left.getNextTuple();
+        //     tuple_count_right = partition_indx;
+        //     // read tuple at this index
+        //     right.reset(partition_indx);
+        //   }
+        // }
+        // right_curr = right.getNextTuple();
+        // tuple_count_right ++;
+        // return null;
       }
-    }
-      catch(IOException e){
+    } catch (IOException e) {
       return null;
-      }
+    }
     return null;
   }
+
   public void join() {
     try {
       tw = new TupleWriter(tempDir + "/joins");
