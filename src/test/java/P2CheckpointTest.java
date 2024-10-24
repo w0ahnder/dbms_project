@@ -44,11 +44,11 @@ public class P2CheckpointTest {
     tempDir = "src/test/resources/binary_samples/temp";
     configList = new ArrayList<>();
     ArrayList<Integer> firstList = new ArrayList<>();
-    firstList.add(2); // Add [0]
+    firstList.add(1); // Add [0]
     firstList.add(4); // Add [0]
     configList.add(firstList);
     ArrayList<Integer> secondList = new ArrayList<>();
-    secondList.add(1); // Add [1]
+    secondList.add(0); // Add [1]
     secondList.add(4); // Add [2]
     configList.add(secondList);
   }

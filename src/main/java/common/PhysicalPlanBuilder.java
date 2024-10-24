@@ -57,13 +57,13 @@ public class PhysicalPlanBuilder {
 
       SortOperator left =
           new ExternalSortOperator(
-              child[0].getOutputSchema(), leftCond, child[0], 3, joinLogOperator.tempDir);
+              child[0].getOutputSchema(), leftCond, child[0], DBCatalog.getInstance().getSortBuff(), joinLogOperator.tempDir);
       System.out.println("child zero :" + child[0].getOutputSchema());
 
       System.out.println("child one :" + child[1].getOutputSchema());
       SortOperator right =
           new ExternalSortOperator(
-              child[1].getOutputSchema(), rightCond, child[1], 3, joinLogOperator.tempDir);
+              child[1].getOutputSchema(), rightCond, child[1], DBCatalog.getInstance().getSortBuff(), joinLogOperator.tempDir);
       rootOperator =
           new SortMergeJoinOperator(
               joinLogOperator.outputSchema,

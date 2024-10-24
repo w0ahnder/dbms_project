@@ -121,7 +121,9 @@ public class SortMergeJoinOperator extends Operator {
 
           if(result!=null) return result;
         }
-        return null;
+        //right_curr = right.getNextTuple();
+        //tuple_count_right ++;
+        //return null;
       }
     }
       catch(IOException e){
@@ -229,6 +231,7 @@ public class SortMergeJoinOperator extends Operator {
         }
         return 0;
       } else {
+        System.out.println("string comparison");
         return t1.toString().compareTo(t2.toString());
       }
     }

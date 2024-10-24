@@ -207,7 +207,9 @@ public class DBCatalog {
       logger.error(e.getMessage());
     }
   }
-
+  public int getSortBuff(){
+    return sort_buff;
+  }
   public boolean if_BNLJ() {
     return BNLJ;
   }
