@@ -2,10 +2,7 @@ package utilities;
 
 import common.Tuple;
 import common.TupleWriter;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -29,13 +26,13 @@ public class DataGenerator {
     this.total = size;
     this.tupleSize = tupleSize;
     this.random = new Random();
-    this.out   = out;
+    this.out = out;
     generateTuples();
   }
 
   public void generateTuples() throws IOException {
     TupleWriter tw = new TupleWriter(out);
-    for (int i = 0; i < total; i ++) {
+    for (int i = 0; i < total; i++) {
       ArrayList<Integer> elements = new ArrayList<>();
 
       for (int j = 0; j < tupleSize; j++) {
@@ -47,9 +44,7 @@ public class DataGenerator {
       elements.clear();
     }
     tw.close();
-
   }
-
 
   public ArrayList<Tuple> allTuples() {
     return data;

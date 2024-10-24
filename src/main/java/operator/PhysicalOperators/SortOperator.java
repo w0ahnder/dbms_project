@@ -71,6 +71,8 @@ public class SortOperator extends Operator {
     op.reset();
   }
 
+  public void reset(int i) {}
+
   /**
    * Get next tuple from operator
    *

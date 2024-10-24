@@ -169,13 +169,16 @@ public class QueryPlanBuilder {
       if (tables.get(0) == table) {
         result = op;
       } else {
-        ArrayList<Column> outputSchema = result.getOutputSchema();
+        ArrayList<Column> outputSchema = new ArrayList<>();
+        outputSchema.addAll(result.getOutputSchema());
+        // System.out.println(outputSchema);
         outputSchema.addAll(op.getOutputSchema());
         ArrayList<Expression> joinExpr = joinExpressions.get(table);
         if (joinExpr.size() == 0) {
-          result = new JoinLogOperator(outputSchema, result, op, null);
+          result = new JoinLogOperator(outputSchema, result, op, null, null);
         } else {
-          result = new JoinLogOperator(outputSchema, result, op, createAndExpression(joinExpr));
+          result =
+              new JoinLogOperator(outputSchema, result, op, createAndExpression(joinExpr), tempDir);
         }
       }
     }
@@ -205,6 +208,7 @@ public class QueryPlanBuilder {
     }
 
     // PROJECT
+    System.out.println(selectItems.size());
     if (selectItems.size() >= 1) {
       ArrayList<Column> newSchema = new ArrayList<>();
       if (!(selectItems.get(0) instanceof AllColumns)) {

@@ -208,6 +208,10 @@ public class DBCatalog {
     }
   }
 
+  public int getSortBuff() {
+    return sort_buff;
+  }
+
   public boolean if_BNLJ() {
     return BNLJ;
   }
@@ -216,21 +220,27 @@ public class DBCatalog {
     return TNLJ;
   }
 
+  public boolean if_SMJ() {
+    return SMJ;
+  }
+
   public int blockSize() {
     return BNLJ_buff;
   }
-  /*************************   Benchmarking Functions    *************/
 
-  public void setLoop(int jointype){
-    TNLJ= jointype==0;
-    BNLJ = jointype==1;
-    SMJ = jointype ==2;
-  }
-  public void setBNLbuff(int b){
-    BNLJ_buff =b;
-  }
+    /*************************   Benchmarking Functions    *************/
 
-  public void setSortBuff(int b){
-    sort_buff  =b;
-  }
+    public void setLoop(int jointype){
+      TNLJ= jointype==0;
+      BNLJ = jointype==1;
+      SMJ = jointype ==2;
+    }
+    public void setBNLbuff(int b){
+      BNLJ_buff =b;
+    }
+  
+    public void setSortBuff(int b){
+      sort_buff  =b;
+    }
+  
 }

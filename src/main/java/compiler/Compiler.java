@@ -1,8 +1,10 @@
 package compiler;
 
+import common.Convert;
 import common.DBCatalog;
 import common.QueryPlanBuilder;
 import common.TupleWriter;
+import java.io.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -67,9 +69,12 @@ public class Compiler {
             long start = System.currentTimeMillis();
             plan.dump(tw);
             // plan.dump(new PrintStream(outfile));
+
             long end = System.currentTimeMillis();
             // tw.close();
             System.out.println("Elapsed time: " + (end - start));
+            Convert cv = new Convert(tw.outFile, new PrintStream(tw.outFile + "human"));
+            cv.bin_to_human();
           } else {
             System.out.println("fail");
             plan.dump(System.out);

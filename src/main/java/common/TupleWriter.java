@@ -16,6 +16,7 @@ public class TupleWriter {
   private boolean done;
   private boolean init;
   private int space;
+  public String outFile;
 
   // every page is 4096 bytes
   // each page stores meta data:  #attributes of the tuples stored on page,  #tuples on page
@@ -25,6 +26,7 @@ public class TupleWriter {
     fout = new FileOutputStream(outFile);
     fc = fout.getChannel();
     buff = ByteBuffer.allocate(4096);
+    this.outFile = outFile;
 
     numTuples = 0;
     numAttr = 0;
