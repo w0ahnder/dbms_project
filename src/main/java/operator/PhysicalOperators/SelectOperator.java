@@ -23,6 +23,9 @@ public class SelectOperator extends Operator {
     scanOp.reset();
   }
 
+  @Override
+  public void reset(int index) throws IOException {}
+
   /**
    * Keeps calling the child's getNextTuple() and evaluates the expression. If the expression is
    * true, we return the tuple. Otherwise, keep calling the child's getNextTuple() until there are

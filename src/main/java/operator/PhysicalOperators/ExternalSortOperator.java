@@ -36,7 +36,9 @@ public class ExternalSortOperator extends SortOperator {
       Integer bufferPages,
       String tempDir) {
     super(outputSchema, orderElements, sc);
-    this.tempDir = tempDir;
+    this.tempDir = tempDir + "/" + "test" + UUID.randomUUID();
+    File tmp = new File(this.tempDir);
+    tmp.mkdir();
     this.op = sc;
     this.comparator = new TupleComparator();
     this.bufferPages = bufferPages;
@@ -49,6 +51,7 @@ public class ExternalSortOperator extends SortOperator {
 
   private void sort() {
     System.out.println("Sorting");
+    System.out.println(op);
     int run = 0;
     int tupleSize = op.outputSchema.size() * 4;
     int numTuples = this.bufferSize / tupleSize;
@@ -88,7 +91,7 @@ public class ExternalSortOperator extends SortOperator {
 
   /** Merge sep in External Sort Algoritms */
   private void merge(int Pass) {
-    System.out.println("Entering merge");
+    System.out.println("merging");
     int num = 0;
     int pass = Pass;
 
@@ -97,7 +100,17 @@ public class ExternalSortOperator extends SortOperator {
     // int totalPass = Pass;
     List<TupleReader> buffer = new ArrayList<>();
 
+    if (pass == 1) {
+      System.out.println("pass should be 1");
+      try {
+        reader = new TupleReader(new File(tempDir + "/run" + num));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     while (num < pass - 1) {
+      System.out.println("this should be false");
       try {
         for (int i = num; i < num + numTuples; i++) {
           if (i < pass) {
@@ -135,7 +148,7 @@ public class ExternalSortOperator extends SortOperator {
   }
 
   private void printhuman() {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 1; i++) {
       Convert conv;
       try {
         conv = new Convert(tempDir + "/run" + i, new PrintStream(tempDir + "/run" + i + "human"));
@@ -157,12 +170,9 @@ public class ExternalSortOperator extends SortOperator {
   }
 
   @Override
-  public void reset(int index) throws IOException {
-    reader.reset(index);
-  }
-  @Override
   public Tuple getNextTuple() {
     if (reader == null) {
+      System.out.println("Reader is null");
       return null;
     }
     try {

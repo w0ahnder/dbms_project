@@ -2,7 +2,6 @@ package operator.PhysicalOperators;
 
 import common.SelectVisitor;
 import common.Tuple;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
@@ -70,9 +69,7 @@ public class JoinOperator extends Operator {
   }
 
   @Override
-  public void reset(int index) throws IOException {
-
-  }
+  public void reset(int index) throws IOException {}
 
   /**
    * Calls getNextTuple on left Operator if that is null, it returns null Calls getNextTuple on

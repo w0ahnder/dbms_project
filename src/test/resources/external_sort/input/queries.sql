@@ -1,1 +1,1 @@
-SELECT * FROM Boats ORDER BY Boats.E;
+SELECT * FROM Sailors S1, Boats B WHERE S1.A = B.E;

@@ -3,6 +3,7 @@ package operator.PhysicalOperators;
 import common.DBCatalog;
 import common.Tuple;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import net.sf.jsqlparser.schema.Column;
@@ -30,6 +31,9 @@ public class ProjectOperator extends Operator {
   public void reset() {
     childOperator.reset();
   }
+
+  @Override
+  public void reset(int index) throws IOException {}
 
   /** returns the child operator of this operator */
   public Operator getChildOperator() {

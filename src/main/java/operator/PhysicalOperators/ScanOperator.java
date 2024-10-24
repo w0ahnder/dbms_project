@@ -38,6 +38,9 @@ public class ScanOperator extends Operator {
     }
   }
 
+  @Override
+  public void reset(int index) throws IOException {}
+
   /**
    * keeps the getting the next record from the file, until we reach the end
    *

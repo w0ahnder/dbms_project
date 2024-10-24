@@ -1,6 +1,7 @@
 package operator.PhysicalOperators;
 
 import common.Tuple;
+import java.io.IOException;
 import java.util.ArrayList;
 import net.sf.jsqlparser.schema.Column;
 
@@ -32,6 +33,9 @@ public class DuplicateEliminationOperator extends Operator {
     curr = null;
     so.reset();
   }
+
+  @Override
+  public void reset(int index) throws IOException {}
 
   /**
    * Get next tuple from operator

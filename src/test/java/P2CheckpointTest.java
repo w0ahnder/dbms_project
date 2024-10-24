@@ -1,6 +1,7 @@
 import common.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -43,31 +44,31 @@ public class P2CheckpointTest {
     tempDir = "src/test/resources/binary_samples/temp";
     configList = new ArrayList<>();
     ArrayList<Integer> firstList = new ArrayList<>();
-    firstList.add(0); // Add [0]
+    firstList.add(2); // Add [0]
+    firstList.add(4); // Add [0]
     configList.add(firstList);
     ArrayList<Integer> secondList = new ArrayList<>();
     secondList.add(1); // Add [1]
-    secondList.add(2); // Add [2]
+    secondList.add(4); // Add [2]
     configList.add(secondList);
   }
 
   // testing boats output, my own query not in checkpoint
-  // @Test
-  public void testQuery16()
-      throws ExecutionControl.NotImplementedException,
-          JSQLParserException,
-          IOException,
-          URISyntaxException {
-    setupBeforeAllTests();
-    Statement stmt = statementList.get(15);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
-    // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
-    String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-    File outfile = new File(outputDir + "/BoatsRead_human");
-    TupleWriter tw = new TupleWriter(outputDir + "/BoatsRead");
-    plan.dump(tw);
-    tw.close();
-  }
+  // // @Test
+  // public void testQuery16()
+  //     throws ExecutionControl.NotImplementedException,
+  //         JSQLParserException,
+  //         IOException,
+  //         URISyntaxException {
+  //   Statement stmt = statementList.get(15);
+  //   Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
+  //   // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
+  //   String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
+  //   File outfile = new File(outputDir + "/BoatsRead_human");
+  //   TupleWriter tw = new TupleWriter(outputDir + "/BoatsRead");
+  //   plan.dump(tw);
+  //   tw.close();
+  // }
 
   // have to maybe handle project operator using reset in the getNextTuple function?
   // should be that a function calls getNextTuple and if that is false, then we reset
@@ -78,7 +79,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-    setupBeforeAllTests();
     Statement stmt = statementList.get(0);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
@@ -87,6 +87,13 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query1");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query1_human");
+    File outFilereset = new File(outputDir + "/query1_human2");
+
+    Convert c = new Convert(out2 + "/query1", new PrintStream(outFilereset));
+    c.bin_to_human_reset(999);
   }
 
   @Test
@@ -95,8 +102,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(1);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
@@ -104,6 +109,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query2");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query2_human");
+    Convert c = new Convert(out2 + "/query2", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -112,8 +122,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(2);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
@@ -122,6 +130,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query3");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query3_human");
+    Convert c = new Convert(out2 + "/query3", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -130,8 +143,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(3);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
@@ -140,6 +151,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query4");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query4_human");
+    Convert c = new Convert(out2 + "/query4", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -148,8 +164,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(4);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(481, HelperMethods.collectAllTuples(plan).size());
@@ -158,6 +172,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query5");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query5_human");
+    Convert c = new Convert(out2 + "/query5", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -166,8 +185,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(5);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(481, HelperMethods.collectAllTuples(plan).size());
@@ -176,6 +193,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query6");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query6_human");
+    Convert c = new Convert(out2 + "/query6", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -184,8 +206,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(6);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(0, HelperMethods.collectAllTuples(plan).size());
@@ -194,6 +214,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query7");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query7_human");
+    Convert c = new Convert(out2 + "/query7", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -202,8 +227,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(7);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(5019, HelperMethods.collectAllTuples(plan).size());
@@ -211,6 +234,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query8");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query8_human");
+    Convert c = new Convert(out2 + "/query8", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -219,8 +247,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(8);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(25224, HelperMethods.collectAllTuples(plan).size());
@@ -229,6 +255,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query9");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query9_human");
+    Convert c = new Convert(out2 + "/query9", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -237,8 +268,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(9);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(19225, HelperMethods.collectAllTuples(plan).size());
@@ -246,6 +275,13 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query10");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query10_human");
+    File outFilereset = new File(outputDir + "/query1_human2");
+
+    Convert c = new Convert(out2 + "/query10", new PrintStream(outFilereset));
+    c.bin_to_human_reset(5);
   }
 
   @Test
@@ -254,8 +290,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(10);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
@@ -263,9 +297,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query11");
     plan.dump(tw);
     tw.close();
-    /*File outFile = new File(outputDir + "/query11_human");
-    Convert c = new Convert(outputDir + "/query11", new PrintStream(outFile));
-    c.bin_to_human();*/
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query11_human");
+    Convert c = new Convert(out2 + "/query11", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -274,8 +310,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(11);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(496964, HelperMethods.collectAllTuples(plan).size());
@@ -286,6 +320,11 @@ public class P2CheckpointTest {
     // plan.dump(new PrintStream(outFile));
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query12_human");
+    Convert c = new Convert(out2 + "/query12", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -294,8 +333,7 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
+    System.out.println("test 13");
     Statement stmt = statementList.get(12);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
@@ -303,6 +341,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query13");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query13_human");
+    Convert c = new Convert(out2 + "/query13", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -311,8 +354,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(13);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(25224, HelperMethods.collectAllTuples(plan).size());
@@ -320,6 +361,11 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query14");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query14_human");
+    Convert c = new Convert(out2 + "/query14", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -328,8 +374,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-
-    setupBeforeAllTests();
     Statement stmt = statementList.get(14);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(24764, HelperMethods.collectAllTuples(plan).size());
@@ -337,5 +381,10 @@ public class P2CheckpointTest {
     TupleWriter tw = new TupleWriter(outputDir + "/query15");
     plan.dump(tw);
     tw.close();
+    outputDir = "src/test/resources/binary_samples/p2human";
+    String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
+    File outFile = new File(outputDir + "/query15_human");
+    Convert c = new Convert(out2 + "/query15", new PrintStream(outFile));
+    c.bin_to_human();
   }
 }

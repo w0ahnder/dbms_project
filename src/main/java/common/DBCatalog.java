@@ -216,7 +216,10 @@ public class DBCatalog {
     return TNLJ;
   }
 
-  public boolean if_SMJ() {return SMJ;}
+  public boolean if_SMJ() {
+    return SMJ;
+  }
+
   public int blockSize() {
     return BNLJ_buff;
   }

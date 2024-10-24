@@ -1,8 +1,8 @@
 package common;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-
+import java.util.List;
+import net.sf.jsqlparser.statement.select.OrderByElement;
 import operator.LogicalOperators.DuplicateEliminationLogOperator;
 import operator.LogicalOperators.JoinLogOperator;
 import operator.LogicalOperators.ProjectLogOperator;
@@ -10,6 +10,7 @@ import operator.LogicalOperators.ScanLogOperator;
 import operator.LogicalOperators.SelectLogOperator;
 import operator.LogicalOperators.SortLogOperator;
 import operator.PhysicalOperators.*;
+import utilities.ColumnProcessor;
 
 public class PhysicalPlanBuilder {
 
@@ -31,6 +32,7 @@ public class PhysicalPlanBuilder {
   }
 
   public void visit(JoinLogOperator joinLogOperator) throws FileNotFoundException {
+    // System.out.println("Visiting");
     Operator[] child = new Operator[2];
     joinLogOperator.leftOperator.accept(this);
     child[0] = rootOperator;
@@ -45,8 +47,27 @@ public class PhysicalPlanBuilder {
       rootOperator =
           new BNLOperator(
               joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
-    }else if(DBCatalog.getInstance().if_SMJ()){
-      rootOperator = new SortMergeJoinOperator(joinLogOperator.outputSchema, (SortOperator)child[0], (SortOperator)child[1], joinLogOperator.tempDir);
+    } else if (DBCatalog.getInstance().if_SMJ()) {
+      ColumnProcessor cp = new ColumnProcessor();
+      List<OrderByElement> leftCond = cp.getOrderByElements(child[0], joinLogOperator.condition);
+      System.out.println(leftCond);
+      List<OrderByElement> rightCond = cp.getOrderByElements(child[1], joinLogOperator.condition);
+      System.out.println(rightCond);
+      //  TODO: change buffer pages to accurate one
+      SortOperator left =
+          new ExternalSortOperator(
+              child[0].getOutputSchema(), leftCond, child[0], 3, joinLogOperator.tempDir);
+      SortOperator right =
+          new ExternalSortOperator(
+              child[1].getOutputSchema(), rightCond, child[1], 3, joinLogOperator.tempDir);
+      rootOperator =
+          new SortMergeJoinOperator(
+              joinLogOperator.outputSchema,
+              left,
+              right,
+              joinLogOperator.tempDir,
+              leftCond,
+              rightCond);
     }
   }
 

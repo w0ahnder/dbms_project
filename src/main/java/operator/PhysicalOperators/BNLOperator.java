@@ -3,7 +3,6 @@ package operator.PhysicalOperators;
 import common.DBCatalog;
 import common.SelectVisitor;
 import common.Tuple;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
@@ -50,9 +49,7 @@ public class BNLOperator extends Operator {
   }
 
   @Override
-  public void reset(int index) throws IOException {
-
-  }
+  public void reset(int index) throws IOException {}
 
   // get the total number of elements that can fit in the buffer where each page is 4096 bytes
   // (4096/ (num of col * 4) ) * block = total number of tuples we should have in the block B

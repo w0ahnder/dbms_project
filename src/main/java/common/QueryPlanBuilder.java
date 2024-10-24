@@ -169,31 +169,17 @@ public class QueryPlanBuilder {
       if (tables.get(0) == table) {
         result = op;
       } else {
-        ArrayList<Column> outputSchema = result.getOutputSchema();
+        ArrayList<Column> outputSchema = new ArrayList<>();
+        outputSchema.addAll(result.getOutputSchema());
+        // System.out.println(outputSchema);
         outputSchema.addAll(op.getOutputSchema());
         ArrayList<Expression> joinExpr = joinExpressions.get(table);
         if (joinExpr.size() == 0) {
           result = new JoinLogOperator(outputSchema, result, op, null, null);
         } else {
-          result = new JoinLogOperator(outputSchema, result, op, createAndExpression(joinExpr), tempDir);
+          result =
+              new JoinLogOperator(outputSchema, result, op, createAndExpression(joinExpr), tempDir);
         }
-      }
-    }
-
-    // PROJECT
-    if (selectItems.size() >= 1) {
-      ArrayList<Column> newSchema = new ArrayList<>();
-      if (!(selectItems.get(0) instanceof AllColumns)) {
-        for (SelectItem selectItem : selectItems) {
-          Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
-          if (if_alias) {
-            String al = c.getTable().getName();
-            c.getTable().setName(DBCatalog.getInstance().getTableName(al));
-            c.getTable().setSchemaName(al);
-          }
-          newSchema.add(c);
-        }
-        result = new ProjectLogOperator(result, selectItems, newSchema);
       }
     }
 
@@ -218,6 +204,24 @@ public class QueryPlanBuilder {
           child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
         }
         result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
+      }
+    }
+
+    // PROJECT
+    System.out.println(selectItems.size());
+    if (selectItems.size() >= 1) {
+      ArrayList<Column> newSchema = new ArrayList<>();
+      if (!(selectItems.get(0) instanceof AllColumns)) {
+        for (SelectItem selectItem : selectItems) {
+          Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
+          if (if_alias) {
+            String al = c.getTable().getName();
+            c.getTable().setName(DBCatalog.getInstance().getTableName(al));
+            c.getTable().setSchemaName(al);
+          }
+          newSchema.add(c);
+        }
+        result = new ProjectLogOperator(result, selectItems, newSchema);
       }
     }
 

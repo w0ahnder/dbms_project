@@ -2,7 +2,6 @@ package operator.PhysicalOperators;
 
 import common.DBCatalog;
 import common.Tuple;
-
 import java.io.IOException;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
@@ -54,9 +53,7 @@ public class SortOperator extends Operator {
   }
 
   @Override
-  public void reset(int index) throws IOException {
-
-  }
+  public void reset(int index) throws IOException {}
 
   /**
    * Get next tuple from operator

@@ -17,7 +17,8 @@ public class JoinLogOperator implements LogicalOperator {
       ArrayList<Column> outputSchema,
       LogicalOperator leftOperator,
       LogicalOperator rightOperator,
-      Expression condition, String tempDir) {
+      Expression condition,
+      String tempDir) {
     this.outputSchema = outputSchema;
     this.leftOperator = leftOperator;
     this.rightOperator = rightOperator;

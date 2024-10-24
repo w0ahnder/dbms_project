@@ -52,7 +52,14 @@ public class Compiler {
       QueryPlanBuilder queryPlanBuilder = new QueryPlanBuilder();
       List<List<Integer>> planConfig = readNumbersFromFile(inputDir + "/plan_builder_config.txt");
       if (outputToFiles) {
-        for (File file : (new File(tempDir).listFiles())) file.delete();
+        for (File file : (new File(tempDir).listFiles())) {
+          if (file.isDirectory()) {
+            for (File files : file.listFiles()) {
+              files.delete();
+            }
+          }
+          file.delete();
+        }
         for (File file : (new File(outputDir).listFiles())) file.delete(); // clean output directory
       }
 
@@ -60,6 +67,7 @@ public class Compiler {
       for (Statement statement : statements.getStatements()) {
         try {
           Operator plan = queryPlanBuilder.buildPlan(statement, tempDir, planConfig);
+          System.out.println(plan.toString());
           if (outputToFiles) {
             // TODO: change to Binary format
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
