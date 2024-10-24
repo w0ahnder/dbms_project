@@ -92,7 +92,10 @@ public class Benchmarking {
         System.out.println("Finished BNLJ5....");
 
         //SORT MERGE JOIN
+        ps.println("Sort Merge Loop Join  ....");
         DBCatalog.getInstance().setLoop(2);
+        DBCatalog.getInstance().setSortBuff(5);
+        execute("src/test/resources/benchmarking/output/SMJ");
         ps.close();
 
     }
