@@ -109,24 +109,22 @@ public class TupleReader {
     numTuples = 0;
   }
 
+  /***
+   * Resets the index at which the Tuple Reader starts to read tuples from
+   * @param index is the index to reset the Tuple Reader to
+   * @throws IOException
+   */
   public void reset(int index) throws IOException {
     // index is the number of tuples we have read so far?
     // file channel position function counts the number of bytes from the beginning of the file
     // to the current position
     // each page of the file is 4096 bytes
-    // we want tuple at index
 
-    // byte position of tuple at index
-    // number of tuples to fit on a page: (4088/(numcol*4))
-    // tuple index/ tuples per page = page tuple is on
     // number of bytes is 4096 * page tuple is on
     // have to calculate offset
     // =>>>>>>>>> (index  - tuple index on previous page)*4*numcol + 8
     int tuplesperpage = (4088) / (numAttr * 4);
-    // find page index would be on
-    // say i want page for tuple 9, and i can put 2 tuples per page
-    // i want page 5 (0 index is 4)
-    int pageforindex = (int) Math.ceil((double) index / (double) tuplesperpage); // 5
+    int pageforindex = (int) Math.ceil((double) index / (double) tuplesperpage);
     // now calculate offset into the page
     // =>calculate index of first tuple on this page
     int first_indx =
@@ -145,15 +143,12 @@ public class TupleReader {
     bufferClear(); // clear out all elements from buffer
     page_start = true;
     done = false;
-    // have to set position of buffer so that the buffer only reads this page's tuples; dont go onto
-    // next
-    // put zeros in front of buffer to simulate reading all the previous tuples and metadata before
-    // reaching tuple at index
+    // have to set position of buffer so that the buffer only reads this page's tuples; dont go onto next
     buff.clear(); // position is at 0, limit is at capacity
     int reads = fc.read(buff);
 
     if (reads >= 0) { // we can read from from channel
-      newPage(); // fill it full of 0's get metadata
+      newPage(); // get metadata
       buff.position(offset); // byte to start reading at on this page
       page_start = false;
     }

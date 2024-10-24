@@ -73,6 +73,7 @@ public class Benchmarking {
         DataGenerator gen2 = new DataGenerator(200, 5000, 3, outdir2);
 
         //TUPLE NESTED JOIN
+
         DBCatalog.getInstance().setLoop(0);
         ps.println("Tuple Nested loop join ....");
         execute("src/test/resources/benchmarking/output/TNLJ"); //output directory for this join

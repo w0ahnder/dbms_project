@@ -1,12 +1,13 @@
 Tuple Nested loop join ....
-Elapsed time for query 0 is 41779
-Elapsed time for query 1 is 43499
-Elapsed time for query 2 is 1
-Block Nested loop join with 1 buffer page ....
-Elapsed time for query 0 is 41360
-Elapsed time for query 1 is 43654
-Elapsed time for query 2 is 1
-Block Nested loop join with 5 buffer pages ....
-Elapsed time for query 0 is 41480
-Elapsed time for query 1 is 43873
+Elapsed time for query 0 is 39811
+Elapsed time for query 1 is 42626
 Elapsed time for query 2 is 0
+Block Nested loop join with 1 buffer page ....
+Elapsed time for query 0 is 39987
+Elapsed time for query 1 is 42707
+Elapsed time for query 2 is 0
+Block Nested loop join with 5 buffer pages ....
+Elapsed time for query 0 is 40059
+Elapsed time for query 1 is 42231
+Elapsed time for query 2 is 0
+Sort Merge Loop Join  ....
