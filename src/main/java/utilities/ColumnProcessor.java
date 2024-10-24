@@ -12,6 +12,12 @@ import operator.PhysicalOperators.Operator;
 
 public class ColumnProcessor {
 
+  /***
+   * Get the columns from where expressions 
+   * @param op operator to get schema from
+   * @param expr where expression for joining 
+   * @return
+   */
   public List<OrderByElement> getOrderByElements(Operator op, Expression expr) {
     ArrayList<String> tableSchema = getColumns(op.getOutputSchema());
     List<OrderByElement> result = new ArrayList<>();
@@ -27,6 +33,11 @@ public class ColumnProcessor {
     return result;
   }
 
+  /***
+   * 
+   * @param expr AndExpression to parse
+   * @return list of all the expressions in expr 
+   */
   private static List<Expression> getAndExpressions(Expression expr) {
     List<Expression> temp = new ArrayList<>();
     while (expr instanceof AndExpression) {
@@ -38,6 +49,11 @@ public class ColumnProcessor {
     return temp;
   }
 
+  /***
+   * 
+   * @param outputSchema schema of table
+   * @return the names of all the columns in form of Alias.Col or TableName .col
+   */
   private static ArrayList<String> getColumns(ArrayList<Column> outputSchema) {
     ArrayList<String> result = new ArrayList<>();
     for (Column col : outputSchema) {
@@ -53,6 +69,11 @@ public class ColumnProcessor {
     return result;
   }
 
+  /***
+   * 
+   * @param exprs List of EqualsTo expressions
+   * @return the List of Column Expressions in exprs
+   */
   private static List<Expression> getColumnExpressions(List<Expression> exprs) {
     List<Expression> temp = new ArrayList<>();
     for (Expression e : exprs) {
