@@ -61,8 +61,6 @@ public class ExternalSortOperator extends SortOperator {
 
   /** Sorts the tuples loaded into memory. */
   private void sort() {
-    System.out.println("Sorting");
-    System.out.println(op);
     int run = 0;
     int tupleSize = op.outputSchema.size() * 4;
     int numTuples = this.bufferSize / tupleSize;
@@ -102,7 +100,6 @@ public class ExternalSortOperator extends SortOperator {
 
   /** Merge sep in External Sort Algoritms */
   private void merge(int Pass) {
-    System.out.println("merging");
     int num = 0;
     int pass = Pass;
 
@@ -112,7 +109,6 @@ public class ExternalSortOperator extends SortOperator {
     List<TupleReader> buffer = new ArrayList<>();
 
     if (pass == 1) {
-      System.out.println("pass should be 1");
       try {
         reader = new TupleReader(new File(tempDir + "/run" + num));
       } catch (IOException e) {
@@ -121,7 +117,6 @@ public class ExternalSortOperator extends SortOperator {
     }
 
     while (num < pass - 1) {
-      System.out.println("this should be false");
       try {
         for (int i = num; i < num + numTuples; i++) {
           if (i < pass) {
@@ -184,7 +179,6 @@ public class ExternalSortOperator extends SortOperator {
   @Override
   public Tuple getNextTuple() {
     if (reader == null) {
-      System.out.println("Reader is null");
       return null;
     }
     try {

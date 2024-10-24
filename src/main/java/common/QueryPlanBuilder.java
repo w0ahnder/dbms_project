@@ -208,7 +208,6 @@ public class QueryPlanBuilder {
     }
 
     // PROJECT
-    System.out.println(selectItems.size());
     if (selectItems.size() >= 1) {
       ArrayList<Column> newSchema = new ArrayList<>();
       if (!(selectItems.get(0) instanceof AllColumns)) {

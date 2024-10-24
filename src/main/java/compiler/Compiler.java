@@ -76,7 +76,7 @@ public class Compiler {
             Convert cv = new Convert(tw.outFile, new PrintStream(tw.outFile + "human"));
             cv.bin_to_human();
           } else {
-            System.out.println("fail");
+
             plan.dump(System.out);
           }
         } catch (Exception e) {

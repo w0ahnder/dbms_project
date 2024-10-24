@@ -65,7 +65,6 @@ public abstract class Operator {
   }
 
   public void dump(TupleWriter tw) throws IOException {
-    System.out.println("Dumping");
     Tuple t = getNextTuple();
     while (t != null) {
       tw.write(t);

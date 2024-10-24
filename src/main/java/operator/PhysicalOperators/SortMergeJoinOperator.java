@@ -50,7 +50,6 @@ public class SortMergeJoinOperator extends Operator {
       List<OrderByElement> orderElements_left,
       List<OrderByElement> orderElements_right) {
     super(schema);
-    System.out.println(orderElements_left);
     this.left = table_1;
     this.right = table_2;
     this.orderElements_left = orderElements_left;
@@ -143,7 +142,6 @@ public class SortMergeJoinOperator extends Operator {
      */
     @Override
     public int compare(Tuple t1, Tuple t2) {
-      System.out.println(t2);
       if (!orderElements_left.isEmpty() && !orderElements_right.isEmpty()) {
         Map<String, Integer> columnToIndexMap_left = createMap(left);
         Map<String, Integer> columnToIndexMap_right = createMap(right);
@@ -168,7 +166,6 @@ public class SortMergeJoinOperator extends Operator {
         }
         return 0;
       } else {
-        System.out.println("string comparison");
         return t1.toString().compareTo(t2.toString());
       }
     }

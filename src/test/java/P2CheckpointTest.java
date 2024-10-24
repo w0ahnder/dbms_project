@@ -332,7 +332,6 @@ public class P2CheckpointTest {
           JSQLParserException,
           IOException,
           URISyntaxException {
-    System.out.println("test 13");
     Statement stmt = statementList.get(12);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
