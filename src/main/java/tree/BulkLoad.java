@@ -92,7 +92,7 @@ public class BulkLoad {
     public void printIndex(ArrayList<Node> ind) throws FileNotFoundException {
         for(Node index:ind){
             if(ind.size()==1){
-                ps.println("Root Node ");
+                ps.println("Root Node at " + index.getAddress());
             }
             else {
                 ps.println("Index Node ");
