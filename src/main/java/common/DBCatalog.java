@@ -39,6 +39,7 @@ public class DBCatalog {
   private HashMap<String, File> availableIndex;// <table.col, file for the index>
 
   private int BNLJ_buff;
+
   private int sort_type; // 0 if in memory
   private int sort_buff;
   private String dbDirectory;
@@ -186,9 +187,8 @@ public class DBCatalog {
   }
 
   /**
-   * Parses the config file to determine the type of join and the block size (if applicable) and the
-   * type of sort to use and number of buffer pages for it if external sort
-   *
+   * Parses the config file to determine the type of join and the block size (if applicable)
+   *and the type of sort to use and number of buffer pages for it if external sort
    * @param input_dir is the path for the config file
    */
   public void config_file(String input_dir) {
@@ -422,6 +422,8 @@ public class DBCatalog {
 
 
 
+  /*************************   Benchmarking Functions    *************/
+  /******Functions used to set parameters in order to do Benchmarking ***********/
   /*************************   Benchmarking Functions    *************/
   /******Functions used to set parameters in order to do Benchmarking ***********/
 
