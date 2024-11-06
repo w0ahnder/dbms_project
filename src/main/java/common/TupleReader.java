@@ -18,6 +18,10 @@ public class TupleReader {
   private FileChannel fc;
   private boolean done;
   private boolean page_start;
+  private int pageID;
+  private int tupleID;
+
+
 
   // every page is 4096 bytes
   // each page stores meta data:  #attributes of the tuples stored on page,  #tuples on page
@@ -32,6 +36,8 @@ public class TupleReader {
     numAttr = 0;
     done = false;
     page_start = true;
+    pageID = -1;
+    tupleID = -1;
   }
 
   // keep getting elements from the file as long as there is space
@@ -54,6 +60,7 @@ public class TupleReader {
         // otherwise get new  page details
         newPage();
         page_start = false;
+        pageID++;
       }
       // position and limit still has elements between them => 1+ tuples
       if (buff.hasRemaining()) {
@@ -62,11 +69,12 @@ public class TupleReader {
         for (int i = 0; i < numAttr; i++) {
           tuple.add(buff.getInt());
         }
-        // System.out.println("Reader tuple: " + tuple.toString());
+        tupleID++;
         return new Tuple(tuple);
       }
       // otherwise position is at limit => 0 tuples, get next page
       page_start = true;
+      tupleID = 0;
       // clear out everything from buffer
       bufferClear();
     }
@@ -97,6 +105,13 @@ public class TupleReader {
     buff.clear();
   }
 
+  public int pID(){
+    return pageID;
+  }
+
+  public int tID(){
+    return tupleID;
+  }
   public void reset() throws IOException {
     // buff.clear();
     bufferClear();
@@ -107,6 +122,8 @@ public class TupleReader {
     done = false;
     numAttr = 0;
     numTuples = 0;
+    pageID=0;
+    tupleID=0;
   }
 
   /***
@@ -143,7 +160,8 @@ public class TupleReader {
     bufferClear(); // clear out all elements from buffer
     page_start = true;
     done = false;
-    // have to set position of buffer so that the buffer only reads this page's tuples; dont go onto next
+    // have to set position of buffer so that the buffer only reads this page's tuples; dont go onto
+    // next
     buff.clear(); // position is at 0, limit is at capacity
     int reads = fc.read(buff);
 

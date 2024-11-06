@@ -1,12 +1,10 @@
 package operator.PhysicalOperators;
 
-import common.Convert;
 import common.Tuple;
 import common.TupleReader;
 import common.TupleWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -150,7 +148,6 @@ public class ExternalSortOperator extends SortOperator {
         e.printStackTrace();
       }
     }
-
   }
 
   /** Resets the operator to the beginning. */
@@ -174,8 +171,11 @@ public class ExternalSortOperator extends SortOperator {
     }
   }
 
-  /** returns the next tuple from the sorted files
-   * @return Tuple or null if we are at the end of the file*/
+  /**
+   * returns the next tuple from the sorted files
+   *
+   * @return Tuple or null if we are at the end of the file
+   */
   @Override
   public Tuple getNextTuple() {
     if (reader == null) {

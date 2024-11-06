@@ -9,7 +9,8 @@ public class Convert {
   private PrintStream printStream;
 
   /**
-   *  Class to convert binary files into Human readable versions
+   * Class to convert binary files into Human readable versions
+   *
    * @param path is the bianry file to read
    * @param ps is the file to write the human readable version
    * @throws FileNotFoundException
@@ -22,6 +23,7 @@ public class Convert {
 
   /**
    * Converts the binary file at path into a human reader version
+   *
    * @throws IOException
    */
   public void bin_to_human() throws IOException {
@@ -34,8 +36,9 @@ public class Convert {
   }
 
   /**
-   * This function is used to test the reset index function in the Tuple Reader. It resets to index and prints the
-   * tuple at that index
+   * This function is used to test the reset index function in the Tuple Reader. It resets to index
+   * and prints the tuple at that index
+   *
    * @param i is the index to reset the binary file to
    * @throws IOException
    */

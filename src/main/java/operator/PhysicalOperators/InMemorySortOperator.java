@@ -113,7 +113,7 @@ public class InMemorySortOperator extends SortOperator {
         } else if (t1_val < t2_val) {
           return -1;
         }
-//        columnToIndexMap.remove(col);
+        //        columnToIndexMap.remove(col);
       }
 
       for (Column col : outputSchema) {
