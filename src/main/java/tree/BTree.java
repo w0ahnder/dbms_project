@@ -12,16 +12,14 @@ public class BTree {
     boolean clustered;
     int attribute;
     int d;
+    List< List<Node>> layers;
 
     public BTree(boolean clust, int  col , int order){
         clustered = clust;
         attribute = col;
         d = order;
+        layers = new ArrayList<>();
     }
-
-
-    //has to create index nodes
-    // TODO: CREATE INDEX LAYER
 
     //has to create leaf layer
     public ArrayList<Node> leafLayer(HashMap<Integer, ArrayList<Tuple>> data){
@@ -88,6 +86,11 @@ public class BTree {
             int right = rem - left;
             int end = start + left;
             indexes.add(makeIndex(nodes, start, end, addr));
+
+            addr++;
+            start = end;
+            end = num;
+            indexes.add(makeIndex(nodes, start, end,addr));
         }
         return indexes;
     }
@@ -125,4 +128,12 @@ public class BTree {
 
         return new Leaf(key_list, rid_lists, address);
     }
+
+    public void addLayer(ArrayList<Node> l){
+        layers.add(l);
+    }
+    public int latestSize(){
+        return layers.getLast().size();
+    }
 }
+

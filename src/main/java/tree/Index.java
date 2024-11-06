@@ -16,7 +16,7 @@ public class Index extends Node{
     }
 
 public int smallest(){
-        return children.get(1).smallest();
+        return children.get(0).smallest();
 }
     //each index page has 1 to indicate it is index page
     //# keys in the node

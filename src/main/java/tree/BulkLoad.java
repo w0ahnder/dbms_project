@@ -52,6 +52,7 @@ public class BulkLoad {
 
         //have to create leaf layer
         ArrayList<Node> leaves = tree.leafLayer(data);
+        tree.addLayer(leaves);
         //now have to make index layer
 
         //every index node needs d<= k <= 2d entries
@@ -60,20 +61,42 @@ public class BulkLoad {
         //2 node tree where root node points directly to the leaf node
 
         //TODO: NEED to make root if 2 node tree
-
+        if(leaves.size() ==1){
+            int address = leaves.get(0).getAddress()+1;
+            ArrayList<Integer> key= new ArrayList<>();
+            key.add(leaves.get(0).smallest());
+            Node r =  new Index(leaves, address, key);
+            ArrayList<Node> root = new ArrayList<Node>();
+            tree.addLayer(root);
+            return;
+        }
+        // TODO: Now do multilayers, have to find way to keep track of layers so we can make a single root
         //create index layer right above the leaves; can pass in a Leaf list
         //then create index layer on top of that, can pass in Index List
-        ArrayList<Node> indexes = tree.indexLayer( (ArrayList<Node>) leaves);
-        //TODO: Now do multilayers
+        ArrayList<Node> indPrint = new ArrayList<>();
+        ArrayList<Node>  nodes = leaves;
+        while (tree.latestSize() >1) {
+            ArrayList<Node> indexes = tree.indexLayer((ArrayList<Node>) nodes);
+            printIndex(indexes);
+            tree.addLayer(indexes);
+            nodes = indexes;
+        }
 
-        printIndex(indexes);
+        //when we get to root node, have to change way we get the smallest; it should be
+
+        //printIndex(indPrint);
         printLeaves(leaves);
         ps.close();
     }
 
     public void printIndex(ArrayList<Node> ind) throws FileNotFoundException {
         for(Node index:ind){
-            ps.println("Index Node ");
+            if(ind.size()==1){
+                ps.println("Root Node ");
+            }
+            else {
+                ps.println("Index Node ");
+            }
             String s = index.toString();
             ps.println(s);
         }
