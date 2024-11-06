@@ -2,9 +2,7 @@ package tree;
 
 import common.Tuple;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -165,15 +163,102 @@ public class BTree {
                     n.serial(bb, fc);
                     fc.write(bb);
                 }
-
             }
-
+            fc.close();
+            out.close();
         }
         catch (Exception e){
             System.out.println("tree_to_file failed");
         }
     }
 
+    /************ Deserialize file to tree *************/
+
+    public void file_to_tree(){
+        try{
+            ByteBuffer bb = ByteBuffer.allocate(4096);
+            FileInputStream in  = new FileInputStream("src/test/resources/samples-2/expected_indexes/Boats.E");
+            FileChannel fc = in.getChannel();
+
+            fc.read(bb);
+            //read the header page root address, num leaves, order
+            int root_addr = bb.getInt(0);
+            int num_leaves = bb.getInt(4);
+            int order = bb.getInt(8);
+             //start processing leaf nodes
+            int page=1;
+            List<List<Node>> lrs = new ArrayList<>();
+            List<Node> leaf_layer = new ArrayList<>();
+            for(int i=0;i<num_leaves;i++){
+                Node leaf = deserializeLeaf(bb, fc, page);
+                leaf_layer.add(leaf);
+                page++;
+            }
+            fc.close();
+            in.close();
+            PrintStream ps = new PrintStream("src/test/resources/samples-2/bulkload/deserialize");
+            printLeaves(leaf_layer, ps);
+            ps.close();
+        }
+        catch (Exception e){
+            System.out.println("file_to_tree failed");
+        }
+    }
+
+    public void printLeaves(List<Node> leaves, PrintStream ps) throws FileNotFoundException {
+        for(Node leaf: leaves){
+            ps.println("Leaf Node");
+            String s = leaf.toString();
+            ps.println(s);
+        }
+    }
+    public Node deserializeLeaf(ByteBuffer b, FileChannel fc, int page){
+        nextPage(b, fc, page);
+        int ind = b.getInt();
+        int numEntries = b.getInt();
+        if(ind==1){
+            System.out.println("This isnt a leaf page");
+            return null;
+        }
+        ArrayList<Integer> keys = new ArrayList<>();
+        ArrayList< ArrayList<Tuple>> rids = new ArrayList<>();
+        for(int i=0;i<numEntries;i++){//loop through all of the keys
+            keys.add(b.getInt());
+
+            int numrid = b.getInt();//number of rids for this key
+            ArrayList<Tuple> list = new ArrayList<>();
+            //get all the data for this specific key
+            for(int r=0;r<numrid;r++){
+                int pgid = b.getInt();
+                int tid = b.getInt();
+                ArrayList<Integer> elem = new ArrayList<>();
+                elem.add(pgid); elem.add(tid);
+                list.add(new Tuple(elem));
+            }
+            rids.add(list);
+        }
+        return new Leaf(keys, rids, page);
+    }
+
+    public void nextPage(ByteBuffer bb, FileChannel fc, int pg){
+        init(bb); //fill with 0's
+        //set file channel to start reading on this new page
+        try {
+            fc.position(4096 * pg);
+            fc.read(bb); //get data on this page
+            bb.flip(); //limit = curr position, position = 0
+        }
+        catch (Exception e){
+            System.out.println("deserialize next page failed");
+        }
+    }
+
+    public void deserializeNodes(ByteBuffer b, FileChannel fc, int pg){
+        //when we first enter, want to read the next page for the node
+    }
+
+
+    //from Tuple writer
     public void init(ByteBuffer b) {
         b.clear();
         b.put(new byte[4096]);
