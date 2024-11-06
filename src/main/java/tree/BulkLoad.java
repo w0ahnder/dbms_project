@@ -19,6 +19,7 @@ public class BulkLoad {
     public boolean clustered; //true if clustered
     public TupleReader reader;
     public BTree tree;
+    PrintStream ps;
     public BulkLoad(File table, int order, int col, boolean clustered) throws FileNotFoundException {
     d = order;
     this.table = table;
@@ -26,7 +27,7 @@ public class BulkLoad {
     this.clustered = clustered;
     reader = new TupleReader(table);
     tree = new BTree(clustered, col, order);
-
+      ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"));
     }
 
     //keep reading tuples and add them to a hashmap keeping track of the key, and list of (pageid, tupleid)
@@ -50,18 +51,39 @@ public class BulkLoad {
         }
 
         //have to create leaf layer
-        ArrayList<Leaf> leaves = tree.leafLayer(data);
-        printLeaves(leaves);
+        ArrayList<Node> leaves = tree.leafLayer(data);
         //now have to make index layer
+
+        //every index node needs d<= k <= 2d entries
+
+        //case where relation is so small only one leaf node
+        //2 node tree where root node points directly to the leaf node
+
+        //TODO: NEED to make root if 2 node tree
+
+        //create index layer right above the leaves; can pass in a Leaf list
+        //then create index layer on top of that, can pass in Index List
+        ArrayList<Node> indexes = tree.indexLayer( (ArrayList<Node>) leaves);
+        //TODO: Now do multilayers
+
+        printIndex(indexes);
+        printLeaves(leaves);
+        ps.close();
     }
-    public void printLeaves(ArrayList<Leaf> leaves) throws FileNotFoundException {
-        PrintStream ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"));
-        for(Leaf leaf: leaves){
+
+    public void printIndex(ArrayList<Node> ind) throws FileNotFoundException {
+        for(Node index:ind){
+            ps.println("Index Node ");
+            String s = index.toString();
+            ps.println(s);
+        }
+    }
+    public void printLeaves(ArrayList<Node> leaves) throws FileNotFoundException {
+        for(Node leaf: leaves){
             ps.println("Leaf Node");
             String s = leaf.toString();
             ps.println(s);
         }
-        ps.close();
     }
 
 }

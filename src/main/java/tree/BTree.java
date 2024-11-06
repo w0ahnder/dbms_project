@@ -24,9 +24,9 @@ public class BTree {
     // TODO: CREATE INDEX LAYER
 
     //has to create leaf layer
-    public ArrayList<Leaf> leafLayer(HashMap<Integer, ArrayList<Tuple>> data){
+    public ArrayList<Node> leafLayer(HashMap<Integer, ArrayList<Tuple>> data){
 
-        ArrayList<Leaf> leaves =  new ArrayList<>();
+        ArrayList<Node> leaves =  new ArrayList<>();
         int tot = data.size();//total number of keys
         int processed = 0;//number of keys we have processed
 
@@ -38,16 +38,18 @@ public class BTree {
         int start = 0;
         //keep track of addresses for serializing later
         int addr = 1; //pages for leaves start at 1
-        while(!( 2*d < tot && tot <3*d) && processed<tot ){
+        int rem = tot;
+        while(!( 2*d < rem && rem <3*d) && processed<tot ){
             //means k>=2d  (so we can use 2d) , k<2d ( we have to use k), k>=3d (can use 2d)
             int collect= (tot - processed) <2*d? (tot - processed) : 2*d; //how many keys to put in this node
             int end = start + collect;
             leaves.add( makeLeaf(data, start, end, key_arr, addr));
             start = end;
             processed = processed+collect;
+            rem = tot - processed;
             addr++;
         }
-        int rem  = tot-processed;
+        rem  = tot-processed;
         //now handle case when not enough to fill the last 2 leaves properly
         if(2*d < rem && rem< 3*d){
             int left = rem/2; //number of entries for second to last leaf node
@@ -64,7 +66,48 @@ public class BTree {
 
     }
 
+    public ArrayList<Node> indexLayer(ArrayList<Node> nodes){
+        int num = nodes.size();
+        int processed = 0;
+        int start = 0;
+        ArrayList<Node> indexes = new ArrayList<>();
+        int addr = num + nodes.get(0).getAddress();
+        int rem = num;
+        while(!( 2*d+1< rem && rem< 3*d+2) && processed<num){
+            int collect= rem <2*d +1? rem : 2*d +1; //how many nodes we include in this index node
+            int end = start +collect;
+            indexes.add(makeIndex(nodes, start, end, addr));
+            addr++;
+            start = end;
+            processed += collect;
+            rem = num - processed;
+        }
+        //now case when last two indexes cant be filled properly
+        if(2*d+1 <rem && rem<3*d+2){
+            int left = rem/2;
+            int right = rem - left;
+            int end = start + left;
+            indexes.add(makeIndex(nodes, start, end, addr));
+        }
+        return indexes;
+    }
 
+    public Index makeIndex(ArrayList<Node> nodes, int start, int end, int address){
+        //add pointers to all the nodes in this range
+        ArrayList<Node> children = new ArrayList<>();
+        ArrayList<Integer> keys = new ArrayList<>();
+        for(int i=start; i<end;i++){
+            children.add(nodes.get(i));
+        }
+        //now have to get the keys we want to use;
+        //look into the second, third, ...  pointers to get the smallest element in the leaf of that subtree
+        for(int i=1;i<children.size();i++){
+            int small = children.get(i).smallest();
+            keys.add(small);
+        }
+        return new Index(children, address, keys);
+
+    }
     public Leaf makeLeaf(HashMap<Integer, ArrayList<Tuple>> data, int start, int end, Integer[] key_arr, int address){
         //each leaf node has to have the < key, list> structure
         ArrayList<Leaf> leaves = new ArrayList<>();
