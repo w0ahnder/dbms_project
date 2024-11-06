@@ -27,8 +27,10 @@ public class BulkLoad {
     this.clustered = clustered;
     reader = new TupleReader(table);
     tree = new BTree(clustered, col, order);
-      ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"));
+    ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"));
+    tree.file_to_tree();
     }
+
 
     //keep reading tuples and add them to a hashmap keeping track of the key, and list of (pageid, tupleid)
     //want to keep track of which page a tuple is read from, and what is the tupleid
@@ -81,10 +83,6 @@ public class BulkLoad {
             tree.addLayer(indexes);
             nodes = indexes;
         }
-
-        //when we get to root node, have to change way we get the smallest; it should be
-
-        //printIndex(indPrint);
         printLeaves(leaves);
         ps.close();
     }

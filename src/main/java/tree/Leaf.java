@@ -31,7 +31,6 @@ public class Leaf extends Node{
 
         // <k, [(p1,t1), (p2,t2),..]>
         //write k, then number of rid's, then pi, ti
-
         bb.putInt(0);
         bb.putInt(keys.size());
         for(int i=0;i<keys.size();i++){

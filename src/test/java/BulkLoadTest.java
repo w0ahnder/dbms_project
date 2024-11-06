@@ -18,6 +18,7 @@ import net.sf.jsqlparser.statement.Statements;
 import operator.PhysicalOperators.Operator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import tree.BTree;
 import tree.BulkLoad;
 
 public class BulkLoadTest {
@@ -55,6 +56,8 @@ public class BulkLoadTest {
         TupleReader tr = new TupleReader( new File("src/test/resources/samples-2/input/db/data/Boats"));
         File Boats = new File("src/test/resources/samples-2/input/db/data/Boats");
         BulkLoad bl  = new BulkLoad(Boats, 10, 1, false);
-        bl.load();
+        //bl.load();
+        //BTree tree = new BTree();
+
     }
 }
