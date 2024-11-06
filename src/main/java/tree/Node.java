@@ -1,5 +1,7 @@
 package tree;
 
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 public abstract class Node {
@@ -18,7 +20,6 @@ public int getAddress(){
 public ArrayList<Node> getChildren(){return children;
 }
 public abstract int smallest();
-
     public abstract String toString();
-
+public abstract void serial(ByteBuffer bb, FileChannel fc);
 }

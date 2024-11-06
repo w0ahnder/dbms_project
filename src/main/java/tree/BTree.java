@@ -2,7 +2,12 @@ package tree;
 
 import common.Tuple;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.lang.reflect.Array;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,5 +140,45 @@ public class BTree {
     public int latestSize(){
         return layers.getLast().size();
     }
+    /********************* Serialize tree to a file *********************/
+
+    public void tree_to_file() {
+        try {
+            ByteBuffer bb = ByteBuffer.allocate(4096);
+            FileOutputStream out = new FileOutputStream(new File("file path"));
+            FileChannel fc = out.getChannel();
+
+            //header page has root address, number of leaves, order
+            Node root = this.layers.getLast().get(0);
+            int rootAddr = root.getAddress();
+            int num_leaves = this.layers.getFirst().size();
+            bb.putInt(0, rootAddr);
+            bb.putInt(4, num_leaves);
+            bb.putInt(8, d);
+            fc.write(bb);
+            //new page now
+            //now serialize all the leaf nodes, then all the index nodes
+            for(List<Node> l: this.layers){
+                for(Node n: l){
+                    //each node gets own page
+                    init(bb);
+                    n.serial(bb, fc);
+                    fc.write(bb);
+                }
+
+            }
+
+        }
+        catch (Exception e){
+            System.out.println("tree_to_file failed");
+        }
+    }
+
+    public void init(ByteBuffer b) {
+        b.clear();
+        b.put(new byte[4096]);
+        b.clear();
+    }
+
 }
 
