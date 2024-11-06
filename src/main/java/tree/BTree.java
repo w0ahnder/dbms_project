@@ -125,4 +125,8 @@ public class BTree {
 
         return new Leaf(key_list, rid_lists, address);
     }
+
+    public String makeIndexFile(){
+        return null;
+    }
 }
