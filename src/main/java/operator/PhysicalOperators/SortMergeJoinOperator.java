@@ -1,13 +1,8 @@
 package operator.PhysicalOperators;
 
-import common.Convert;
 import common.DBCatalog;
 import common.Tuple;
-import common.TupleReader;
-import common.TupleWriter;
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -30,7 +25,6 @@ public class SortMergeJoinOperator extends Operator {
   Tuple right_curr;
 
   TupleComparator comparator = new TupleComparator();
-
 
   public int partition_indx;
 
@@ -61,7 +55,8 @@ public class SortMergeJoinOperator extends Operator {
   }
 
   /**
-   * Resets pointer on the operator object to the beginning. Achieves this by resetting its left and right children
+   * Resets pointer on the operator object to the beginning. Achieves this by resetting its left and
+   * right children
    */
   @Override
   public void reset() {
@@ -71,12 +66,12 @@ public class SortMergeJoinOperator extends Operator {
 
   public void reset(int index) throws IOException {}
 
-
   /**
    * Get next tuple from operator
    *
    * @return Tuple, or null if we are at the end. Retrieves next tuple by calling getNextTuple() on
-   * its left and right child operator and checking that the values at the required column match each other
+   *     its left and right child operator and checking that the values at the required column match
+   *     each other
    */
   public Tuple getNextTuple() {
     try {
@@ -128,8 +123,9 @@ public class SortMergeJoinOperator extends Operator {
   }
 
   /**
-   * Custom Comparator class to compare to tuples two tuples to determine if to move to the next tuple
-   * on the left(outer) table or on the right(inner) table.
+   * Custom Comparator class to compare to tuples two tuples to determine if to move to the next
+   * tuple on the left(outer) table or on the right(inner) table.
+   *
    * <p>
    */
   private class TupleComparator implements Comparator<Tuple> {

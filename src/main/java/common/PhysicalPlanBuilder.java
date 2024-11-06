@@ -69,12 +69,7 @@ public class PhysicalPlanBuilder {
               DBCatalog.getInstance().getSortBuff(),
               joinLogOperator.tempDir);
       rootOperator =
-          new SortMergeJoinOperator(
-              joinLogOperator.outputSchema,
-              left,
-              right,
-              leftCond,
-              rightCond);
+          new SortMergeJoinOperator(joinLogOperator.outputSchema, left, right, leftCond, rightCond);
     }
   }
 
