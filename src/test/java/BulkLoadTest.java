@@ -51,7 +51,7 @@ public class BulkLoadTest {
         bl.load();
         BTree tree =  bl.getTree();
         String path = "src/test/resources/samples-2/bulkload";
-        tree.tree_to_file(path + "/BoatsE_bin");
+        tree.tree_to_file(path + "/Boats.E_bin");
     }
 
     @Test

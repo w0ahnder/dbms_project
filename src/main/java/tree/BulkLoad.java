@@ -7,8 +7,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.io.PrintStream;
+import java.util.*;
 
 import common.*;
+import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.select.OrderByElement;
+import operator.PhysicalOperators.InMemorySortOperator;
+import operator.PhysicalOperators.Operator;
+import operator.PhysicalOperators.ScanOperator;
+import operator.PhysicalOperators.SortOperator;
 
 public class BulkLoad {
 
@@ -17,12 +26,18 @@ public class BulkLoad {
     public int attribute;
     public boolean clustered; //true if clustered
     public TupleReader reader;
+    public BTree tree;
+    PrintStream ps;
     public BulkLoad(File table, int order, int col, boolean clustered) throws FileNotFoundException {
     d = order;
     this.table = table;
     attribute  = col;
     this.clustered = clustered;
     reader = new TupleReader(table);
+    tree = new BTree(clustered, col, order);
+    //ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"))
+        ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Sailors.A_bulk"));
+    }
 
     }
 
@@ -46,9 +61,101 @@ public class BulkLoad {
             data.put(key,loc);
         }
 
+        //have to create leaf layer
+        ArrayList<Node> leaves = tree.leafLayer(data);
+        tree.addLayer(leaves);
+        //now have to make index layer
+
+        //every index node needs d<= k <= 2d entries
+
+        //case where relation is so small only one leaf node
+        //2 node tree where root node points directly to the leaf node
+
+        //TODO: NEED to make root if 2 node tree
+        if(leaves.size() ==1){
+            int address = leaves.get(0).getAddress()+1;
+            ArrayList<Integer> key= new ArrayList<>();
+            key.add(leaves.get(0).smallest());
+            Node r =  new Index(leaves, address, key);
+            ArrayList<Node> root = new ArrayList<Node>();
+            tree.addLayer(root);
+            return;
+        }
+        // TODO: Now do multilayers, have to find way to keep track of layers so we can make a single root
+        //create index layer right above the leaves; can pass in a Leaf list
+        //then create index layer on top of that, can pass in Index List
+        ArrayList<Node> indPrint = new ArrayList<>();
+        ArrayList<Node>  nodes = leaves;
+        while (tree.latestSize() >1) {
+            ArrayList<Node> indexes = tree.indexLayer((ArrayList<Node>) nodes);
+            printIndex(indexes);
+            tree.addLayer(indexes);
+            nodes = indexes;
+        }
+        printLeaves(leaves);
+        ps.close();
+    }
+
+    public void printIndex(ArrayList<Node> ind) throws FileNotFoundException {
+        for(Node index:ind){
+            if(ind.size()==1){
+                ps.println("Root Node at " + index.getAddress());
+            }
+            else {
+                ps.println("Index Node ");
+            }
+            String s = index.toString();
+            ps.println(s);
+        }
+    }
+    public void printLeaves(ArrayList<Node> leaves) throws FileNotFoundException {
+        for(Node leaf: leaves){
+            ps.println("Leaf Node");
+            String s = leaf.toString();
+            ps.println(s);
+        }
+    }
+
+    public BTree getTree(){
+        return  this.tree;
+    }
+
+
+    /**
+     * Sort a relation on a given attribute and overwrite the original file
+     * @param outputPath is where the sorted relation should be written
+     */
+    //TODO: handle clustered index
+    public static void sortRelation(String tablename, String tablepath, String col, String outputPath){
+        //in memeory sort uses column schema, orderby elements, and use a Scan operator
+       try{
+        ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tablename);
+        OrderByElement ob = new OrderByElement();
+        Column newc = new Column();
+        Table t = new Table(tablename);
+        newc.setTable(t);
+        newc.setColumnName(col);
+        ob.setExpression(newc);
+        List<OrderByElement> ele = new ArrayList<>();
+        ele.add(ob);
+
+        Operator scan = new ScanOperator(schema, tablepath);
+        InMemorySortOperator sorter = new InMemorySortOperator(schema, ele, scan);
+        ArrayList<Tuple> res = sorter.getResult();
+        TupleWriter tw = new TupleWriter(outputPath);
+        for(Tuple tup: res){
+            tw.write(tup);
+        }
+            tw.close();
+        }
+        catch (Exception e){
+            System.out.println("sorting relation in BulkLoad failed");
+        }
+
     }
 
 }
+
 class PRCompare implements Comparator<Tuple>{
 
     public int compare(Tuple t1, Tuple t2){

@@ -62,6 +62,10 @@ public class InMemorySortOperator extends SortOperator {
     return result;
   }
 
+  public ArrayList<Tuple> getResult() {
+    return result;
+  }
+
   /**
    * Get next tuple from operator
    *
