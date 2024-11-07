@@ -140,10 +140,14 @@ public class BTree {
     }
     /********************* Serialize tree to a file *********************/
 
-    public void tree_to_file() {
+    /**
+     * Serialize this tree and store in the File at path
+     * @param path is path to store serialized tree
+     */
+    public void tree_to_file(String path) {
         try {
             ByteBuffer bb = ByteBuffer.allocate(4096);
-            FileOutputStream out = new FileOutputStream(new File("file path"));
+            FileOutputStream out = new FileOutputStream(new File(path));
             FileChannel fc = out.getChannel();
 
             //header page has root address, number of leaves, order

@@ -3,11 +3,14 @@ package common;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tree.BTree;
+import tree.BulkLoad;
 
 /**
  * Class to contain information about database - names of tables, schema of each table and file
@@ -29,6 +32,9 @@ public class DBCatalog {
   private boolean BNLJ = false;
   private boolean TNLJ = false;
   private boolean SMJ = false;
+  private boolean fullScan;
+  private boolean buildIndex = false;
+  private boolean evalQuery = false;
   private int BNLJ_buff;
 
   private int sort_type; // 0 if in memory
@@ -190,6 +196,7 @@ public class DBCatalog {
       BufferedReader br = new BufferedReader(new FileReader(config));
       String l1 = br.readLine();
       String l2 = br.readLine();
+      String l3 = br.readLine();
       // first line is join method; 0 for TNLJ, 1 for BNLJ, 2 for SMJ
       // if BNL, second number on line is number of buffer pages
       String[] line1 = l1.split("\\s");
@@ -207,6 +214,9 @@ public class DBCatalog {
       int sort = Integer.parseInt(line2[0]);
       sort_type = sort;
       if (sort_type == 1) sort_buff = Integer.parseInt(line2[1]);
+
+      String[] line3 = l3.split("\\s");
+      fullScan= Integer.parseInt(line3[0]) ==0 ;//if we do a full scan then it is 0
       br.close();
 
     } catch (Exception e) {
@@ -248,6 +258,126 @@ public class DBCatalog {
   public int blockSize() {
     return BNLJ_buff;
   }
+
+
+  /**
+   *
+   * @return true if we have to build an index, false if provided
+   */
+  public boolean ifBuild(){
+    return buildIndex;
+  }
+
+  /**
+   *
+   * @return true if we have to do a full scan instead of using an index
+   */
+  public boolean isFullScan(){
+    return fullScan;
+  }
+
+  /**
+   *
+   * @return true if we have to actually evaluate query
+   */
+  public boolean isEvalQuery(){
+    return evalQuery;
+  }
+
+  /**
+   * Reads interpreter configuration file
+   * @param path is path to interpreter configuration file
+   * @return
+   */
+  public void setInterpreter(String path){
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(path));
+      String inputDir = br.readLine();
+      String outputDir = br.readLine();
+      String tempDir = br.readLine();
+      buildIndex = Integer.parseInt(br.readLine())==1;
+      evalQuery= Integer.parseInt(br.readLine())==1;
+
+      br.close();
+    }
+    catch (Exception e){
+      System.out.println("Failed to read Interpreter Configuration File");
+    }
+  }
+
+
+  /**
+   * We use this to find out which tables we have available indexes for or,
+   * for which we have to build an index for. Each line has
+   * tablename attribute clustered order
+   *
+   * @param path is path for the index_info.txt file
+   */
+  public void getIndexInfo(String path){
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(path));
+      String str;
+      //has <table.col, (clustered, order)>
+      HashMap<String, Tuple> index_info = new HashMap<>();
+      //if we build an index has <table.col, tree>
+      HashMap<String, BTree> trees = new HashMap<>();
+      //<table.col, file for index relation>
+      HashMap<String, File> availableIndex = new HashMap<>();
+      while((str = br.readLine())!=null){
+        String[] splits = str.split("\\s");
+        String table = splits[0];
+        String attribute = splits[1];
+        int clust = Integer.parseInt(splits[2]);
+        int order = Integer.parseInt(splits[3]);
+        // TODO: have to serialize the tree and give file location
+        //can name file table.col and catch a file not found exception
+
+        //find index of attribute in table schema
+        int cindex = colIndex(table, attribute);
+        ArrayList<Integer> elements = new ArrayList<>();
+        elements.add(clust);elements.add(order);
+
+        index_info.put(table+"." +attribute, new Tuple(elements));
+        //if index not available, have to build
+        if(buildIndex){
+          boolean clustered = clust==1; //1 if clustered
+          File relation = new File(path + "/"+table);
+          BulkLoad load = new BulkLoad(relation, order, cindex, clustered);
+          BTree btree = load.getTree();
+          trees.put(table+"." +attribute, btree);
+          String p = "put in file path to store indexes";
+          btree.tree_to_file(p);
+          availableIndex.put(table+"." +attribute, new File(p));
+        }
+        else{
+          File givenIndex = new File(path + "/"+table+ "." + attribute);
+          availableIndex.put(table+"." +attribute, givenIndex);
+        }
+        //if index available have to set correct path
+
+
+      }
+      br.close();
+    }
+    catch (Exception e){
+      System.out.println("Failed to read Interpreter Configuration File");
+    }
+  }
+
+  public int colIndex(String table, String col){
+    ArrayList<Column> cols = tables.get(table);
+    for(int i=0; i<cols.size();i++){
+      if(cols.get(i).getColumnName().equalsIgnoreCase(col)){
+        return i;
+      }
+    }
+    System.out.println("Column index not found");
+    return -1;
+  }
+
+
+
+
 
   /*************************   Benchmarking Functions    *************/
   /******Functions used to set parameters in order to do Benchmarking ***********/
