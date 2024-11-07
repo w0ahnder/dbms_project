@@ -56,7 +56,7 @@ public class BulkLoadTest {
         TupleReader tr = new TupleReader( new File("src/test/resources/samples-2/input/db/data/Boats"));
         File Boats = new File("src/test/resources/samples-2/input/db/data/Boats");
         BulkLoad bl  = new BulkLoad(Boats, 10, 1, false);
-        //bl.load();
+        bl.load();
         //BTree tree = new BTree();
 
     }
