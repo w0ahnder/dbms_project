@@ -32,14 +32,18 @@ public int smallest(){
         //number of keys in node
         //the keys, in order
         //then addresses of all children in order
-        bb.putInt(1);
-        bb.putInt(num_keys);
+        int index = 0;
+        bb.putInt(index,1);
+        index+=4;
+        bb.putInt(index,num_keys);
         for(int i=0; i<num_keys;i++){
-            bb.putInt(keys.get(i));
+            index+=4;
+            bb.putInt(index, keys.get(i));
         }
 
         for(Node n: children){
-            bb.putInt(n.getAddress());
+            index+=4;
+            bb.putInt(index, n.getAddress());
         }
     }
     public String toString(){
