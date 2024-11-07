@@ -53,8 +53,14 @@ public class QueryPlanBuilder {
 
 
   public void indexEval(){
+    if(DBCatalog.getInstance().ifBuild()){
+    }
+    else{
+      //means indexes are provided
+    }
 
   }
+
   /**
    * Top level method to translate statement to query plan
    *
