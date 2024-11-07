@@ -82,6 +82,10 @@ public class TupleReader {
     return null;
   }
 
+  public void reset(int pageId, int tupleId){
+
+  }
+
   // set the page up to be read
   public void newPage() {
     // limit=pos, pos=0

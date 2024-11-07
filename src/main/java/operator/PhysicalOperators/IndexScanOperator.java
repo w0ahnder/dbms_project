@@ -9,6 +9,7 @@ import tree.BTree;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class IndexScanOperator extends Operator {
 
@@ -35,7 +36,8 @@ public class IndexScanOperator extends Operator {
     int order;
     int number_of_leaves;
 
-    boolean first_read;
+    boolean first_read; //to check if this is the first time reading from a clustered index
+
 
 
    ArrayList<PageItem> page_stack;
@@ -52,6 +54,8 @@ public class IndexScanOperator extends Operator {
         table_path = path;
         reader = DBCatalog.getInstance().getReader(path);
         indexFile = new RandomAccessFile(indexFilePath, "r");
+        reader = new TupleReader(new File(table_path));
+        first_read = true;
 
         //add the root page to the stack at the beginning
         initial_setup();
@@ -71,6 +75,21 @@ public class IndexScanOperator extends Operator {
                 if (rid == null){
                     return null;
                 }
+                reader.reset(rid[0], rid[1]);
+                return reader.read();
+            }else{
+                Tuple output = null;
+                if (first_read){
+                    int [] rid = getRID();
+                    reader.reset(rid[0], rid[1]);
+                    output = reader.read();
+                    first_read = false;
+                }else{
+                    output = reader.read();
+                }
+                //logic to use highkey and lowkey
+                return output;
+
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -145,6 +164,34 @@ public class IndexScanOperator extends Operator {
                 this.curr_index_key_pos = page_values[2];
                 this.curr_index_child = page_values[4];
             }
+        }
+
+        public String toString() {
+            StringBuilder build = new StringBuilder();
+            if (this.isLeaf){
+                build.append("Leaf: leaf_curr_rid_pos:")
+                        .append(this.leaf_curr_key_pos)
+                        .append(", leaf_curr_key_pos:")
+                        .append(this.leaf_curr_key_pos)
+                        .append(", leaf_curr_key_rid_count:")
+                        .append(this.leaf_curr_key_rid_count)
+                        .append(", leaf_key_count:")
+                        .append(this.leaf_key_count);
+            }else{
+                build.append("Index: number_of_index_keys:")
+                        .append(this.number_of_index_keys)
+                        .append(", curr_index_key_pos:")
+                        .append(this.curr_index_key_pos)
+                        .append(", curr_index_child:")
+                        .append(this.curr_index_child);
+
+            }
+            build.append("list values: ")
+                    .append(Arrays.toString(this.page_values));
+
+
+            return build.toString();
+
         }
 
         //takes a page number and creates a page item of that page.
