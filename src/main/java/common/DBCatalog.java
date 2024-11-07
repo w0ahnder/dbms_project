@@ -215,8 +215,9 @@ public class DBCatalog {
       sort_type = sort;
       if (sort_type == 1) sort_buff = Integer.parseInt(line2[1]);
 
+
       String[] line3 = l3.split("\\s");
-      fullScan= Integer.parseInt(line3[0]) ==0 ;//if we do a full scan then it is 0
+      fullScan= Integer.parseInt(line3[0]) ==0 ;//if we do a full scan then it is 0, no index
       br.close();
 
     } catch (Exception e) {
@@ -292,12 +293,15 @@ public class DBCatalog {
   public void setInterpreter(String path){
     try {
       BufferedReader br = new BufferedReader(new FileReader(path));
-      String inputDir = br.readLine();
+      String inputDir = br.readLine();//contains db, plan_builder, queries
+      setDataDirectory(inputDir +"/db");
       String outputDir = br.readLine();
       String tempDir = br.readLine();
       buildIndex = Integer.parseInt(br.readLine())==1;
       evalQuery= Integer.parseInt(br.readLine())==1;
-
+      //1,0 means build index, but dont run query
+      //1,1 means build index, run queries
+      //0,1 means don't build(index given), and run query
       br.close();
     }
     catch (Exception e){
@@ -306,30 +310,31 @@ public class DBCatalog {
   }
 
 
-  /**
-   * We use this to find out which tables we have available indexes for or,
-   * for which we have to build an index for. Each line has
+  /**We use this when fullScan is false
+   * We use this to find out for which tables we have available indexes,
+   * for which we have to build an index. Each line has
    * tablename attribute clustered order
    *
-   * @param path is path for the index_info.txt file
    */
-  public void getIndexInfo(String path){
+  public void getIndexInfo(){
     try {
-      BufferedReader br = new BufferedReader(new FileReader(path));
+      BufferedReader br = new BufferedReader(
+              new FileReader(dbDirectory+ "/index_info.txt"));
       String str;
       //has <table.col, (clustered, order)>
       HashMap<String, Tuple> index_info = new HashMap<>();
       //if we build an index has <table.col, tree>
-      HashMap<String, BTree> trees = new HashMap<>();
+      //HashMap<String, BTree> trees = new HashMap<>();
       //<table.col, file for index relation>
       HashMap<String, File> availableIndex = new HashMap<>();
+
+
       while((str = br.readLine())!=null){
         String[] splits = str.split("\\s");
         String table = splits[0];
         String attribute = splits[1];
         int clust = Integer.parseInt(splits[2]);
         int order = Integer.parseInt(splits[3]);
-        // TODO: have to serialize the tree and give file location
         //can name file table.col and catch a file not found exception
 
         //find index of attribute in table schema
@@ -341,16 +346,17 @@ public class DBCatalog {
         //if index not available, have to build
         if(buildIndex){
           boolean clustered = clust==1; //1 if clustered
-          File relation = new File(path + "/"+table);
+          File relation = new File(dbDirectory + "/data/"+table);
           BulkLoad load = new BulkLoad(relation, order, cindex, clustered);
           BTree btree = load.getTree();
-          trees.put(table+"." +attribute, btree);
-          String p = "put in file path to store indexes";
-          btree.tree_to_file(p);
+          //trees.put(table+"." +attribute, btree);
+          String p = dbDirectory + "/indexes/" + table+"." +attribute;
+          btree.tree_to_file(p);//serialize the tree and write to File
           availableIndex.put(table+"." +attribute, new File(p));
         }
+
         else{
-          File givenIndex = new File(path + "/"+table+ "." + attribute);
+          File givenIndex = new File(dbDirectory + "/indexes/"+table+ "." + attribute);
           availableIndex.put(table+"." +attribute, givenIndex);
         }
         //if index available have to set correct path
