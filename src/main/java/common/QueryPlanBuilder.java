@@ -198,7 +198,7 @@ public class QueryPlanBuilder {
         result = new DuplicateEliminationLogOperator(schema, result);
       } else {
         SortLogOperator child;
-        if (sortConfig.get(1).equals(0)) {
+        if (sortConfig.get(0).equals(0)) {
           child = new SortLogOperator(new ArrayList<>(), result);
         } else {
           child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
