@@ -52,26 +52,6 @@ public class P2CheckpointTest {
     configList.add(secondList);
   }
 
-  // testing boats output, my own query not in checkpoint
-  // // @Test
-  // public void testQuery16()
-  //     throws ExecutionControl.NotImplementedException,
-  //         JSQLParserException,
-  //         IOException,
-  //         URISyntaxException {
-  //   Statement stmt = statementList.get(15);
-  //   Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
-  //   // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
-  //   String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
-  //   File outfile = new File(outputDir + "/BoatsRead_human");
-  //   TupleWriter tw = new TupleWriter(outputDir + "/BoatsRead");
-  //   plan.dump(tw);
-  //   tw.close();
-  // }
-
-  // have to maybe handle project operator using reset in the getNextTuple function?
-  // should be that a function calls getNextTuple and if that is false, then we reset
-
   @Test
   public void testQuery1()
       throws ExecutionControl.NotImplementedException,
@@ -85,14 +65,13 @@ public class P2CheckpointTest {
     // File outfile = new File(outputDir + "/query1");
     TupleWriter tw = new TupleWriter(outputDir + "/query1");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query1_human");
-    File outFilereset = new File(outputDir + "/query1_human2");
+    // File outFilereset = new File(outputDir + "/query1_human2");
 
-    Convert c = new Convert(out2 + "/query1", new PrintStream(outFilereset));
-    c.bin_to_human_reset(999);
+    Convert c = new Convert(out2 + "/query1", new PrintStream(outFile));
+    c.bin_to_human();
   }
 
   @Test
@@ -107,7 +86,6 @@ public class P2CheckpointTest {
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query2");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query2_human");
@@ -128,7 +106,6 @@ public class P2CheckpointTest {
     File outfile = new File(outputDir + "/query3");
     TupleWriter tw = new TupleWriter(outputDir + "/query3");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query3_human");
@@ -149,7 +126,6 @@ public class P2CheckpointTest {
     File outfile = new File(outputDir + "/query4");
     TupleWriter tw = new TupleWriter(outputDir + "/query4");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query4_human");
@@ -170,7 +146,6 @@ public class P2CheckpointTest {
     File outfile = new File(outputDir + "/query5");
     TupleWriter tw = new TupleWriter(outputDir + "/query5");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query5_human");
@@ -191,7 +166,6 @@ public class P2CheckpointTest {
     File outfile = new File(outputDir + "/query6");
     TupleWriter tw = new TupleWriter(outputDir + "/query6");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query6_human");
@@ -212,7 +186,6 @@ public class P2CheckpointTest {
     File outfile = new File(outputDir + "/query7");
     TupleWriter tw = new TupleWriter(outputDir + "/query7");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query7_human");
@@ -232,7 +205,6 @@ public class P2CheckpointTest {
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query8");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query8_human");
@@ -253,7 +225,6 @@ public class P2CheckpointTest {
     // plan.dump(new PrintStream(outputDir + "/query9_human"));
     TupleWriter tw = new TupleWriter(outputDir + "/query9");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query9_human");
@@ -273,7 +244,6 @@ public class P2CheckpointTest {
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query10");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query10_human");
@@ -295,7 +265,6 @@ public class P2CheckpointTest {
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query11");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query11_human");
@@ -318,7 +287,6 @@ public class P2CheckpointTest {
     // File outFile = new File(outputDir + "/query12_human");
     // plan.dump(new PrintStream(outFile));
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query12_human");
@@ -338,7 +306,6 @@ public class P2CheckpointTest {
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query13");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query13_human");
@@ -358,7 +325,6 @@ public class P2CheckpointTest {
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query14");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query14_human");
@@ -378,7 +344,6 @@ public class P2CheckpointTest {
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query15");
     plan.dump(tw);
-    tw.close();
     outputDir = "src/test/resources/binary_samples/p2human";
     String out2 = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outFile = new File(outputDir + "/query15_human");
