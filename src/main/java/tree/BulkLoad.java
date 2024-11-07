@@ -28,8 +28,6 @@ public class BulkLoad {
     reader = new TupleReader(table);
     tree = new BTree(clustered, col, order);
     ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"));
-    //tree.file_to_tree();
-    //Deserialize.file_to_tree();
     }
 
 
@@ -107,6 +105,11 @@ public class BulkLoad {
             ps.println(s);
         }
     }
+
+    public BTree getTree(){
+        return  this.tree;
+    }
+
 
 }
 
