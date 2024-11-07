@@ -31,16 +31,22 @@ public class Leaf extends Node{
 
         // <k, [(p1,t1), (p2,t2),..]>
         //write k, then number of rid's, then pi, ti
-        bb.putInt(0);
-        bb.putInt(keys.size());
+        int index=0;
+        bb.putInt(0,0);
+        index+=4;
+        bb.putInt(index, keys.size());
         for(int i=0;i<keys.size();i++){
+            index+=4;
             int key = keys.get(i);
-            bb.putInt(key);
+            bb.putInt(index,key);
             ArrayList<Tuple> id = rids.get(i);
-            bb.putInt(id.size()); //number of rids
+            index+=4;
+            bb.putInt(index,id.size()); //number of rids
             for(Tuple t: id){
-                bb.putInt(t.getElementAtIndex(0));
-                bb.putInt(t.getElementAtIndex(1));
+                index+=4;
+                bb.putInt(index,t.getElementAtIndex(0));
+                index+=4;
+                bb.putInt(index, t.getElementAtIndex(1));
             }
         }
 
