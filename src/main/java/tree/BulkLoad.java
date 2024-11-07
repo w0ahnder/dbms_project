@@ -36,7 +36,7 @@ public class BulkLoad {
     reader = new TupleReader(table);
     tree = new BTree(clustered, col, order);
     //ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"))
-        ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Sailors.A_bulk"));
+        //ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Sailors.A_bulk"));
     }
 
     }
@@ -122,7 +122,10 @@ public class BulkLoad {
 
 
     /**
-     * Sort a relation on a given attribute and overwrite the original file
+     * Sort a relation on a given attribute and write the sorted file
+     * @param tablename is the name of the table we want to sort (not alias)
+     * @param tablepath is the path to the table
+     * @param col is the col we want to sort the table on
      * @param outputPath is where the sorted relation should be written
      */
     //TODO: handle clustered index

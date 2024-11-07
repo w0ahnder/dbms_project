@@ -217,6 +217,7 @@ public class DBCatalog {
       sort_type = sort;
       if (sort_type == 1) sort_buff = Integer.parseInt(line2[1]);
 
+
       String[] line3 = l3.split("\\s");
       fullScan= Integer.parseInt(line3[0]) ==0 ;//if we do a full scan then it is 0, no index
       br.close();
@@ -314,10 +315,6 @@ public class DBCatalog {
   /**We use this when fullScan is false
    * We use this to find out for which tables we have available indexes,
    * for which we have to build an index. Each line has
-  /**We use this when fullScan is false. We find out what indexes we have to build or
-   * which are provided for us depending on whether or not we have to build
-   * We use this to find out for which tables we have available indexes,
-   * for which we have to build an index. Each line has
    * tablename attribute clustered order
    *
    */
@@ -331,8 +328,8 @@ public class DBCatalog {
       //if we build an index has <table.col, tree>
       //HashMap<String, BTree> trees = new HashMap<>();
       //<table.col, file for index relation>
-
       availableIndex = new HashMap<>();
+
 
       while((str = br.readLine())!=null){
         String[] splits = str.split("\\s");
@@ -422,7 +419,8 @@ public class DBCatalog {
 
 
 
-  
+
+
   /*************************   Benchmarking Functions    *************/
   /******Functions used to set parameters in order to do Benchmarking ***********/
 
