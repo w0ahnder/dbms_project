@@ -50,6 +50,17 @@ public class QueryPlanBuilder {
 
   public QueryPlanBuilder() {}
 
+
+
+  public void indexEval(){
+    if(DBCatalog.getInstance().ifBuild()){
+      DBCatalog.getInstance().getIndexInfo(); //builds indexes
+    }
+    else{
+      //means indexes are provided
+    }
+
+  }
   /**
    * Top level method to translate statement to query plan
    *
@@ -70,6 +81,10 @@ public class QueryPlanBuilder {
     this.queryFlag = queryFlag;
     // List<Integer> joinConfig = planConfList.get(0);
     List<Integer> sortConfig = planConfList.get(1);
+    if(!DBCatalog.getInstance().isFullScan()){// we have to use an index
+      indexEval();
+    }
+
 
     tables = new ArrayList<>();
     andExpressions = new ArrayList<>();

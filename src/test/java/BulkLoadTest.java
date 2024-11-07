@@ -31,9 +31,8 @@ public class BulkLoadTest {
     @BeforeAll
     static void setupBeforeAllTests() throws IOException, JSQLParserException, URISyntaxException {
         ClassLoader classLoader = BulkLoadTest.class.getClassLoader();
-        URI path = Objects.requireNonNull(classLoader.getResource("binary_samples/input")).toURI();
+        URI path = Objects.requireNonNull(classLoader.getResource("samples-2/input")).toURI();
         Path resourcePath = Paths.get(path);
-        // System.out.println("DB path" + resourcePath.resolve("db").toString());
         DBCatalog.getInstance().setDataDirectory(resourcePath.resolve("db").toString());
         DBCatalog.getInstance().config_file(resourcePath.toString());
 
@@ -45,19 +44,28 @@ public class BulkLoadTest {
     }
 
     @Test
-    public void testQuery1()
-            throws ExecutionControl.NotImplementedException,
-            JSQLParserException,
-            IOException,
-            URISyntaxException {
-       // Statement stmt = statementList.get(0);
-        //Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList);
-
-        TupleReader tr = new TupleReader( new File("src/test/resources/samples-2/input/db/data/Boats"));
+    public void testBoatsE()
+            throws IOException{
         File Boats = new File("src/test/resources/samples-2/input/db/data/Boats");
         BulkLoad bl  = new BulkLoad(Boats, 10, 1, false);
         bl.load();
-        //BTree tree = new BTree();
+        BTree tree =  bl.getTree();
+        String path = "src/test/resources/samples-2/bulkload";
+        tree.tree_to_file(path + "/Boats.E_bin");
+    }
 
+    @Test
+    public void testSailorsA() throws IOException{
+
+        String tablepath = "src/test/resources/samples-2/input/db/data/Sailors";
+        String sortedFile = "src/test/resources/samples-2/bulkload/SailorsSort";
+
+        BulkLoad.sortRelation("Sailors", tablepath, "A", sortedFile);
+        File SortedSailors = new File("src/test/resources/samples-2/bulkload/SailorsSort");
+        BulkLoad bl = new BulkLoad(SortedSailors, 15, 0, true);
+        bl.load();
+        BTree tree = bl.getTree();
+        String path  = "src/test/resources/samples-2/bulkload";
+        tree.tree_to_file(path + "/Sailors.A_bin");
     }
 }

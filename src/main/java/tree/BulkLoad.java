@@ -4,12 +4,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import common.*;
+import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.select.OrderByElement;
+import operator.PhysicalOperators.InMemorySortOperator;
+import operator.PhysicalOperators.Operator;
+import operator.PhysicalOperators.ScanOperator;
+import operator.PhysicalOperators.SortOperator;
 
 public class BulkLoad {
 
@@ -27,7 +31,8 @@ public class BulkLoad {
     this.clustered = clustered;
     reader = new TupleReader(table);
     tree = new BTree(clustered, col, order);
-    ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"));
+    //ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"))
+        ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Sailors.A_bulk"));
     }
 
 
@@ -110,6 +115,39 @@ public class BulkLoad {
         return  this.tree;
     }
 
+
+    /**
+     * Sort a relation on a given attribute and overwrite the original file
+     * @param outputPath is where the sorted relation should be written
+     */
+    //TODO: handle clustered index
+    public static void sortRelation(String tablename, String tablepath, String col, String outputPath){
+        //in memeory sort uses column schema, orderby elements, and use a Scan operator
+       try{
+        ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tablename);
+        OrderByElement ob = new OrderByElement();
+        Column newc = new Column();
+        Table t = new Table(tablename);
+        newc.setTable(t);
+        newc.setColumnName(col);
+        ob.setExpression(newc);
+        List<OrderByElement> ele = new ArrayList<>();
+        ele.add(ob);
+
+        Operator scan = new ScanOperator(schema, tablepath);
+        InMemorySortOperator sorter = new InMemorySortOperator(schema, ele, scan);
+        ArrayList<Tuple> res = sorter.getResult();
+        TupleWriter tw = new TupleWriter(outputPath);
+        for(Tuple tup: res){
+            tw.write(tup);
+        }
+            tw.close();
+        }
+        catch (Exception e){
+            System.out.println("sorting relation in BulkLoad failed");
+        }
+
+    }
 
 }
 
