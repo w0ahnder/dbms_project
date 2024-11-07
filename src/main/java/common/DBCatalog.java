@@ -346,6 +346,8 @@ public class DBCatalog {
 
         index_info.put(table+"." +attribute, new Tuple(elements));
         //if index not available, have to build
+        //if the index is clustered does that mean the base table is sorted?
+        //TODO: have to sort first then build if clustered
         if(buildIndex){
           boolean clustered = clust==1; //1 if clustered
           File relation = new File(dbDirectory + "/data/"+table);
