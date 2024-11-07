@@ -53,12 +53,6 @@ public class QueryPlanBuilder {
 
 
   public void indexEval(){
-    if(DBCatalog.getInstance().ifBuild()){
-      DBCatalog.getInstance().getIndexInfo(); //builds indexes
-    }
-    else{
-      //means indexes are provided
-    }
 
   }
   /**
@@ -81,8 +75,11 @@ public class QueryPlanBuilder {
     this.queryFlag = queryFlag;
     // List<Integer> joinConfig = planConfList.get(0);
     List<Integer> sortConfig = planConfList.get(1);
+
+    //I think that the temp directory is within the interpreter_config_file.txt
+    //means we have to process this first ^^ to get the tempDir, sort/join types, inputDir, etc
     if(!DBCatalog.getInstance().isFullScan()){// we have to use an index
-      indexEval();
+      DBCatalog.getInstance().processIndex(); //reads
     }
 
 

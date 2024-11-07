@@ -35,8 +35,10 @@ public class DBCatalog {
   private boolean fullScan;
   private boolean buildIndex = false;
   private boolean evalQuery = false;
-  private int BNLJ_buff;
+  private HashMap<String, Tuple> index_info; //<table.col, (clustered, order)>
+  private HashMap<String, File> availableIndex;// <table.col, file for the index>
 
+  private int BNLJ_buff;
   private int sort_type; // 0 if in memory
   private int sort_buff;
   private String dbDirectory;
@@ -310,24 +312,24 @@ public class DBCatalog {
   }
 
 
-  /**We use this when fullScan is false
+  /**We use this when fullScan is false. We find out what indexes we have to build or
+   * which are provided for us depending on whether or not we have to build
    * We use this to find out for which tables we have available indexes,
    * for which we have to build an index. Each line has
    * tablename attribute clustered order
    *
    */
-  public void getIndexInfo(){
+  public void processIndex(){
     try {
       BufferedReader br = new BufferedReader(
               new FileReader(dbDirectory+ "/index_info.txt"));
       String str;
       //has <table.col, (clustered, order)>
-      HashMap<String, Tuple> index_info = new HashMap<>();
+      index_info = new HashMap<>();
       //if we build an index has <table.col, tree>
       //HashMap<String, BTree> trees = new HashMap<>();
       //<table.col, file for index relation>
-      HashMap<String, File> availableIndex = new HashMap<>();
-
+      availableIndex = new HashMap<>();
 
       while((str = br.readLine())!=null){
         String[] splits = str.split("\\s");
@@ -361,7 +363,6 @@ public class DBCatalog {
         }
         //if index available have to set correct path
 
-
       }
       br.close();
     }
@@ -370,6 +371,40 @@ public class DBCatalog {
     }
   }
 
+  /**
+   * Returns the indexed File for table.col if it exists
+   * @param table that we want to check if there is an index for
+   * @param col in table that we want to check index for
+   * @return the File for the index if it exists, null o/w
+   */
+  public File getAvailableIndex(String table, String col){
+    String indexName = table + "." + col;
+    if(availableIndex.containsKey(indexName)){
+      return availableIndex.get(indexName);
+    }
+    return null;
+  }
+
+  /**
+   * Returns ta Tuple containing clustered = 1 or 0, and order of the index
+   * for an index on table.col
+   * @param table of the index we want to check
+   * @param col in table that we want to get index ifo for
+   * @returns Tuple with (int clustered, order)
+   */
+  public Tuple getClustOrd(String table, String col){
+    String indexName = table + "." + col;
+    if(index_info.containsKey(indexName)){
+      return index_info.get(indexName);
+    }
+    return  null;
+  }
+  /**
+   * Finds the index of a column in a table's schema
+   * @param table is the table whose column index we want to find
+   * @param col the column to find the index of
+   * @return index of col in table
+   */
   public int colIndex(String table, String col){
     ArrayList<Column> cols = tables.get(table);
     for(int i=0; i<cols.size();i++){
