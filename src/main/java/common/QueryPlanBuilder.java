@@ -45,6 +45,8 @@ public class QueryPlanBuilder {
   ArrayList<String> aliases;
   Boolean if_alias = false;
   ArrayList<String> tables = new ArrayList<>();
+  Integer indexFlag;
+  Integer queryFlag;
 
   public QueryPlanBuilder() {}
 
@@ -61,9 +63,16 @@ public class QueryPlanBuilder {
    * @precondition stmt is a Select having a body that is a PlainSelect
    */
   @SuppressWarnings("unchecked")
-  public Operator buildPlan(Statement stmt, String tempDir, List<List<Integer>> planConfList)
+  public Operator buildPlan(
+      Statement stmt,
+      String tempDir,
+      List<List<Integer>> planConfList,
+      Integer indexFlag,
+      Integer queryFlag)
       throws ExecutionControl.NotImplementedException {
 
+    this.indexFlag = indexFlag;
+    this.queryFlag = queryFlag;
     // List<Integer> joinConfig = planConfList.get(0);
     List<Integer> sortConfig = planConfList.get(1);
 

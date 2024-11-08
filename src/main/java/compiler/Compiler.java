@@ -29,6 +29,8 @@ public class Compiler {
   private static String outputDir;
   private static String inputDir;
   private static String tempDir;
+  private static Integer indexFlag;
+  private static Integer queryFlag;
   private static final boolean outputToFiles = true;
 
   /**
@@ -39,9 +41,11 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    inputDir = args[0];
-    outputDir = args[1];
-    tempDir = args[2];
+    String configFile = args[0];
+    readDirectories(configFile);
+    // inputDir = args[0];
+    // outputDir = args[1];
+    // tempDir = args[2];
 
     // TODO: Get the join and sort methods from the configuration file
     // TODO: get the location of the tmepDir
@@ -61,7 +65,8 @@ public class Compiler {
       int counter = 1; // for numbering output files
       for (Statement statement : statements.getStatements()) {
         try {
-          Operator plan = queryPlanBuilder.buildPlan(statement, tempDir, planConfig);
+          Operator plan =
+              queryPlanBuilder.buildPlan(statement, tempDir, planConfig, indexFlag, queryFlag);
           if (outputToFiles) {
             // TODO: change to Binary format
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
@@ -113,5 +118,22 @@ public class Compiler {
       System.err.println("Error reading the file: " + e.getMessage());
     }
     return numbers;
+  }
+
+  private static void readDirectories(String filePath) {
+    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+      List<String> lines = new ArrayList<>();
+      String line;
+      while ((line = br.readLine()) != null) {
+        lines.add(line);
+      }
+      inputDir = lines.get(0);
+      outputDir = lines.get(1);
+      tempDir = lines.get(2);
+      indexFlag = Integer.parseInt(lines.get(3));
+      queryFlag = Integer.parseInt(lines.get(4));
+    } catch (IOException e) {
+      System.err.println("Error reading the file: " + e.getMessage());
+    }
   }
 }
