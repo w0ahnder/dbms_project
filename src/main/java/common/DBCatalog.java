@@ -346,6 +346,7 @@ public class DBCatalog {
           boolean clustered = clust == 1; // 1 if clustered
           File relation = new File(dbDirectory + "/data/" + table);
           BulkLoad bl = new BulkLoad(relation, order, cindex, clustered);
+          //BulkLoad.sortRelation(".",",",",,","");
           bl.load();
           if (clustered) {
             String tablePath = dbDirectory + "/data/" + table;
