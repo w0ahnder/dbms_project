@@ -15,6 +15,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
+import operator.PhysicalOperators.IndexScanOperator;
 import operator.PhysicalOperators.Operator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,7 @@ public class BulkLoadTest {
 
         //statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
         //queryPlanBuilder = new QueryPlanBuilder();
+
     }
 
     @Test
@@ -67,5 +69,18 @@ public class BulkLoadTest {
         BTree tree = bl.getTree();
         String path  = "src/test/resources/samples-2/bulkload";
         tree.tree_to_file(path + "/SailorsA_bin");
+    }
+
+    @Test
+    public void testBoatsEIndexScan()
+            throws IOException{
+        File Boats = new File("src/test/resources/samples-2/input/db/data/Boats");
+        BulkLoad bl  = new BulkLoad(Boats, 10, 1, false);
+        bl.load();
+        BTree tree =  bl.getTree();
+        String path = "src/test/resources/samples-2/bulkload";
+        tree.tree_to_file(path + "/BoatsE_bin");
+        File index_file = new File(path + "/BoatsE_bin");
+        IndexScanOperator scan = new IndexScanOperator(DBCatalog.getInstance().get_Table("Boats"), Boats, 1, false, 1000, 3000, index_file);
     }
 }

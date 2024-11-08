@@ -8,6 +8,7 @@ import tree.BTree;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -25,13 +26,10 @@ public class IndexScanOperator extends Operator {
     public String table_path;
     public TupleReader reader;
 
-    BTree indexTree;
 
     int page_size = 4096;
 
     public String indexFilePath;
-
-    public RandomAccessFile indexFile;
 
     int order;
     int number_of_leaves;
@@ -39,23 +37,25 @@ public class IndexScanOperator extends Operator {
     boolean first_read; //to check if this is the first time reading from a clustered index
 
 
+    ByteBuffer buff;
 
+    FileChannel fileChannel;
    ArrayList<PageItem> page_stack;
 
-    public IndexScanOperator(ArrayList<Column> outputSchema, String path, int ind, boolean clustered, int low, int high, BTree tree) throws IOException {
+    public IndexScanOperator(ArrayList<Column> outputSchema, File table_file, int ind, boolean clustered, int low, int high, File index_file) throws IOException {
         super(outputSchema);
         this.index = ind;
         this.isClustered = clustered;
         this.lowKey = low;
         this.highKey = high;
-        this.indexTree = tree;
-        this.indexFilePath = indexTree.makeIndexFile();
+        this.indexFilePath = "placeholder";
         db = DBCatalog.getInstance();
-        table_path = path;
-        reader = DBCatalog.getInstance().getReader(path);
-        indexFile = new RandomAccessFile(indexFilePath, "r");
-        reader = new TupleReader(new File(table_path));
+        //table_path = path;
+        reader = new TupleReader(table_file); //to read table file
         first_read = true;
+        buff = ByteBuffer.allocate(4096);
+        FileInputStream fin = new FileInputStream(index_file);
+        fileChannel = fin.getChannel();
 
         //add the root page to the stack at the beginning
         initial_setup();
@@ -226,21 +226,27 @@ public class IndexScanOperator extends Operator {
         public int[] setup(int page_num) throws IOException {
             int[] pageValues = new int[page_size / 4];
 
-            //to read from the beginning of a particular page
-            indexFile.seek((long) page_num * page_size);
-
-            //to store the binary content of the page
-            byte[] pageBuffer = new byte[page_size];
-            int bytesRead = indexFile.read(pageBuffer);
-
-            if (bytesRead != page_size) {
-                throw new IOException("Could not read a full page.");
-            }
-
-            ByteBuffer byteBuffer = ByteBuffer.wrap(pageBuffer);
-
+//            //to read from the beginning of a particular page
+//            indexFile.seek((long) page_num * page_size);
+//            fileChannel.position((long) page_num * page_size);
+//
+//            //to store the binary content of the page
+//            byte[] pageBuffer = new byte[page_size];
+//            int bytesRead = indexFile.read(pageBuffer);
+//
+//            if (bytesRead != page_size) {
+//                throw new IOException("Could not read a full page.");
+//            }
+//
+//            ByteBuffer byteBuffer = ByteBuffer.wrap(pageBuffer);
+//
+//            for (int i = 0; i < pageValues.length; i++) {
+//                pageValues[i] = byteBuffer.getInt();
+//            }
+            fileChannel.position((long) page_num * page_size);
+            fileChannel.read(buff);
             for (int i = 0; i < pageValues.length; i++) {
-                pageValues[i] = byteBuffer.getInt();
+                pageValues[i] = buff.getInt();
             }
 
 
