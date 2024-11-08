@@ -96,8 +96,10 @@ public class TupleReader {
 
       if (reads >= 0) { // we can read from from channel
         newPage(); // get metadata
+
         int offset = tupleId*numAttr*4;
         buff.position(offset+8); // byte to start reading at on this page
+
         page_start = false;
       }
 

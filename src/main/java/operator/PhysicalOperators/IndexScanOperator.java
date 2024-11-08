@@ -130,6 +130,7 @@ public class IndexScanOperator extends Operator {
     //get's the header of the index file to get the root page address and add that page to the stack
     public void initial_setup() throws IOException {
         PageItem header_page = new PageItem(0);
+        System.out.print("header page before root; " + header_page);
         int root_page_num = header_page.pageValues.get(0);
         number_of_leaves = header_page.pageValues.get(1);
         order = header_page.pageValues.get(2);
@@ -138,21 +139,32 @@ public class IndexScanOperator extends Operator {
     }
 
     public int[] getRID() throws IOException {
-        PageItem lastItem = page_stack.getLast();
-        System.out.println(lastItem.toString());
-        while (!lastItem.isLeaf && !page_stack.isEmpty()){
-            Integer next_child_page = lastItem.getChildPageFromIndex();
-            if(next_child_page == null){
+        while (!page_stack.isEmpty()){
+            PageItem last_item = page_stack.getLast();
+            while (!last_item.isLeaf){
+                Integer page = last_item.getChildPageFromIndex();
+                if (page == null){
+                    page_stack.removeLast();
+                    if (page_stack.isEmpty()){
+                        return null;
+                    }
+                    last_item = page_stack.getLast();
+                }else{
+                   PageItem new_item = new PageItem(page);
+                   page_stack.add(new_item);
+                   last_item = page_stack.getLast();
+                }
+            }
+            int[] rid = last_item.getRIDfromLeaf();
+            if (rid == null){
                 page_stack.removeLast();
             }else{
-                page_stack.add(new PageItem(next_child_page));
+                System.out.println("current rid to be read is " + Arrays.toString(rid));
+                return rid;
             }
-            lastItem = page_stack.getLast();
         }
-        if (page_stack.isEmpty()){
-            return null;
-        }
-        return lastItem.getRIDfromLeaf();
+        return null;
+
     }
 
 
@@ -181,9 +193,10 @@ public class IndexScanOperator extends Operator {
 
         int untouchedIndexKeyCount;
 
-        Boolean on_final_index_key = null;
+        int page = 0;
 
         public PageItem(int page_num) throws IOException {
+            page = page_num;
             this.pageValues = setup(page_num);
             this.isLeaf = pageValues.get(0) == 0;
             this.first_read = true;
@@ -202,7 +215,7 @@ public class IndexScanOperator extends Operator {
         public String toString() {
             StringBuilder build = new StringBuilder();
             if (this.isLeaf){
-                build.append("Leaf: currentLeafRidPosition:")
+                build.append("Leaf: pageNumber: " + page + " currentLeafRidPosition:")
                         .append(this.leafCurrentKeyPosition)
                         .append(", leafCurrentKeyPosition:")
                         .append(this.leafCurrentKeyPosition)
@@ -211,13 +224,13 @@ public class IndexScanOperator extends Operator {
                         .append(", leafKeyCount:")
                         .append(this.leafKeyCount);
             }else{
-                build.append("Index: numberOfIndexKeys:")
+                build.append("Index: pageNumber: " + page + " numberOfIndexKeys:")
                         .append(this.numberOfIndexKeys)
-                        .append(", currentIndexKeyPosition:")
+                        .append(", currentIndexKeyPosition: ")
                         .append(this.currentIndexKeyPosition);
 
             }
-            build.append("list values: ")
+            build.append(", list values: ")
                     .append(this.pageValues);
 
 
@@ -241,10 +254,10 @@ public class IndexScanOperator extends Operator {
             while(buff.hasRemaining()){
                 int val = buff.getInt();
                 pageValues.add(val);
-                System.out.println("in while loop " + val);
+                //System.out.println("in while loop " + val);
                 i++;
             }
-            System.out.println("page num: " + page_num + " pagevalues: " + pageValues.toString());
+            //System.out.println("page num: " + page_num + " pagevalues: " + pageValues.toString());
             buff.clear();
 
             //returns the content of the page but in denary
@@ -298,31 +311,8 @@ public class IndexScanOperator extends Operator {
                     if (curr_key == Integer.MAX_VALUE) {
                         return null;
                     }
-
                 }
 
-            //if only highkey
-//            }else if (lowKey==null){
-//                if (highKey != null){
-//                    while(!(highKey >= curr_key)){
-//                        curr_key = advance();
-//                        if (curr_key == Integer.MAX_VALUE){
-//                            return null;
-//                        }
-//                    }
-//                }
-//
-//             //if only lowkey
-//            }else {
-//                if (highKey == null){
-//                    while((lowKey <= curr_key)){
-//                        curr_key = advance();
-//                        if (curr_key == Integer.MAX_VALUE){
-//                            return null;
-//                        }
-//                    }
-//                }
-//            }
             int[] rid = new int[2];
             rid[0] = pageValues.get(this.currentLeafRidPosition);
             rid[1] = pageValues.get(this.currentLeafRidPosition + 1);
@@ -334,10 +324,10 @@ public class IndexScanOperator extends Operator {
 
         private Integer advance(){
             this.leafKeyCount-=1;
-            if (this.leafKeyCount == 0){
+            this.leafCurrentKeyPosition += (this.leafCurrentKeyRIDCount * 2) + 2;
+            if (this.leafKeyCount == 0 || this.leafCurrentKeyPosition >= 1024){
                 return Integer.MAX_VALUE;
             }
-            this.leafCurrentKeyPosition += (this.leafCurrentKeyRIDCount * 2) + 2;
             this.leafCurrentKeyRIDCount = this.pageValues.get(this.leafCurrentKeyPosition + 1);
             this.currentLeafRidPosition = this.leafCurrentKeyPosition + 2;
             return this.pageValues.get(this.leafCurrentKeyPosition);
