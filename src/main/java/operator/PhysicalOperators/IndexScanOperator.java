@@ -47,7 +47,6 @@ public class IndexScanOperator extends ScanOperator {
     highkey = high;
     try {
       tr = new TupleReader(DBCatalog.getInstance().getFileForTable(table));
-
       fin = new FileInputStream(indexFile);
       fc = fin.getChannel();
       buff = ByteBuffer.allocate(4096);
@@ -67,7 +66,8 @@ public class IndexScanOperator extends ScanOperator {
       }
       RIDindex = 0;
     } catch (Exception e) {
-      System.out.println("Index scan operator constructor failed");
+
+      e.printStackTrace();
     }
   }
 
@@ -160,6 +160,14 @@ public class IndexScanOperator extends ScanOperator {
         // 1. check if all keys in this leaf are processed,
         // 2. check if addr+1 is valid, if valid update current leaf info
         if (currLeafKeyIndex >= leafKeys.size()) {
+          fc.position((leafAddr + 1) * 4096);
+          bufferClear();
+          fc.read(buff);
+          buff.flip();
+          int indicator = buff.getInt();
+          if (indicator == 1) {
+            return null;
+          }
           processNode(leafAddr + 1);
           currLeafKeyIndex = 0;
           RIDindex = 0;

@@ -34,10 +34,13 @@ public class DBCatalog {
   private boolean fullScan;
   private boolean buildIndex = false;
   private boolean evalQuery = false;
-  private HashMap<String, Tuple> index_info; // <table.col, (clustered, order)>
-  private HashMap<String, File> availableIndex; // <table.col, file for the index>
+  private HashMap<String, Tuple> index_info = new HashMap<>();
+  ; // <table.col, (clustered, order)>
+  private HashMap<String, File> availableIndex = new HashMap<>();
+  ; // <table.col, file for the index>
 
   private int BNLJ_buff;
+
   private int sort_type; // 0 if in memory
   private int sort_buff;
   private String dbDirectory;
@@ -306,10 +309,8 @@ public class DBCatalog {
   }
 
   /**
-   * We use this when fullScan is false. We find out what indexes we have to build or which are
-   * provided for us depending on whether or not we have to build We use this to find out for which
-   * tables we have available indexes, for which we have to build an index. Each line has tablename
-   * attribute clustered order
+   * We use this when fullScan is false We use this to find out for which tables we have available
+   * indexes, for which we have to build an index. Each line has tablename attribute clustered order
    */
   public void processIndex() {
     try {
@@ -335,11 +336,8 @@ public class DBCatalog {
         ArrayList<Integer> elements = new ArrayList<>();
         elements.add(clust);
         elements.add(order);
-
         index_info.put(table + "." + attribute, new Tuple(elements));
         // if index not available, have to build
-        // if the index is clustered does that mean the base table is sorted?
-        // TODO: have to sort first then build if clustered
         if (buildIndex) {
           boolean clustered = clust == 1; // 1 if clustered
           File relation = new File(dbDirectory + "/data/" + table);
@@ -375,6 +373,22 @@ public class DBCatalog {
       return availableIndex.get(indexName);
     }
     return null;
+  }
+
+  /**
+   * Return the column name part after "table." if it exists
+   *
+   * @param table that we want to check if there is an index for
+   * @return
+   */
+  public String getAvailableIndexColumn(String table) {
+    String prefix = table + ".";
+    for (String indexName : availableIndex.keySet()) {
+      if (indexName.startsWith(prefix)) {
+        return indexName.substring(prefix.length());
+      }
+    }
+    return null; // Return null if no match found
   }
 
   /**

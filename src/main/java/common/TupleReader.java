@@ -76,7 +76,6 @@ public class TupleReader {
       // clear out everything from buffer
       bufferClear();
     }
-    // System.out.println("Reader tuple: " + null);
     return null;
   }
 

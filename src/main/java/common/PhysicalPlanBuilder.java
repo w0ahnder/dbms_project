@@ -26,9 +26,42 @@ public class PhysicalPlanBuilder {
 
   public void visit(SelectLogOperator selectLogOperator) throws FileNotFoundException {
     selectLogOperator.scan.accept(this);
-    rootOperator =
-        new SelectOperator(
-            rootOperator.getOutputSchema(), (ScanOperator) rootOperator, selectLogOperator.where);
+    if (selectLogOperator.where != null) {
+      rootOperator =
+          new SelectOperator(
+              rootOperator.getOutputSchema(), (ScanOperator) rootOperator, selectLogOperator.where);
+    } else if (selectLogOperator.indexedExpr == null) {
+      rootOperator =
+          new SelectOperator(
+              rootOperator.getOutputSchema(),
+              (ScanOperator) rootOperator,
+              selectLogOperator.unIndexedExpr);
+    } else if (selectLogOperator.unIndexedExpr == null) {
+      rootOperator =
+          new IndexScanOperator(
+              selectLogOperator.outputSchema,
+              selectLogOperator.table_path,
+              selectLogOperator.table_name,
+              selectLogOperator.index_file,
+              selectLogOperator.ind,
+              selectLogOperator.lowKey,
+              selectLogOperator.highKey,
+              selectLogOperator.clustered);
+    } else {
+      ScanOperator childOperator =
+          new IndexScanOperator(
+              selectLogOperator.outputSchema,
+              selectLogOperator.table_path,
+              selectLogOperator.table_name,
+              selectLogOperator.index_file,
+              selectLogOperator.ind,
+              selectLogOperator.lowKey,
+              selectLogOperator.highKey,
+              selectLogOperator.clustered);
+      rootOperator =
+          new SelectOperator(
+              rootOperator.getOutputSchema(), childOperator, selectLogOperator.unIndexedExpr);
+    }
   }
 
   public void visit(JoinLogOperator joinLogOperator) throws FileNotFoundException {

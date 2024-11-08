@@ -155,7 +155,6 @@ public class BTree {
       ByteBuffer bb = ByteBuffer.allocate(4096);
       FileOutputStream out = new FileOutputStream(new File(path));
       FileChannel fc = out.getChannel();
-
       // header page has root address, number of leaves, order
       Node root = this.layers.getLast().get(0);
       int rootAddr = root.getAddress();
@@ -177,7 +176,7 @@ public class BTree {
       fc.close();
       out.close();
     } catch (Exception e) {
-      System.out.println("tree_to_file failed");
+      e.printStackTrace();
     }
   }
 
