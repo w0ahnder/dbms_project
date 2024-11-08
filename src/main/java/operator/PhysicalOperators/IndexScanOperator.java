@@ -130,9 +130,9 @@ public class IndexScanOperator extends Operator {
     //get's the header of the index file to get the root page address and add that page to the stack
     public void initial_setup() throws IOException {
         PageItem header_page = new PageItem(0);
-        int root_page_num = header_page.pageValues[0];
-        number_of_leaves = header_page.pageValues[1];
-        order = header_page.pageValues[2];
+        int root_page_num = header_page.pageValues.get(0);
+        number_of_leaves = header_page.pageValues.get(1);
+        order = header_page.pageValues.get(2);
         System.out.println("about to add root page");
         page_stack.add(new PageItem(root_page_num));
     }
