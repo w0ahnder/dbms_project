@@ -40,7 +40,7 @@ public class IndexScanOperator extends Operator {
     ByteBuffer buff;
 
     FileChannel fileChannel;
-   ArrayList<PageItem> page_stack;
+   ArrayList<PageItem> page_stack = new ArrayList<>();
 
     public IndexScanOperator(ArrayList<Column> outputSchema, File table_file, int ind, boolean clustered, int low, int high, File index_file) throws IOException {
         super(outputSchema);
@@ -104,6 +104,7 @@ public class IndexScanOperator extends Operator {
                 //logic to use highkey and lowkey
                 int compare = output.getElementAtIndex(index);
                     if (lowKey <= compare && highKey >= compare) {
+                        System.out.println(output);
                         return output;
                     }
                     return null;
@@ -137,6 +138,7 @@ public class IndexScanOperator extends Operator {
 
     public int[] getRID() throws IOException {
         PageItem lastItem = page_stack.getLast();
+        System.out.println(lastItem.toString());
         while (!lastItem.isLeaf && !page_stack.isEmpty()){
             Integer next_child_page = lastItem.getChildPageFromIndex();
             if(next_child_page == null){
@@ -245,8 +247,14 @@ public class IndexScanOperator extends Operator {
 //            }
             fileChannel.position((long) page_num * page_size);
             fileChannel.read(buff);
-            for (int i = 0; i < pageValues.length; i++) {
+//            for (int i = 0; i < pageValues.length; i++) {
+//                pageValues[i] = buff.getInt();
+//            }
+
+            int i=0;
+            while(buff.hasRemaining()){
                 pageValues[i] = buff.getInt();
+                i++;
             }
 
 
