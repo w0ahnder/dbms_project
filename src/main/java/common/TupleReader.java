@@ -21,8 +21,6 @@ public class TupleReader {
   private int pageID;
   private int tupleID;
 
-
-
   // every page is 4096 bytes
   // each page stores meta data:  #attributes of the tuples stored on page,  #tuples on page
   // boats has x154  = 340 tuples on page
@@ -105,13 +103,14 @@ public class TupleReader {
     buff.clear();
   }
 
-  public int pID(){
+  public int pID() {
     return pageID;
   }
 
-  public int tID(){
+  public int tID() {
     return tupleID;
   }
+
   public void reset() throws IOException {
     // buff.clear();
     bufferClear();
@@ -122,8 +121,8 @@ public class TupleReader {
     done = false;
     numAttr = 0;
     numTuples = 0;
-    pageID=-1;
-    tupleID=-1;
+    pageID = -1;
+    tupleID = -1;
   }
 
   /***

@@ -50,15 +50,11 @@ public class QueryPlanBuilder {
 
   public QueryPlanBuilder() {}
 
-
-
-  public void indexEval(){
-    if(DBCatalog.getInstance().ifBuild()){
+  public void indexEval() {
+    if (DBCatalog.getInstance().ifBuild()) {
+    } else {
+      // means indexes are provided
     }
-    else{
-      //means indexes are provided
-    }
-
   }
 
   /**
@@ -82,12 +78,11 @@ public class QueryPlanBuilder {
     // List<Integer> joinConfig = planConfList.get(0);
     List<Integer> sortConfig = planConfList.get(1);
 
-    //I think that the temp directory is within the interpreter_config_file.txt
-    //means we have to process this first ^^ to get the tempDir, sort/join types, inputDir, etc
-    if(!DBCatalog.getInstance().isFullScan()){// we have to use an index
-      DBCatalog.getInstance().processIndex(); //reads
+    // I think that the temp directory is within the interpreter_config_file.txt
+    // means we have to process this first ^^ to get the tempDir, sort/join types, inputDir, etc
+    if (!DBCatalog.getInstance().isFullScan()) { // we have to use an index
+      DBCatalog.getInstance().processIndex(); // reads
     }
-
 
     tables = new ArrayList<>();
     andExpressions = new ArrayList<>();

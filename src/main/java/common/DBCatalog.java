@@ -3,7 +3,6 @@ package common;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -35,8 +34,8 @@ public class DBCatalog {
   private boolean fullScan;
   private boolean buildIndex = false;
   private boolean evalQuery = false;
-  private HashMap<String, Tuple> index_info; //<table.col, (clustered, order)>
-  private HashMap<String, File> availableIndex;// <table.col, file for the index>
+  private HashMap<String, Tuple> index_info; // <table.col, (clustered, order)>
+  private HashMap<String, File> availableIndex; // <table.col, file for the index>
 
   private int BNLJ_buff;
 
@@ -187,8 +186,9 @@ public class DBCatalog {
   }
 
   /**
-   * Parses the config file to determine the type of join and the block size (if applicable)
-   *and the type of sort to use and number of buffer pages for it if external sort
+   * Parses the config file to determine the type of join and the block size (if applicable) and the
+   * type of sort to use and number of buffer pages for it if external sort
+   *
    * @param input_dir is the path for the config file
    */
   public void config_file(String input_dir) {
@@ -217,9 +217,8 @@ public class DBCatalog {
       sort_type = sort;
       if (sort_type == 1) sort_buff = Integer.parseInt(line2[1]);
 
-
       String[] line3 = l3.split("\\s");
-      fullScan= Integer.parseInt(line3[0]) ==0 ;//if we do a full scan then it is 0, no index
+      fullScan = Integer.parseInt(line3[0]) == 0; // if we do a full scan then it is 0, no index
       br.close();
 
     } catch (Exception e) {
@@ -262,164 +261,152 @@ public class DBCatalog {
     return BNLJ_buff;
   }
 
-
   /**
-   *
    * @return true if we have to build an index, false if provided
    */
-  public boolean ifBuild(){
+  public boolean ifBuild() {
     return buildIndex;
   }
 
   /**
-   *
    * @return true if we have to do a full scan instead of using an index
    */
-  public boolean isFullScan(){
+  public boolean isFullScan() {
     return fullScan;
   }
 
   /**
-   *
    * @return true if we have to actually evaluate query
    */
-  public boolean isEvalQuery(){
+  public boolean isEvalQuery() {
     return evalQuery;
   }
 
   /**
    * Reads interpreter configuration file
+   *
    * @param path is path to interpreter configuration file
    * @return
    */
-  public void setInterpreter(String path){
+  public void setInterpreter(String path) {
     try {
       BufferedReader br = new BufferedReader(new FileReader(path));
-      String inputDir = br.readLine();//contains db, plan_builder, queries
-      setDataDirectory(inputDir +"/db");
+      String inputDir = br.readLine(); // contains db, plan_builder, queries
+      setDataDirectory(inputDir + "/db");
       String outputDir = br.readLine();
       String tempDir = br.readLine();
-      buildIndex = Integer.parseInt(br.readLine())==1;
-      evalQuery= Integer.parseInt(br.readLine())==1;
-      //1,0 means build index, but dont run query
-      //1,1 means build index, run queries
-      //0,1 means don't build(index given), and run query
+      buildIndex = Integer.parseInt(br.readLine()) == 1;
+      evalQuery = Integer.parseInt(br.readLine()) == 1;
+      // 1,0 means build index, but dont run query
+      // 1,1 means build index, run queries
+      // 0,1 means don't build(index given), and run query
       br.close();
-    }
-    catch (Exception e){
+    } catch (Exception e) {
       System.out.println("Failed to read Interpreter Configuration File");
     }
   }
 
-
-  /**We use this when fullScan is false
-   * We use this to find out for which tables we have available indexes,
-   * for which we have to build an index. Each line has
-   * tablename attribute clustered order
-   *
+  /**
+   * We use this when fullScan is false We use this to find out for which tables we have available
+   * indexes, for which we have to build an index. Each line has tablename attribute clustered order
    */
-  public void processIndex(){
+  public void processIndex() {
     try {
-      BufferedReader br = new BufferedReader(
-              new FileReader(dbDirectory+ "/index_info.txt"));
+      BufferedReader br = new BufferedReader(new FileReader(dbDirectory + "/index_info.txt"));
       String str;
-      //has <table.col, (clustered, order)>
+      // has <table.col, (clustered, order)>
       index_info = new HashMap<>();
-      //if we build an index has <table.col, tree>
-      //HashMap<String, BTree> trees = new HashMap<>();
-      //<table.col, file for index relation>
+      // if we build an index has <table.col, tree>
+      // HashMap<String, BTree> trees = new HashMap<>();
+      // <table.col, file for index relation>
       availableIndex = new HashMap<>();
 
-
-      while((str = br.readLine())!=null){
+      while ((str = br.readLine()) != null) {
         String[] splits = str.split("\\s");
         String table = splits[0];
         String attribute = splits[1];
         int clust = Integer.parseInt(splits[2]);
         int order = Integer.parseInt(splits[3]);
-        //can name file table.col and catch a file not found exception
+        // can name file table.col and catch a file not found exception
 
-        //find index of attribute in table schema
+        // find index of attribute in table schema
         int cindex = colIndex(table, attribute);
         ArrayList<Integer> elements = new ArrayList<>();
-        elements.add(clust);elements.add(order);
+        elements.add(clust);
+        elements.add(order);
 
-        index_info.put(table+"." +attribute, new Tuple(elements));
-        //if index not available, have to build
-        if(buildIndex){
-          boolean clustered = clust==1; //1 if clustered
-          File relation = new File(dbDirectory + "/data/"+table);
+        index_info.put(table + "." + attribute, new Tuple(elements));
+        // if index not available, have to build
+        if (buildIndex) {
+          boolean clustered = clust == 1; // 1 if clustered
+          File relation = new File(dbDirectory + "/data/" + table);
           BulkLoad load = new BulkLoad(relation, order, cindex, clustered);
           BTree btree = load.getTree();
-          //trees.put(table+"." +attribute, btree);
-          String p = dbDirectory + "/indexes/" + table+"." +attribute;
-          btree.tree_to_file(p);//serialize the tree and write to File
-          availableIndex.put(table+"." +attribute, new File(p));
+          // trees.put(table+"." +attribute, btree);
+          String p = dbDirectory + "/indexes/" + table + "." + attribute;
+          btree.tree_to_file(p); // serialize the tree and write to File
+          availableIndex.put(table + "." + attribute, new File(p));
+        } else {
+          File givenIndex = new File(dbDirectory + "/indexes/" + table + "." + attribute);
+          availableIndex.put(table + "." + attribute, givenIndex);
         }
-
-        else{
-          File givenIndex = new File(dbDirectory + "/indexes/"+table+ "." + attribute);
-          availableIndex.put(table+"." +attribute, givenIndex);
-        }
-        //if index available have to set correct path
-
+        // if index available have to set correct path
 
       }
       br.close();
-    }
-    catch (Exception e){
+    } catch (Exception e) {
       System.out.println("Failed to read Interpreter Configuration File");
     }
   }
 
   /**
    * Returns the indexed File for table.col if it exists
+   *
    * @param table that we want to check if there is an index for
    * @param col in table that we want to check index for
    * @return the File for the index if it exists, null o/w
    */
-  public File getAvailableIndex(String table, String col){
+  public File getAvailableIndex(String table, String col) {
     String indexName = table + "." + col;
-    if(availableIndex.containsKey(indexName)){
+    if (availableIndex.containsKey(indexName)) {
       return availableIndex.get(indexName);
     }
     return null;
   }
 
   /**
-   * Returns ta Tuple containing clustered = 1 or 0, and order of the index
-   * for an index on table.col
+   * Returns ta Tuple containing clustered = 1 or 0, and order of the index for an index on
+   * table.col
+   *
    * @param table of the index we want to check
    * @param col in table that we want to get index ifo for
    * @returns Tuple with (int clustered, order)
    */
-  public Tuple getClustOrd(String table, String col){
+  public Tuple getClustOrd(String table, String col) {
     String indexName = table + "." + col;
-    if(index_info.containsKey(indexName)){
+    if (index_info.containsKey(indexName)) {
       return index_info.get(indexName);
     }
-    return  null;
+    return null;
   }
+
   /**
    * Finds the index of a column in a table's schema
+   *
    * @param table is the table whose column index we want to find
    * @param col the column to find the index of
    * @return index of col in table
    */
-  public int colIndex(String table, String col){
+  public int colIndex(String table, String col) {
     ArrayList<Column> cols = tables.get(table);
-    for(int i=0; i<cols.size();i++){
-      if(cols.get(i).getColumnName().equalsIgnoreCase(col)){
+    for (int i = 0; i < cols.size(); i++) {
+      if (cols.get(i).getColumnName().equalsIgnoreCase(col)) {
         return i;
       }
     }
     System.out.println("Column index not found");
     return -1;
   }
-
-
-
-
 
   /*************************   Benchmarking Functions    *************/
   /******Functions used to set parameters in order to do Benchmarking ***********/
