@@ -73,6 +73,7 @@ public class BulkLoadTest {
         tree.tree_to_file(path + "/SailorsA_bin");
     }
 
+    @Test
     public void testBoatsEIndexScan()
             throws IOException{
         File Boats = new File("src/test/resources/samples-2/input/db/data/Boats");
@@ -82,8 +83,10 @@ public class BulkLoadTest {
         String path = "src/test/resources/samples-2/bulkload";
         tree.tree_to_file(path + "/BoatsE_bin");
         File index_file = new File(path + "/BoatsE_bin");
+
         ArrayList<Column> schema = DBCatalog.getInstance().get_Table("Boats");
-        IndexScanOperator scan = new IndexScanOperator(schema, "", "Boats", Boats, 1, 1000, 3000, false);
+        String tablepath = "src/test/resources/samples-2/input/db/data/Boats";
+        IndexScanOperator scan = new IndexScanOperator(schema, tablepath, "Boats", index_file, 1, 1000, 3000, false);
         scan.dump(new TupleWriter("src/test/resources/samples-2/indexScan/trial1"));
 
         String outputDir = "src/test/resources/samples-2/indexScan/trial1_human";
