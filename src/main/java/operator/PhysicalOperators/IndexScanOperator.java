@@ -103,22 +103,22 @@ public class IndexScanOperator extends Operator {
 
                 //logic to use highkey and lowkey
                 int compare = output.getElementAtIndex(index);
-                if (lowKey != null && highKey!= null){
-                    if (lowKey <= compare && highKey >= compare){
+                    if (lowKey <= compare && highKey >= compare) {
                         return output;
-                    }return null;
-                }else if (lowKey == null && highKey == null){
-                    return output;
-                }
-                else if (lowKey == null){
-                    if (highKey >= compare){
-                        return output;
-                    }return null;
-                }else {
-                    if (lowKey <= compare){
-                        return output;
-                    }return null;
-                }
+                    }
+                    return null;
+//                }else if (lowKey == null && highKey == null){
+//                    return output;
+//                }
+//                else if (lowKey == null){
+//                    if (highKey >= compare){
+//                        return output;
+//                    }return null;
+//                }else {
+//                    if (lowKey <= compare){
+//                        return output;
+//                    }return null;
+//                }
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -255,17 +255,18 @@ public class IndexScanOperator extends Operator {
 
             int curr_key = this.pageValues[this.currentIndexKeyPosition];
 
-            while (!((lowKey == null || lowKey < curr_key) || this.numberOfIndexKeys == 1)){
+            while (!((lowKey < curr_key) || this.numberOfIndexKeys == 1)){
                 this.numberOfIndexKeys -= 1;
                 this.currentIndexKeyPosition  += 1;
+                curr_key = this.pageValues[this.currentIndexKeyPosition];
             }
-            if (lowKey == null || lowKey < curr_key){
+            if (lowKey < curr_key){
                 int child_page = this.pageValues[this.currentIndexKeyPosition + untouchedIndexKeyCount];
                 this.numberOfIndexKeys -= 1;
                 this.currentIndexKeyPosition  += 1;
                 return child_page;
             }
-            if (highKey == null || curr_key < highKey) {
+            if (curr_key < highKey) {
                 this.numberOfIndexKeys-=1;
                 return this.pageValues[this.currentIndexKeyPosition + untouchedIndexKeyCount + 1];
             } else {
@@ -288,36 +289,37 @@ public class IndexScanOperator extends Operator {
             int curr_key = this.pageValues[this.leafCurrentKeyPosition];
 
             //if highkey and lowkey
-            if (lowKey != null && highKey != null){
-                while(!(lowKey <= curr_key && highKey >= curr_key)){
+
+                while (!(lowKey <= curr_key && highKey >= curr_key)) {
                     curr_key = advance();
-                    if (curr_key == Integer.MAX_VALUE){
+                    if (curr_key == Integer.MAX_VALUE) {
                         return null;
                     }
 
                 }
-            //if only highkey
-            }else if (lowKey==null){
-                if (highKey != null){
-                    while(!(highKey >= curr_key)){
-                        curr_key = advance();
-                        if (curr_key == Integer.MAX_VALUE){
-                            return null;
-                        }
-                    }
-                }
 
-             //if only lowkey
-            }else {
-                if (highKey == null){
-                    while((lowKey <= curr_key)){
-                        curr_key = advance();
-                        if (curr_key == Integer.MAX_VALUE){
-                            return null;
-                        }
-                    }
-                }
-            }
+            //if only highkey
+//            }else if (lowKey==null){
+//                if (highKey != null){
+//                    while(!(highKey >= curr_key)){
+//                        curr_key = advance();
+//                        if (curr_key == Integer.MAX_VALUE){
+//                            return null;
+//                        }
+//                    }
+//                }
+//
+//             //if only lowkey
+//            }else {
+//                if (highKey == null){
+//                    while((lowKey <= curr_key)){
+//                        curr_key = advance();
+//                        if (curr_key == Integer.MAX_VALUE){
+//                            return null;
+//                        }
+//                    }
+//                }
+//            }
             int[] rid = new int[2];
             rid[0] = pageValues[this.currentLeafRidPosition];
             rid[1] = pageValues[this.currentLeafRidPosition + 1];
