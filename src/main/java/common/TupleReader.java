@@ -74,7 +74,7 @@ public class TupleReader {
       }
       // otherwise position is at limit => 0 tuples, get next page
       page_start = true;
-      tupleID = 0;
+      tupleID = -1;
       // clear out everything from buffer
       bufferClear();
     }
@@ -126,8 +126,8 @@ public class TupleReader {
     done = false;
     numAttr = 0;
     numTuples = 0;
-    pageID=0;
-    tupleID=0;
+    pageID=-1;
+    tupleID=-1;
   }
 
   /***

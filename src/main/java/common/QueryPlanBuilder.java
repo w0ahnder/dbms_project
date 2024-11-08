@@ -48,6 +48,11 @@ public class QueryPlanBuilder {
 
   public QueryPlanBuilder() {}
 
+
+
+  public void indexEval(){
+
+  }
   /**
    * Top level method to translate statement to query plan
    *
@@ -61,6 +66,13 @@ public class QueryPlanBuilder {
 
     // List<Integer> joinConfig = planConfList.get(0);
     List<Integer> sortConfig = planConfList.get(1);
+
+    //I think that the temp directory is within the interpreter_config_file.txt
+    //means we have to process this first ^^ to get the tempDir, sort/join types, inputDir, etc
+    if(!DBCatalog.getInstance().isFullScan()){// we have to use an index
+      DBCatalog.getInstance().processIndex(); //reads
+    }
+
 
     tables = new ArrayList<>();
     andExpressions = new ArrayList<>();
@@ -198,7 +210,7 @@ public class QueryPlanBuilder {
         result = new DuplicateEliminationLogOperator(schema, result);
       } else {
         SortLogOperator child;
-        if (sortConfig.get(1).equals(0)) {
+        if (sortConfig.get(0).equals(0)) {
           child = new SortLogOperator(new ArrayList<>(), result);
         } else {
           child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);

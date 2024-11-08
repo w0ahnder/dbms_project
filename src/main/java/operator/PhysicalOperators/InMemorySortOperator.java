@@ -62,6 +62,24 @@ public class InMemorySortOperator extends SortOperator {
     return result;
   }
 
+  /**
+   * Get next tuple from operator
+   *
+   * @return Tuple, or null if we are at the end. Retrieves next tuple by indexing with "curr" into
+   *     "result" which is a sorted list of all the tuples from its child operator.
+   */
+  public Tuple getNextTuple() {
+    if (curr == result.size()) {
+      return null;
+    }
+    curr += 1;
+    return result.get(curr - 1);
+  }
+
+  public ArrayList<Tuple> getResult() {
+    return result;
+  }
+
   /** Custom Comparator class to compare two tuples based on columns */
   private class TupleComparator implements Comparator<Tuple> {
     public TupleComparator() {}
