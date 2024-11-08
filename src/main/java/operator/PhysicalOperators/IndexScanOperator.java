@@ -29,6 +29,7 @@ public class IndexScanOperator extends ScanOperator{
     List<Integer> leafKeys;//all the keys in the current leaf node
     List< ArrayList<Tuple>> leafRids;//all the rids for each of the keys in this leaf
     int leafAddr;//page address of the current leaf node
+    int currLeafKeyIndex;
 
 
     public IndexScanOperator(ArrayList<Column> schema, String tablepath, String table,File indexFile, int col, Integer low, Integer high, boolean clustered) throws FileNotFoundException {
@@ -40,7 +41,7 @@ public class IndexScanOperator extends ScanOperator{
              fc = fin.getChannel();
              buff = ByteBuffer.allocate(4096);
              this.clustered = clustered;
-
+            currLeafKeyIndex = 0;
              //have to deserialize from root to leaf layer
             processHeader();
             //TODO: deal with null low or high key; go from root to leaf to get smallest or biggest elements
@@ -48,10 +49,15 @@ public class IndexScanOperator extends ScanOperator{
                 lowkey = getSmallest(rootAddr);//smallest entry in entire tree
             }
             //if high key is null it's okay, we just keep reading until we hit an index page
-            //we have to start reading from lowkey instead
-            else{
-
+            else{////we have to start reading from lowkey instead
+                    rootToLeaf(lowkey);//get leaf info
+                    //now have to find the smallest key inside leaf node that is >=lowkey
+                    while(leafKeys.get(currLeafKeyIndex)<lowkey && currLeafKeyIndex<leafKeys.size()){
+                        currLeafKeyIndex++;
+                    }
             }
+
+
         }
         catch(Exception e){
             System.out.println("Index scan operator constructor failed");
@@ -113,9 +119,12 @@ public class IndexScanOperator extends ScanOperator{
     void processNode(int addr){
         int indicator = buff.getInt();
         if(indicator==0){//leaf, now we process leaf
+            processLeaf(addr);
         }
-        //process index node
 
+        else {
+            processIndex(addr);
+        }
 
     }
 
@@ -135,14 +144,19 @@ public class IndexScanOperator extends ScanOperator{
         //if 3, 5, 7
         // we cant follow pointer associated with 5 because it leads to elements <5
         //but if we got 1,2,3,4,6
+        int found_low = num_keys;//means that the lowkey is greater than the last key in the index
+        //so we get the last address
         for(int i=0;i<num_keys;i++){
             int currKey = buff.getInt();
             index_keys.add(currKey); //
             //indexx nodes have 2d +1 children and 2d pointers
             //key_0  points to child with key < k_0
             //want to get as close as possible
-            if(lowkey >= currKey) {//means we reached our lower bound, and can stop here
-
+            if(lowkey<currKey){
+                found_low = i;
+            }
+            if(lowkey >= currKey) {
+                break; //means that we passed the location of where our low key would be
             }
 
         }
@@ -151,8 +165,8 @@ public class IndexScanOperator extends ScanOperator{
             int currAddr = buff.getInt();
             addresses.add(currAddr);
         }
-
-
+        int follow_addr = addresses.get(found_low);
+        processNode(follow_addr);
 
     }
 
@@ -194,7 +208,9 @@ public class IndexScanOperator extends ScanOperator{
             Tuple t = tr.read();
             return t;
         }
+        else{
 
+        }
 
         }
         catch (Exception e){
