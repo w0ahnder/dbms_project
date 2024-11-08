@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class IndexScanOperator extends Operator {
 
-    int index;
+    int index; //tuple column that we care about
 
     boolean isClustered;
 
@@ -64,32 +64,61 @@ public class IndexScanOperator extends Operator {
 
     @Override
     public void reset() {
+        page_stack = new ArrayList<>();
+        try{
+            initial_setup();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
 
     }
 
     @Override
     public Tuple getNextTuple() {
         try{
-            if (!isClustered){
+            if (!isClustered){ //if it's not a clustered index
                 int [] rid = getRID();
                 if (rid == null){
                     return null;
                 }
                 reader.reset(rid[0], rid[1]);
                 return reader.read();
-            }else{
-                Tuple output = null;
-                if (first_read){
+            }else{ //if clustered
+                Tuple output;
+                if (first_read){ //checks if this is the first time calling getNextTuple
                     int [] rid = getRID();
-                    reader.reset(rid[0], rid[1]);
-                    output = reader.read();
+                    if (rid == null){
+                        return null;
+                    }
+                    reader.reset(rid[0], rid[1]); //fixes the tupleReader pointer to a particular position in the file
+                    output = reader.read(); //reads the tuple at that place
                     first_read = false;
                 }else{
                     output = reader.read();
                 }
-                //logic to use highkey and lowkey
-                return output;
+                if (output == null){ //this means all pages have been read
+                    return null;
+                }
 
+                //logic to use highkey and lowkey
+                int compare = output.getElementAtIndex(index);
+                if (lowKey != null && highKey!= null){
+                    if (lowKey <= compare && highKey >= compare){
+                        return output;
+                    }return null;
+                }else if (lowKey == null && highKey == null){
+                    return output;
+                }
+                else if (lowKey == null){
+                    if (highKey >= compare){
+                        return output;
+                    }return null;
+                }else {
+                    if (lowKey <= compare){
+                        return output;
+                    }return null;
+                }
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -100,9 +129,9 @@ public class IndexScanOperator extends Operator {
     //get's the header of the index file to get the root page address and add that page to the stack
     public void initial_setup() throws IOException {
         PageItem header_page = new PageItem(0);
-        int root_page_num = header_page.page_values[0];
-        number_of_leaves = header_page.page_values[1];
-        order = header_page.page_values[2];
+        int root_page_num = header_page.pageValues[0];
+        number_of_leaves = header_page.pageValues[1];
+        order = header_page.pageValues[2];
         page_stack.add(new PageItem(root_page_num));
     }
 
@@ -127,67 +156,66 @@ public class IndexScanOperator extends Operator {
     private class PageItem{
 
         //all the values for a page
-        int[] page_values;
+        int[] pageValues;
 
         //position to read from
-        int leaf_curr_rid_pos;
+        int currentLeafRidPosition;
 
-        int leaf_curr_key_rid_count;
+        int leafCurrentKeyRIDCount;
         boolean isLeaf;
 
-        int number_of_index_keys;
+        int numberOfIndexKeys;
 
-        int curr_index_key_pos;
+        int currentIndexKeyPosition;
+        
 
-        int curr_index_child;
+        int leafCurrentKeyPosition;
 
-        int leaf_curr_key_pos;
-
-        int leaf_key_count;
+        int leafKeyCount;
 
         //indicates if we are reading this Pageitem for the first time to determine how to move forward
         boolean first_read;
 
+        int untouchedIndexKeyCount;
+
         Boolean on_final_index_key = null;
 
         public PageItem(int page_num) throws IOException {
-            this.page_values = setup(page_num);
-            this.isLeaf = page_values[0] == 0;
+            this.pageValues = setup(page_num);
+            this.isLeaf = pageValues[0] == 0;
             this.first_read = true;
             if (isLeaf){
-                this.leaf_curr_rid_pos = 4;
-                this.leaf_curr_key_pos = 2;
-                this.leaf_curr_key_rid_count = page_values[3];
-                this.leaf_key_count = page_values[1];
+                this.currentLeafRidPosition = 4;
+                this.leafCurrentKeyPosition = 2;
+                this.leafCurrentKeyRIDCount = pageValues[3];
+                this.leafKeyCount = pageValues[1];
             }else{
-                this.number_of_index_keys = page_values[1];
-                this.curr_index_key_pos = page_values[2];
-                this.curr_index_child = page_values[4];
+                this.numberOfIndexKeys = pageValues[1] + 1;
+                untouchedIndexKeyCount = this.numberOfIndexKeys - 1;
+                this.currentIndexKeyPosition = 2;
             }
         }
 
         public String toString() {
             StringBuilder build = new StringBuilder();
             if (this.isLeaf){
-                build.append("Leaf: leaf_curr_rid_pos:")
-                        .append(this.leaf_curr_key_pos)
-                        .append(", leaf_curr_key_pos:")
-                        .append(this.leaf_curr_key_pos)
-                        .append(", leaf_curr_key_rid_count:")
-                        .append(this.leaf_curr_key_rid_count)
-                        .append(", leaf_key_count:")
-                        .append(this.leaf_key_count);
+                build.append("Leaf: currentLeafRidPosition:")
+                        .append(this.leafCurrentKeyPosition)
+                        .append(", leafCurrentKeyPosition:")
+                        .append(this.leafCurrentKeyPosition)
+                        .append(", leafCurrentKeyRIDCount:")
+                        .append(this.leafCurrentKeyRIDCount)
+                        .append(", leafKeyCount:")
+                        .append(this.leafKeyCount);
             }else{
-                build.append("Index: number_of_index_keys:")
-                        .append(this.number_of_index_keys)
-                        .append(", curr_index_key_pos:")
-                        .append(this.curr_index_key_pos)
-                        .append(", curr_index_child:")
-                        .append(this.curr_index_child);
+                build.append("Index: numberOfIndexKeys:")
+                        .append(this.numberOfIndexKeys)
+                        .append(", currentIndexKeyPosition:")
+                        .append(this.currentIndexKeyPosition);
 
             }
             build.append("list values: ")
-                    .append(Arrays.toString(this.page_values));
+                    .append(Arrays.toString(this.pageValues));
 
 
             return build.toString();
@@ -196,7 +224,7 @@ public class IndexScanOperator extends Operator {
 
         //takes a page number and creates a page item of that page.
         public int[] setup(int page_num) throws IOException {
-            int[] page_values = new int[page_size / 4];
+            int[] pageValues = new int[page_size / 4];
 
             //to read from the beginning of a particular page
             indexFile.seek((long) page_num * page_size);
@@ -211,44 +239,35 @@ public class IndexScanOperator extends Operator {
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(pageBuffer);
 
-            for (int i = 0; i < page_values.length; i++) {
-                page_values[i] = byteBuffer.getInt();
+            for (int i = 0; i < pageValues.length; i++) {
+                pageValues[i] = byteBuffer.getInt();
             }
 
 
             //returns the content of the page but in denary
-            return page_values;
+            return pageValues;
         }
 
         public Integer getChildPageFromIndex(){
-            if (lowKey == null){
-                lowKey = Integer.MIN_VALUE;
+            if (this.numberOfIndexKeys == 0){ //done reading all keys and children in that index
+                return null;
             }
-            int curr_key = this.page_values[this.curr_index_key_pos];
 
+            int curr_key = this.pageValues[this.currentIndexKeyPosition];
 
-            while (!(lowKey < curr_key || this.number_of_index_keys == 0)){
-                this.number_of_index_keys -= 1;
-                this.curr_index_key_pos  += 1;
-                if (this.number_of_index_keys == 0){
-                    on_final_index_key = true;
-                }
-
+            while (!((lowKey == null || lowKey < curr_key) || this.numberOfIndexKeys == 1)){
+                this.numberOfIndexKeys -= 1;
+                this.currentIndexKeyPosition  += 1;
             }
-            if (lowKey < curr_key){
-                int child_page = this.page_values[this.curr_index_key_pos + this.number_of_index_keys];
-                this.number_of_index_keys -= 1;
-                this.curr_index_key_pos  += 1;
+            if (lowKey == null || lowKey < curr_key){
+                int child_page = this.pageValues[this.currentIndexKeyPosition + untouchedIndexKeyCount];
+                this.numberOfIndexKeys -= 1;
+                this.currentIndexKeyPosition  += 1;
                 return child_page;
             }
-            if (on_final_index_key) {
-                if (highKey == null || curr_key < highKey) {
-                    int child_page = this.page_values[this.curr_index_key_pos + this.number_of_index_keys + 1];
-                    on_final_index_key = false;
-                    return child_page;
-                } else {
-                    return null;
-                }
+            if (highKey == null || curr_key < highKey) {
+                this.numberOfIndexKeys-=1;
+                return this.pageValues[this.currentIndexKeyPosition + untouchedIndexKeyCount + 1];
             } else {
                 return null;
             }
@@ -256,17 +275,19 @@ public class IndexScanOperator extends Operator {
 
 
         public int[] getRIDfromLeaf(){
-            if (this.leaf_key_count == 0){
+            if (this.leafKeyCount == 0){ //done reading all the keys and their values
                 return null;
-            }if (this.leaf_curr_key_rid_count == 0) {
-                this.leaf_key_count-=1;
-                this.leaf_curr_key_pos = this.leaf_curr_rid_pos;
-                this.leaf_curr_key_rid_count = this.page_values[this.leaf_curr_key_pos + 1];
-                this.leaf_curr_rid_pos = this.leaf_curr_key_pos + 2;
+            }if (this.leafCurrentKeyRIDCount == 0) {//done reading all the values for a particular key
+                this.leafKeyCount-=1;
+                this.leafCurrentKeyPosition = this.currentLeafRidPosition;
+                this.leafCurrentKeyRIDCount = this.pageValues[this.leafCurrentKeyPosition + 1];
+                this.currentLeafRidPosition = this.leafCurrentKeyPosition + 2;
             }
 
             //need to consider highkey and lowkey
-            int curr_key = this.page_values[this.leaf_curr_key_pos];
+            int curr_key = this.pageValues[this.leafCurrentKeyPosition];
+
+            //if highkey and lowkey
             if (lowKey != null && highKey != null){
                 while(!(lowKey <= curr_key && highKey >= curr_key)){
                     curr_key = advance();
@@ -277,38 +298,44 @@ public class IndexScanOperator extends Operator {
                 }
             //if only highkey
             }else if (lowKey==null){
-                while(!(highKey >= curr_key)){
-                    curr_key = advance();
-                    if (curr_key == Integer.MAX_VALUE){
-                        return null;
+                if (highKey != null){
+                    while(!(highKey >= curr_key)){
+                        curr_key = advance();
+                        if (curr_key == Integer.MAX_VALUE){
+                            return null;
+                        }
                     }
                 }
+
              //if only lowkey
             }else {
-                while(!(lowKey <= curr_key)){
-                    curr_key = advance();
-                    if (curr_key == Integer.MAX_VALUE){
-                        return null;
+                if (highKey == null){
+                    while((lowKey <= curr_key)){
+                        curr_key = advance();
+                        if (curr_key == Integer.MAX_VALUE){
+                            return null;
+                        }
                     }
                 }
             }
             int[] rid = new int[2];
-            rid[0] = page_values[this.leaf_curr_rid_pos];
-            rid[1] = page_values[this.leaf_curr_rid_pos + 1];
-            this.leaf_curr_rid_pos+=2;
-            this.leaf_curr_key_rid_count-=1;
+            rid[0] = pageValues[this.currentLeafRidPosition];
+            rid[1] = pageValues[this.currentLeafRidPosition + 1];
+            this.currentLeafRidPosition+=2;
+            this.leafCurrentKeyRIDCount-=1;
             return rid;
 
         }
 
         private Integer advance(){
-            this.leaf_curr_key_pos += (this.leaf_curr_key_rid_count * 2) + 2;
-            if (this.leaf_curr_key_pos >= this.page_values.length){
+            this.leafKeyCount-=1;
+            if (this.leafKeyCount == 0){
                 return Integer.MAX_VALUE;
             }
-            this.leaf_curr_key_rid_count = this.page_values[this.leaf_curr_key_pos + 1];
-            this.leaf_curr_rid_pos = this.leaf_curr_key_pos + 2;
-            return this.page_values[this.leaf_curr_key_pos];
+            this.leafCurrentKeyPosition += (this.leafCurrentKeyRIDCount * 2) + 2;
+            this.leafCurrentKeyRIDCount = this.pageValues[this.leafCurrentKeyPosition + 1];
+            this.currentLeafRidPosition = this.leafCurrentKeyPosition + 2;
+            return this.pageValues[this.leafCurrentKeyPosition];
         }
 
 
