@@ -30,6 +30,7 @@ public class IndexScanOperator extends ScanOperator{
     List< ArrayList<Tuple>> leafRids;//all the rids for each of the keys in this leaf
     int leafAddr;//page address of the current leaf node
     int currLeafKeyIndex;
+    int RIDindex;
 
 
     public IndexScanOperator(ArrayList<Column> schema, String tablepath, String table,File indexFile, int col, Integer low, Integer high, boolean clustered) throws FileNotFoundException {
@@ -44,6 +45,7 @@ public class IndexScanOperator extends ScanOperator{
             currLeafKeyIndex = 0;
              //have to deserialize from root to leaf layer
             processHeader();
+            processRootPage();
             //TODO: deal with null low or high key; go from root to leaf to get smallest or biggest elements
             if(low ==  null){
                 lowkey = getSmallest(rootAddr);//smallest entry in entire tree
@@ -56,8 +58,7 @@ public class IndexScanOperator extends ScanOperator{
                         currLeafKeyIndex++;
                     }
             }
-
-
+            RIDindex=0;
         }
         catch(Exception e){
             System.out.println("Index scan operator constructor failed");
@@ -77,9 +78,11 @@ public class IndexScanOperator extends ScanOperator{
         }
 
         int j=0;
-        int currAddr;
-        while(j<(num_keys+1) && (currAddr= buff.getInt())!=0){
+        int currAddr = buff.getInt();
+        while(j<(num_keys+1)){
             root_addresses.add(currAddr);
+            currAddr = buff.getInt();
+            j++;
         }
         //now we have all the addresses, children = 2d+1, keys = 2d usually
         //go look through the children index nodes until we get to leaf layer
@@ -110,13 +113,13 @@ public class IndexScanOperator extends ScanOperator{
 
     public void rootToLeaf(int key) throws IOException {
         //go to leaf with key
-        fc.position(rootAddr);
-        bufferClear();
-        fc.read(buff);
         processNode(rootAddr);
 
     }
-    void processNode(int addr){
+    void processNode(int addr) throws IOException {
+        fc.position(addr*4096);
+        bufferClear();
+        fc.read(buff);
         int indicator = buff.getInt();
         if(indicator==0){//leaf, now we process leaf
             processLeaf(addr);
@@ -128,7 +131,7 @@ public class IndexScanOperator extends ScanOperator{
 
     }
 
-    void processIndex(int addr){
+    void processIndex(int addr) throws IOException {
         int num_keys = buff.getInt();
         int num_addresses = num_keys+1;
         List<Integer> index_keys = new ArrayList<Integer>();
@@ -154,13 +157,9 @@ public class IndexScanOperator extends ScanOperator{
             //want to get as close as possible
             if(lowkey<currKey){
                 found_low = i;
+                break;
             }
-            if(lowkey >= currKey) {
-                break; //means that we passed the location of where our low key would be
-            }
-
         }
-
         for(int i=0;i<num_addresses;i++){
             int currAddr = buff.getInt();
             addresses.add(currAddr);
@@ -205,11 +204,40 @@ public class IndexScanOperator extends ScanOperator{
     public Tuple getNextTuple() {
         try{
         if(clustered){
-            Tuple t = tr.read();
+            Tuple t = .read();
             return t;
         }
         else{
+            //when do we return null?
+            //return null when the key is >high key
+            //return null when we processed all of the leaf nodes and we hit an index page
+            //      leaf address can be used to monitor how many leaf pages are left
 
+
+            //get next leaf node when all of the keys are processed in this one
+            //1. check if all keys in this leaf are processed,
+            //2. check if addr+1 is valid, if valid update current leaf info
+            if(currLeafKeyIndex >= leafKeys.size()){
+                if(leafAddr + 1 > numLeaves) return null;
+                else{
+                    processLeaf(leafAddr+1);//get the next leaf and update all fields
+                    currLeafKeyIndex = 0;
+                }
+            }
+            if(leafKeys.get(currLeafKeyIndex)>highkey) return null; //check if new leaf is in bounds
+
+            int currentRidsize = leafRids.get(currLeafKeyIndex).size(); //number of <pg,tid> for a given key
+            if(RIDindex>=currentRidsize) {//means we looked at all of the rids for this key
+                //get next key, and reset the rid to start from pageid_0, tid_0
+                RIDindex = 0;
+                currLeafKeyIndex++;
+            }
+
+            ArrayList<Tuple> entries = leafRids.get(currLeafKeyIndex);
+            Tuple entry = entries.get(RIDindex);
+            reader.reset(entry.getElementAtIndex(0), entry.getElementAtIndex(1));
+            Tuple result = reader.read();
+            return result;
         }
 
         }
