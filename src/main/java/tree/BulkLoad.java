@@ -36,10 +36,9 @@ public class BulkLoad {
     reader = new TupleReader(table);
     tree = new BTree(clustered, col, order);
     //ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"))
-        //ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Sailors.A_bulk"));
+        ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Sailors.A_bulk"));
     }
 
-    }
 
     //keep reading tuples and add them to a hashmap keeping track of the key, and list of (pageid, tupleid)
     //want to keep track of which page a tuple is read from, and what is the tupleid
