@@ -81,7 +81,7 @@ public class BulkLoadTest {
         String path = "src/test/resources/samples-2/bulkload";
         tree.tree_to_file(path + "/BoatsE_bin");
         File index_file = new File(path + "/BoatsE_bin");
-        IndexScanOperator scan = new IndexScanOperator(DBCatalog.getInstance().get_Table("Boats"), Boats, 1, false, 0, 567, index_file);
+        IndexScanOperator scan = new IndexScanOperator(DBCatalog.getInstance().get_Table("Boats"), Boats, 1, false, Integer.MIN_VALUE, 10000, index_file);
         scan.dump(new TupleWriter("src/test/resources/samples-2/indexScan/trial1"));
 
         String outputDir = "src/test/resources/samples-2/indexScan/trial1_human";

@@ -4,7 +4,6 @@ import common.DBCatalog;
 import common.Tuple;
 import common.TupleReader;
 import net.sf.jsqlparser.schema.Column;
-import tree.BTree;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -50,7 +49,6 @@ public class IndexScanOperator extends Operator {
         this.highKey = high;
         this.indexFilePath = "placeholder";
         db = DBCatalog.getInstance();
-        //table_path = path;
         reader = new TupleReader(table_file); //to read table file
         first_read = true;
         buff = ByteBuffer.allocate(4096);
@@ -118,7 +116,6 @@ public class IndexScanOperator extends Operator {
     //get's the header of the index file to get the root page address and add that page to the stack
     public void initial_setup() throws IOException {
         PageItem header_page = new PageItem(0);
-        //System.out.print("header page before root; " + header_page);
         int root_page_num = header_page.pageValues.get(0);
         number_of_leaves = header_page.pageValues.get(1);
         order = header_page.pageValues.get(2);
@@ -131,7 +128,7 @@ public class IndexScanOperator extends Operator {
             PageItem last_item = page_stack.getLast();
             while (!last_item.isLeaf){
                 Integer page = last_item.getChildPageFromIndex();
-                if (page == null){
+                if (page == null || page == 0){
                     page_stack.removeLast();
                     if (page_stack.isEmpty()){
                         return null;
@@ -234,17 +231,21 @@ public class IndexScanOperator extends Operator {
             fileChannel.position((long) page_num * page_size);
             fileChannel.read(buff);
             buff.flip();
-//            for (int i = 0; i < pageValues.length; i++) {
-//                pageValues[i] = buff.getInt();
-//            }
-
             try{
-                while(buff.hasRemaining()){
-                    int val = buff.getInt();
-                    //System.out.println("in while loop page num: " + page_num + " pagevalues: " + pageValues);
-                    pageValues.add(val);
-                    //System.out.println("in while loop " + val);
+                if (page_num == 0){
+                    pageValues.add(buff.getInt());
+                    pageValues.add(buff.getInt());
+                    pageValues.add(buff.getInt());
                 }
+                else{
+                    while(buff.hasRemaining()){
+                        int val = buff.getInt();
+                        //System.out.println("in while loop page num: " + page_num + " pagevalues: " + pageValues);
+                        pageValues.add(val);
+                        //System.out.println("in while loop " + val);
+                    }
+                }
+
                 System.out.println("page num: " + page_num + " pagevalues: " + pageValues.toString());
                 buff.clear();
             }catch (OutOfMemoryError m){
