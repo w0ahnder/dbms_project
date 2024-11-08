@@ -31,6 +31,7 @@ public class IndexScanOperator extends ScanOperator{
     int leafAddr;//page address of the current leaf node
     int currLeafKeyIndex;
     int RIDindex;
+    int col;
 
 
     public IndexScanOperator(ArrayList<Column> schema, String tablepath, String table,File indexFile, int col, Integer low, Integer high, boolean clustered) throws FileNotFoundException {
@@ -43,6 +44,7 @@ public class IndexScanOperator extends ScanOperator{
              buff = ByteBuffer.allocate(4096);
              this.clustered = clustered;
             currLeafKeyIndex = 0;
+            this.col = col;
              //have to deserialize from root to leaf layer
             processHeader();
             processRootPage();
@@ -204,7 +206,9 @@ public class IndexScanOperator extends ScanOperator{
     public Tuple getNextTuple() {
         try{
         if(clustered){
-            Tuple t = .read();
+            Tuple t = tr.read();
+            if( t==null || t.getElementAtIndex(col)>highkey) return null;
+
             return t;
         }
         else{
