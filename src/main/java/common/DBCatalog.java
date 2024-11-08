@@ -324,10 +324,10 @@ public class DBCatalog {
 
       while ((str = br.readLine()) != null) {
         String[] splits = str.split("\\s");
-        String table = splits[0];
-        String attribute = splits[1];
-        int clust = Integer.parseInt(splits[2]);
-        int order = Integer.parseInt(splits[3]);
+        String table = splits[0]; System.out.println("Table: " + table+ ".");
+        String attribute = splits[1];System.out.println("Attribute: " + attribute+ ".");
+        int clust = Integer.parseInt(splits[2]);System.out.println("Clust: " + clust+ ".");
+        int order = Integer.parseInt(splits[3]);System.out.println("order: " + order+ ".");
         // can name file table.col and catch a file not found exception
 
         // find index of attribute in table schema
@@ -343,9 +343,9 @@ public class DBCatalog {
         if (buildIndex) {
           boolean clustered = clust == 1; // 1 if clustered
           File relation = new File(dbDirectory + "/data/" + table);
-          BulkLoad load = new BulkLoad(relation, order, cindex, clustered);
-          BTree btree = load.getTree();
-          // trees.put(table+"." +attribute, btree);
+          BulkLoad bl = new BulkLoad(relation, order, cindex, clustered);
+          bl.load();
+          BTree btree = bl.getTree();
           String p = dbDirectory + "/indexes/" + table + "." + attribute;
           btree.tree_to_file(p); // serialize the tree and write to File
           availableIndex.put(table + "." + attribute, new File(p));
