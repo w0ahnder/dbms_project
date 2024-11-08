@@ -1,5 +1,5 @@
-/path/to/input
-/path/to/output
-/path/to/tempdir
+src/test/resources/samples-2/input
+src/test/resources/samples-2/processIndex
+src/test/resources/samples-2/temp
 1
 0
