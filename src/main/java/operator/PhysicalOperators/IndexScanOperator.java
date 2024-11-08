@@ -133,6 +133,7 @@ public class IndexScanOperator extends Operator {
         int root_page_num = header_page.pageValues[0];
         number_of_leaves = header_page.pageValues[1];
         order = header_page.pageValues[2];
+        System.out.println("about to add root page");
         page_stack.add(new PageItem(root_page_num));
     }
 
@@ -158,7 +159,7 @@ public class IndexScanOperator extends Operator {
     private class PageItem{
 
         //all the values for a page
-        int[] pageValues;
+        ArrayList<Integer> pageValues;
 
         //position to read from
         int currentLeafRidPosition;
@@ -184,15 +185,15 @@ public class IndexScanOperator extends Operator {
 
         public PageItem(int page_num) throws IOException {
             this.pageValues = setup(page_num);
-            this.isLeaf = pageValues[0] == 0;
+            this.isLeaf = pageValues.get(0) == 0;
             this.first_read = true;
             if (isLeaf){
                 this.currentLeafRidPosition = 4;
                 this.leafCurrentKeyPosition = 2;
-                this.leafCurrentKeyRIDCount = pageValues[3];
-                this.leafKeyCount = pageValues[1];
+                this.leafCurrentKeyRIDCount = pageValues.get(3);
+                this.leafKeyCount = pageValues.get(1);
             }else{
-                this.numberOfIndexKeys = pageValues[1] + 1;
+                this.numberOfIndexKeys = pageValues.get(1) + 1;
                 untouchedIndexKeyCount = this.numberOfIndexKeys - 1;
                 this.currentIndexKeyPosition = 2;
             }
@@ -217,7 +218,7 @@ public class IndexScanOperator extends Operator {
 
             }
             build.append("list values: ")
-                    .append(Arrays.toString(this.pageValues));
+                    .append(this.pageValues);
 
 
             return build.toString();
@@ -225,38 +226,26 @@ public class IndexScanOperator extends Operator {
         }
 
         //takes a page number and creates a page item of that page.
-        public int[] setup(int page_num) throws IOException {
-            int[] pageValues = new int[page_size / 4];
+        public ArrayList<Integer> setup(int page_num) throws IOException {
+            ArrayList<Integer> pageValues = new ArrayList<>();
 
-//            //to read from the beginning of a particular page
-//            indexFile.seek((long) page_num * page_size);
-//            fileChannel.position((long) page_num * page_size);
-//
-//            //to store the binary content of the page
-//            byte[] pageBuffer = new byte[page_size];
-//            int bytesRead = indexFile.read(pageBuffer);
-//
-//            if (bytesRead != page_size) {
-//                throw new IOException("Could not read a full page.");
-//            }
-//
-//            ByteBuffer byteBuffer = ByteBuffer.wrap(pageBuffer);
-//
-//            for (int i = 0; i < pageValues.length; i++) {
-//                pageValues[i] = byteBuffer.getInt();
 //            }
             fileChannel.position((long) page_num * page_size);
             fileChannel.read(buff);
+            buff.flip();
 //            for (int i = 0; i < pageValues.length; i++) {
 //                pageValues[i] = buff.getInt();
 //            }
 
             int i=0;
             while(buff.hasRemaining()){
-                pageValues[i] = buff.getInt();
+                int val = buff.getInt();
+                pageValues.add(val);
+                System.out.println("in while loop " + val);
                 i++;
             }
-
+            System.out.println("page num: " + page_num + " pagevalues: " + pageValues.toString());
+            buff.clear();
 
             //returns the content of the page but in denary
             return pageValues;
@@ -267,22 +256,22 @@ public class IndexScanOperator extends Operator {
                 return null;
             }
 
-            int curr_key = this.pageValues[this.currentIndexKeyPosition];
+            int curr_key = this.pageValues.get(this.currentIndexKeyPosition);
 
             while (!((lowKey < curr_key) || this.numberOfIndexKeys == 1)){
                 this.numberOfIndexKeys -= 1;
                 this.currentIndexKeyPosition  += 1;
-                curr_key = this.pageValues[this.currentIndexKeyPosition];
+                curr_key = this.pageValues.get(this.currentIndexKeyPosition);
             }
             if (lowKey < curr_key){
-                int child_page = this.pageValues[this.currentIndexKeyPosition + untouchedIndexKeyCount];
+                int child_page = this.pageValues.get(this.currentIndexKeyPosition + untouchedIndexKeyCount);
                 this.numberOfIndexKeys -= 1;
                 this.currentIndexKeyPosition  += 1;
                 return child_page;
             }
             if (curr_key < highKey) {
                 this.numberOfIndexKeys-=1;
-                return this.pageValues[this.currentIndexKeyPosition + untouchedIndexKeyCount + 1];
+                return this.pageValues.get(this.currentIndexKeyPosition + untouchedIndexKeyCount + 1);
             } else {
                 return null;
             }
@@ -295,12 +284,12 @@ public class IndexScanOperator extends Operator {
             }if (this.leafCurrentKeyRIDCount == 0) {//done reading all the values for a particular key
                 this.leafKeyCount-=1;
                 this.leafCurrentKeyPosition = this.currentLeafRidPosition;
-                this.leafCurrentKeyRIDCount = this.pageValues[this.leafCurrentKeyPosition + 1];
+                this.leafCurrentKeyRIDCount = this.pageValues.get(this.leafCurrentKeyPosition + 1);
                 this.currentLeafRidPosition = this.leafCurrentKeyPosition + 2;
             }
 
             //need to consider highkey and lowkey
-            int curr_key = this.pageValues[this.leafCurrentKeyPosition];
+            int curr_key = this.pageValues.get(this.leafCurrentKeyPosition);
 
             //if highkey and lowkey
 
@@ -335,8 +324,8 @@ public class IndexScanOperator extends Operator {
 //                }
 //            }
             int[] rid = new int[2];
-            rid[0] = pageValues[this.currentLeafRidPosition];
-            rid[1] = pageValues[this.currentLeafRidPosition + 1];
+            rid[0] = pageValues.get(this.currentLeafRidPosition);
+            rid[1] = pageValues.get(this.currentLeafRidPosition + 1);
             this.currentLeafRidPosition+=2;
             this.leafCurrentKeyRIDCount-=1;
             return rid;
@@ -349,9 +338,9 @@ public class IndexScanOperator extends Operator {
                 return Integer.MAX_VALUE;
             }
             this.leafCurrentKeyPosition += (this.leafCurrentKeyRIDCount * 2) + 2;
-            this.leafCurrentKeyRIDCount = this.pageValues[this.leafCurrentKeyPosition + 1];
+            this.leafCurrentKeyRIDCount = this.pageValues.get(this.leafCurrentKeyPosition + 1);
             this.currentLeafRidPosition = this.leafCurrentKeyPosition + 2;
-            return this.pageValues[this.leafCurrentKeyPosition];
+            return this.pageValues.get(this.leafCurrentKeyPosition);
         }
 
 

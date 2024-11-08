@@ -32,7 +32,7 @@ public class BulkLoad {
     reader = new TupleReader(table);
     tree = new BTree(clustered, col, order);
     //ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Boats.E_bulk"))
-        ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/Sailors.A_bulk"));
+        ps = new PrintStream(new File("src/test/resources/samples-2/bulkload/trial_bulk"));
     }
 
 
