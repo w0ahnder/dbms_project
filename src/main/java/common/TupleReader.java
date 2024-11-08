@@ -21,8 +21,6 @@ public class TupleReader {
   private int pageID;
   private int tupleID;
 
-
-
   // every page is 4096 bytes
   // each page stores meta data:  #attributes of the tuples stored on page,  #tuples on page
   // boats has x154  = 340 tuples on page
@@ -82,30 +80,29 @@ public class TupleReader {
     return null;
   }
 
-  public void reset(int pageId, int tupleId){
+  public void reset(int pageId, int tupleId) {
 
-    try{
-      fc.position((pageId)*4096);
+    try {
+      fc.position((pageId) * 4096);
       bufferClear(); // clear out all elements from buffer
       page_start = true;
       done = false;
-      // have to set position of buffer so that the buffer only reads this page's tuples; dont go onto
+      // have to set position of buffer so that the buffer only reads this page's tuples; dont go
+      // onto
       // next
       buff.clear(); // position is at 0, limit is at capacity
       int reads = fc.read(buff);
 
       if (reads >= 0) { // we can read from from channel
         newPage(); // get metadata
-        int offset = tupleId*numAttr*4;
-        buff.position(offset+8); // byte to start reading at on this page
+        int offset = tupleId * numAttr * 4;
+        buff.position(offset + 8); // byte to start reading at on this page
         page_start = false;
       }
 
     } catch (IOException e) {
       System.out.println("Reset to page, tuple failed");
     }
-
-
   }
 
   // set the page up to be read
@@ -131,13 +128,14 @@ public class TupleReader {
     buff.clear();
   }
 
-  public int pID(){
+  public int pID() {
     return pageID;
   }
 
-  public int tID(){
+  public int tID() {
     return tupleID;
   }
+
   public void reset() throws IOException {
     // buff.clear();
     bufferClear();
@@ -148,8 +146,8 @@ public class TupleReader {
     done = false;
     numAttr = 0;
     numTuples = 0;
-    pageID=-1;
-    tupleID=-1;
+    pageID = -1;
+    tupleID = -1;
   }
 
   /***
@@ -171,16 +169,16 @@ public class TupleReader {
     // now calculate offset into the page
     // =>calculate index of first tuple on this page
     int first_indx =
-            pageforindex == 0
-                    ? 0
-                    : (pageforindex - 1) * tuplesperpage; // (4*2) = 8 first tuple index on the page we want
+        pageforindex == 0
+            ? 0
+            : (pageforindex - 1) * tuplesperpage; // (4*2) = 8 first tuple index on the page we want
     int offset = 8 + (index - first_indx) * (numAttr * 4); // offset into page, 8 for metadata
 
     int total_bytes =
-            4096
-                    * (pageforindex == 0
-                    ? 0
-                    : (pageforindex - 1)); // total page offset from beginning of file
+        4096
+            * (pageforindex == 0
+                ? 0
+                : (pageforindex - 1)); // total page offset from beginning of file
 
     fc.position(total_bytes); // set file scan to location of tuple
     bufferClear(); // clear out all elements from buffer
