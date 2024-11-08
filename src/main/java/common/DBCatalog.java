@@ -34,8 +34,10 @@ public class DBCatalog {
   private boolean fullScan;
   private boolean buildIndex = false;
   private boolean evalQuery = false;
-  private HashMap<String, Tuple> index_info; // <table.col, (clustered, order)>
-  private HashMap<String, File> availableIndex; // <table.col, file for the index>
+  private HashMap<String, Tuple> index_info = new HashMap<>();
+  ; // <table.col, (clustered, order)>
+  private HashMap<String, File> availableIndex = new HashMap<>();
+  ; // <table.col, file for the index>
 
   private int BNLJ_buff;
 
@@ -372,6 +374,22 @@ public class DBCatalog {
       return availableIndex.get(indexName);
     }
     return null;
+  }
+
+  /**
+   * Return the column name part after "table." if it exists
+   *
+   * @param table that we want to check if there is an index for
+   * @return
+   */
+  public String getAvailableIndexColumn(String table) {
+    String prefix = table + ".";
+    for (String indexName : availableIndex.keySet()) {
+      if (indexName.startsWith(prefix)) {
+        return indexName.substring(prefix.length());
+      }
+    }
+    return null; // Return null if no match found
   }
 
   /**

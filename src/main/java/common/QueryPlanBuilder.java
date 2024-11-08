@@ -1,5 +1,6 @@
 package common;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import operator.LogicalOperators.ProjectLogOperator;
 import operator.LogicalOperators.ScanLogOperator;
 import operator.LogicalOperators.SelectLogOperator;
 import operator.LogicalOperators.SortLogOperator;
+import operator.PhysicalOperators.*;
 import operator.PhysicalOperators.Operator;
 
 /**
@@ -184,8 +186,11 @@ public class QueryPlanBuilder {
       schema = copyColumn(DBCatalog.getInstance().get_Table(table), table);
       LogicalOperator op = new ScanLogOperator(schema, table_path);
       ArrayList<Expression> selectExpr = selectExpressions.get(table);
+
+      // SELECT
       if (selectExpr.size() > 0) {
-        op = new SelectLogOperator(createAndExpression(selectExpressions.get(table)), op);
+        // first check if no indexing at all(not sure if necessary)
+        op = filterScanExpressions(schema, table_path, selectExpressions.get(table), tableName, op);
       }
 
       if (tables.get(0) == table) {
@@ -269,6 +274,60 @@ public class QueryPlanBuilder {
     }
     ands.add(where);
     return ands;
+  }
+
+  public LogicalOperator filterScanExpressions(
+      ArrayList<Column> outputSchema,
+      String table_path,
+      List<Expression> expressions,
+      String tableName,
+      LogicalOperator op) {
+    if (expressions.size() < 1) {
+      return op;
+    }
+
+    String col = DBCatalog.getInstance().getAvailableIndexColumn(tableName);
+    if (col == null) {
+      System.out.println("col should be null obvii");
+      return new SelectLogOperator(createAndExpression(expressions), op);
+    }
+
+    File indexFile = DBCatalog.getInstance().getAvailableIndex(tableName, col);
+
+    ArrayList<Expression> indexed = new ArrayList<>();
+    ArrayList<Expression> nonIndexed = new ArrayList<>();
+
+    for (Expression expr : expressions) {
+      ScanVisitor visitor = new ScanVisitor(expr, tableName);
+      if (visitor.evaluate_expr()) {
+        indexed.add(expr);
+      } else {
+        nonIndexed.add(expr);
+      }
+    }
+    Expression indexedExpr = createAndExpression(indexed);
+    Expression nonIndexedExpr = createAndExpression(nonIndexed);
+    ScanVisitor visitor = new ScanVisitor(indexedExpr, tableName);
+    Integer highKey = visitor.getHighKey();
+    Integer lowKey = visitor.getLowKey();
+    File tableFile = new File(table_path);
+    Integer ind = DBCatalog.getInstance().colIndex(tableName, col);
+    boolean clustered =
+        DBCatalog.getInstance().getClustOrd(tableName, col).getElementAtIndex(0) == 1;
+    op =
+        new SelectLogOperator(
+            indexedExpr,
+            nonIndexedExpr,
+            outputSchema,
+            table_path,
+            tableFile,
+            ind,
+            clustered,
+            lowKey,
+            highKey,
+            indexFile,
+            op);
+    return op;
   }
 
   /**
