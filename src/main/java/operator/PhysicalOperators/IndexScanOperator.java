@@ -214,5 +214,7 @@ public class IndexScanOperator extends ScanOperator {
     }
   }
 
-  public void reset() {}
+  public void reset() {
+    // TODO: resetting
+  }
 }

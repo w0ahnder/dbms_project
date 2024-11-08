@@ -306,7 +306,9 @@ public class QueryPlanBuilder {
     Expression indexedExpr = createAndExpression(indexed);
     Expression nonIndexedExpr = createAndExpression(nonIndexed);
     ScanVisitor visitor = new ScanVisitor(indexedExpr, tableName + "." + col);
-    visitor.evaluate_expr();
+    if (indexedExpr != null) {
+      visitor.evaluate_expr();
+    }
     Integer highKey = visitor.getHighKey();
     Integer lowKey = visitor.getLowKey();
     File tableFile = new File(table_path);
