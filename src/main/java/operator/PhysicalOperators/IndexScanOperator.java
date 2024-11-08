@@ -108,18 +108,6 @@ public class IndexScanOperator extends Operator {
                         return output;
                     }
                     return null;
-//                }else if (lowKey == null && highKey == null){
-//                    return output;
-//                }
-//                else if (lowKey == null){
-//                    if (highKey >= compare){
-//                        return output;
-//                    }return null;
-//                }else {
-//                    if (lowKey <= compare){
-//                        return output;
-//                    }return null;
-//                }
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -130,7 +118,7 @@ public class IndexScanOperator extends Operator {
     //get's the header of the index file to get the root page address and add that page to the stack
     public void initial_setup() throws IOException {
         PageItem header_page = new PageItem(0);
-        System.out.print("header page before root; " + header_page);
+        //System.out.print("header page before root; " + header_page);
         int root_page_num = header_page.pageValues.get(0);
         number_of_leaves = header_page.pageValues.get(1);
         order = header_page.pageValues.get(2);
@@ -230,8 +218,8 @@ public class IndexScanOperator extends Operator {
                         .append(this.currentIndexKeyPosition);
 
             }
-            build.append(", list values: ")
-                    .append(this.pageValues);
+//            build.append(", list values: ")
+//                    .append(this.pageValues);
 
 
             return build.toString();
@@ -250,15 +238,21 @@ public class IndexScanOperator extends Operator {
 //                pageValues[i] = buff.getInt();
 //            }
 
-            int i=0;
-            while(buff.hasRemaining()){
-                int val = buff.getInt();
-                pageValues.add(val);
-                //System.out.println("in while loop " + val);
-                i++;
+            try{
+                while(buff.hasRemaining()){
+                    int val = buff.getInt();
+                    //System.out.println("in while loop page num: " + page_num + " pagevalues: " + pageValues);
+                    pageValues.add(val);
+                    //System.out.println("in while loop " + val);
+                }
+                System.out.println("page num: " + page_num + " pagevalues: " + pageValues.toString());
+                buff.clear();
+            }catch (OutOfMemoryError m){
+                System.out.println("memory error " + page_num + pageValues);
             }
-            //System.out.println("page num: " + page_num + " pagevalues: " + pageValues.toString());
-            buff.clear();
+
+
+
 
             //returns the content of the page but in denary
             return pageValues;
@@ -296,6 +290,9 @@ public class IndexScanOperator extends Operator {
                 return null;
             }if (this.leafCurrentKeyRIDCount == 0) {//done reading all the values for a particular key
                 this.leafKeyCount-=1;
+                if (this.leafKeyCount == 0){
+                    return null;
+                }
                 this.leafCurrentKeyPosition = this.currentLeafRidPosition;
                 this.leafCurrentKeyRIDCount = this.pageValues.get(this.leafCurrentKeyPosition + 1);
                 this.currentLeafRidPosition = this.leafCurrentKeyPosition + 2;
@@ -318,6 +315,8 @@ public class IndexScanOperator extends Operator {
             rid[1] = pageValues.get(this.currentLeafRidPosition + 1);
             this.currentLeafRidPosition+=2;
             this.leafCurrentKeyRIDCount-=1;
+            System.out.println("before returning rid to getRid function" + this);
+
             return rid;
 
         }
