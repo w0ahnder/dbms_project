@@ -334,13 +334,9 @@ public class DBCatalog {
       while ((str = br.readLine()) != null) {
         String[] splits = str.split("\\s");
         String table = splits[0];
-        System.out.println("Table: " + table + ".");
         String attribute = splits[1];
-        System.out.println("Attribute: " + attribute + ".");
         int clust = Integer.parseInt(splits[2]);
-        System.out.println("Clust: " + clust + ".");
         int order = Integer.parseInt(splits[3]);
-        System.out.println("order: " + order + ".");
         // can name file table.col and catch a file not found exception
 
         // find index of attribute in table schema

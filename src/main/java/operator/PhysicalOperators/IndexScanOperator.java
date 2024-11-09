@@ -66,12 +66,12 @@ public class IndexScanOperator extends ScanOperator {
         currLeafKeyIndex++;
       }
       RIDindex = 0;
-      if(clustered){
+      if (clustered) {
         ArrayList<Tuple> rids = leafRids.get(currLeafKeyIndex);
         Tuple curr = rids.get(RIDindex);
         int page = curr.getElementAtIndex(0);
         int row = curr.getElementAtIndex(1);
-        tr.reset(page,row);
+        tr.reset(page, row);
       }
     } catch (Exception e) {
 

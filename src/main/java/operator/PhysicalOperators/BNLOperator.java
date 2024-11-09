@@ -43,7 +43,6 @@ public class BNLOperator extends Operator {
         0; // keep track of how many tuples we have in B bc sometimes the block may not be filled up
     buffer = new ArrayList<>();
     // fill();//get block B from left operators
-    System.out.println("DOING BNLJ ");
   }
 
   /**
