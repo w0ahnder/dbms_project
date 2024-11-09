@@ -58,7 +58,11 @@ public class InMemorySortOperator extends SortOperator {
   }
 
   public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
-    result.sort(new TupleComparator());
+    try {
+      result.sort(new TupleComparator());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     return result;
   }
 

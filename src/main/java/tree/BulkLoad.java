@@ -138,7 +138,6 @@ public class BulkLoad {
       ob.setExpression(newc);
       List<OrderByElement> ele = new ArrayList<>();
       ele.add(ob);
-
       Operator scan = new ScanOperator(schema, tablepath);
       InMemorySortOperator sorter = new InMemorySortOperator(schema, ele, scan);
       ArrayList<Tuple> res = sorter.getResult();

@@ -54,6 +54,9 @@ public class Compiler {
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");
     DBCatalog.getInstance().config_file(inputDir);
     DBCatalog.getInstance().setInterpreter(configFile);
+    if (!DBCatalog.getInstance().isFullScan()) { // we have to use an index
+      DBCatalog.getInstance().processIndex(); // reads
+    }
     try {
       String str = Files.readString(Paths.get(inputDir + "/queries.sql"));
       Statements statements = CCJSqlParserUtil.parseStatements(str);

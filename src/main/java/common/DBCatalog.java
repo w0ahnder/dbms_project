@@ -149,6 +149,7 @@ public class DBCatalog {
    * having information from previous query
    */
   public void resetDB() {
+    useAlias = false;
     aliasmap.clear();
     aliasSchema.clear();
   }

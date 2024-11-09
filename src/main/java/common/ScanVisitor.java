@@ -135,7 +135,6 @@ public class ScanVisitor implements ExpressionVisitor {
         lowKey = Integer.max(leftVal + 1, lowKey);
       } else if (rightVal != null) {
         highKey = Integer.min(rightVal - 1, highKey);
-        System.out.println(highKey);
       }
     }
   }

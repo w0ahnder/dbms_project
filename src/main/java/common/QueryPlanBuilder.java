@@ -82,9 +82,6 @@ public class QueryPlanBuilder {
 
     // I think that the temp directory is within the interpreter_config_file.txt
     // means we have to process this first ^^ to get the tempDir, sort/join types, inputDir, etc
-    if (!DBCatalog.getInstance().isFullScan()) { // we have to use an index
-      DBCatalog.getInstance().processIndex(); // reads
-    }
 
     tables = new ArrayList<>();
     andExpressions = new ArrayList<>();
@@ -99,11 +96,13 @@ public class QueryPlanBuilder {
     if (alias1 != null) {
       if_alias = true;
       // set alias boolean in DBCatalog
+      System.out.println("setting alias to " + if_alias);
       DBCatalog.getInstance().setUseAlias(if_alias);
       DBCatalog.getInstance().setTableAlias(tableName, alias1.toString().trim());
       aliases.add(alias1.toString().trim());
     } else {
       if_alias = false;
+      System.out.println("setting alias to " + if_alias);
       DBCatalog.getInstance().setUseAlias(if_alias);
       DBCatalog.getInstance().resetDB();
     }
