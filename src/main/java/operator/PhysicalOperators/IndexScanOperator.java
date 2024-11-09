@@ -148,7 +148,7 @@ public class IndexScanOperator extends ScanOperator {
       if (clustered) {
         Tuple t = tr.read();
         if (t == null || t.getElementAtIndex(col) > highkey) return null;
-
+      //TODO: handle closing all channels when we return
         return t;
       } else {
         // when do we return null?

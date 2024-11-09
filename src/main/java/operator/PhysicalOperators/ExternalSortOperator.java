@@ -55,6 +55,7 @@ public class ExternalSortOperator extends SortOperator {
     this.numTuples = this.bufferSize / tupleSize;
     this.orderByElements = orderElements;
     sort();
+    System.out.println("DOING EXTERNAL SORT");
   }
 
   /** Sorts the tuples loaded into memory. */

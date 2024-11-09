@@ -345,13 +345,13 @@ public class DBCatalog {
         if (buildIndex) {
           boolean clustered = clust == 1; // 1 if clustered
           File relation = new File(dbDirectory + "/data/" + table);
-          BulkLoad bl = new BulkLoad(relation, order, cindex, clustered);
-          //BulkLoad.sortRelation(".",",",",,","");
-          bl.load();
           if (clustered) {
             String tablePath = dbDirectory + "/data/" + table;
-            bl.sortRelation(table, tablePath, attribute, tablePath);
+            BulkLoad.sortRelation(table, tablePath, attribute, tablePath);
           }
+
+          BulkLoad bl = new BulkLoad(relation, order, cindex, clustered);
+          bl.load();
           BTree btree = bl.getTree();
           String p = dbDirectory + "/indexes/" + table + "." + attribute;
           btree.tree_to_file(p); // serialize the tree and write to File
