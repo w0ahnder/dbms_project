@@ -117,7 +117,7 @@ public class PhysicalPlanBuilder {
     duplicateEliminationLogOperator.sort.accept(this);
     rootOperator =
         new DuplicateEliminationOperator(
-            duplicateEliminationLogOperator.outputSchema, (SortOperator) rootOperator);
+            duplicateEliminationLogOperator.outputSchema, rootOperator);
   }
 
   public void visit(ProjectLogOperator projectLogOperator) throws FileNotFoundException {
