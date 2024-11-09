@@ -91,8 +91,9 @@ public class IndexScanOperator extends ScanOperator {
   }
 
   /**
-   * Processes the index node at page addr. It follows the key that will lead down to
-   * a leaf level corresponding to lowkey
+   * Processes the index node at page addr. It follows the key that will lead down to a leaf level
+   * corresponding to lowkey
+   *
    * @param addr is address of this index node
    * @throws IOException
    */
@@ -124,8 +125,9 @@ public class IndexScanOperator extends ScanOperator {
   }
 
   /**
-   * Processes a leaf node at addr. It gets the keys, data entries, and sets the address. This is the leaf
-   * node where we will be starting to read tuples from.
+   * Processes a leaf node at addr. It gets the keys, data entries, and sets the address. This is
+   * the leaf node where we will be starting to read tuples from.
+   *
    * @param addr
    */
   void processLeaf(int addr) {
@@ -151,9 +153,7 @@ public class IndexScanOperator extends ScanOperator {
     leafAddr = addr;
   }
 
-  /**
-   * Fills the buffer full of zeros
-   */
+  /** Fills the buffer full of zeros */
   public void bufferClear() {
     // set limit to capacity, position=0
     buff.clear();
@@ -222,8 +222,8 @@ public class IndexScanOperator extends ScanOperator {
   }
 
   /**
-   * Processes the header page for the index file. It sets the address of the root, the number of leaves, and
-   * the order of the tree
+   * Processes the header page for the index file. It sets the address of the root, the number of
+   * leaves, and the order of the tree
    */
   public void processHeader() {
 

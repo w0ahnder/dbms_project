@@ -286,6 +286,13 @@ public class DBCatalog {
   }
 
   /**
+   * @param val the value to set when we want to evaluate query
+   */
+  public void setEvalQuery(boolean val) {
+    evalQuery = val;
+  }
+
+  /**
    * Reads interpreter configuration file
    *
    * @param path is path to interpreter configuration file
