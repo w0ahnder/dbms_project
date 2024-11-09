@@ -21,7 +21,6 @@ public class DuplicateEliminationOperator extends Operator {
     super(outputSchema);
     so = sortOp;
     curr = null;
-    System.out.println("Duplicate elimination ");
   }
 
   /**
