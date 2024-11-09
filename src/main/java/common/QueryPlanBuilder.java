@@ -75,6 +75,10 @@ public class QueryPlanBuilder {
       Integer queryFlag)
       throws ExecutionControl.NotImplementedException {
 
+    if (!DBCatalog.getInstance().isEvalQuery()) {
+      return null;
+    }
+
     this.indexFlag = indexFlag;
     this.queryFlag = queryFlag;
     // List<Integer> joinConfig = planConfList.get(0);
@@ -96,13 +100,11 @@ public class QueryPlanBuilder {
     if (alias1 != null) {
       if_alias = true;
       // set alias boolean in DBCatalog
-      System.out.println("setting alias to " + if_alias);
       DBCatalog.getInstance().setUseAlias(if_alias);
       DBCatalog.getInstance().setTableAlias(tableName, alias1.toString().trim());
       aliases.add(alias1.toString().trim());
     } else {
       if_alias = false;
-      System.out.println("setting alias to " + if_alias);
       DBCatalog.getInstance().setUseAlias(if_alias);
       DBCatalog.getInstance().resetDB();
     }

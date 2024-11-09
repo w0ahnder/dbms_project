@@ -77,7 +77,9 @@ public class Compiler {
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
             // File outfile = new File(outputDir + "/query" + counter);
             long start = System.currentTimeMillis();
-            plan.dump(tw);
+            if (plan != null) {
+              plan.dump(tw);
+            }
             // plan.dump(new PrintStream(outfile));
 
             long end = System.currentTimeMillis();
