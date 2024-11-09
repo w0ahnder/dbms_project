@@ -39,8 +39,9 @@ public class BulkLoad {
   // want to keep track of which page a tuple is read from, and what is the tupleid
 
   /**
-   * Keeps reading tuples and creates a hashmap containing unique elements in the
-   * index col and their locations in the table we are reading from
+   * Keeps reading tuples and creates a hashmap containing unique elements in the index col and
+   * their locations in the table we are reading from
+   *
    * @throws IOException
    */
   public void load() throws IOException {
@@ -97,6 +98,7 @@ public class BulkLoad {
 
   /**
    * Print the keys and addresses of the elements in a list of index nodes
+   *
    * @param ind list of Index nodes
    * @throws FileNotFoundException
    */
@@ -111,8 +113,10 @@ public class BulkLoad {
       ps.println(s);
     }
   }
+
   /**
    * Print the keys and page information for each leaf node
+   *
    * @param leaves list of Leaf nodes
    * @throws FileNotFoundException
    */
@@ -126,6 +130,7 @@ public class BulkLoad {
 
   /**
    * returns the BTree created from the bulkload
+   *
    * @return
    */
   public BTree getTree() {

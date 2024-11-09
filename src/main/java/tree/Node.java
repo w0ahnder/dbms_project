@@ -15,7 +15,6 @@ public abstract class Node {
   }
 
   /**
-   *
    * @return the address of this node
    */
   public int getAddress() {
@@ -23,7 +22,6 @@ public abstract class Node {
   }
 
   /**
-   *
    * @return The child nodes of this node
    */
   public ArrayList<Node> getChildren() {
@@ -31,9 +29,8 @@ public abstract class Node {
   }
 
   /**
-   *
-   * @return the smallest element in this node, if a leaf, or
-   * the smallest element in the leaf level corresponding to an index node
+   * @return the smallest element in this node, if a leaf, or the smallest element in the leaf level
+   *     corresponding to an index node
    */
   public abstract int smallest();
 

@@ -20,6 +20,7 @@ public class Index extends Node {
 
   /**
    * gets the smallest element in leaf level following the subtrees of this index node
+   *
    * @return the leftmost key in leaf layer for this index node
    */
   public int smallest() {
@@ -33,6 +34,7 @@ public class Index extends Node {
 
   /**
    * Creates a serial representation of this index node
+   *
    * @param bb ByteBuffer to put integers into
    * @param fc will write the contents of the buffer to the location of our index file
    */
@@ -59,6 +61,7 @@ public class Index extends Node {
 
   /**
    * String representation of this Index that prints its keys and their addresses
+   *
    * @return
    */
   public String toString() {

@@ -19,7 +19,6 @@ public class Leaf extends Node {
   }
 
   /**
-
    * @return all the keys in this leaf node
    */
   public ArrayList<Integer> getKeys() {
@@ -28,6 +27,7 @@ public class Leaf extends Node {
 
   /**
    * Creates a serial representation of this leaf node
+   *
    * @param bb ByteBuffer to put integers into
    * @param fc will write the contents of the buffer
    */
@@ -59,7 +59,6 @@ public class Leaf extends Node {
   }
 
   /**
-   *
    * @return leftmost key in this leaf node
    */
   public int smallest() {
@@ -73,5 +72,4 @@ public class Leaf extends Node {
     }
     return s;
   }
-
 }

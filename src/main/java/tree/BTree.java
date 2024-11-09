@@ -24,6 +24,7 @@ public class BTree {
 
   /**
    * Create a leaf layer
+   *
    * @param data has the keys and pageid,rowid
    * @return a layer of Leaf nodes
    */
@@ -73,6 +74,7 @@ public class BTree {
 
   /**
    * create a layer of index nodes
+   *
    * @param nodes list of nodes we include in this layer
    * @return A new layer of nodes
    */
@@ -110,6 +112,7 @@ public class BTree {
 
   /**
    * Creates an index node
+   *
    * @param nodes list of nodes to put in subtree of this index node
    * @param start where we start collecting nodes
    * @param end where we stop getting nodes for subtree
@@ -135,6 +138,7 @@ public class BTree {
 
   /**
    * makes a leaf node
+   *
    * @param data is the pageID, rowID tuples for all the keys
    * @param start is from where we should start collecting the keys
    * @param end is where we stop collecting keys to add to a leaf node
@@ -162,8 +166,8 @@ public class BTree {
   }
 
   /**
-   * adds layers to our tree so we can keep track of when we
-   * eventually just reach one root node
+   * adds layers to our tree so we can keep track of when we eventually just reach one root node
+   *
    * @param l is a layer of nodes to add to our tree
    */
   public void addLayer(ArrayList<Node> l) {
@@ -213,6 +217,7 @@ public class BTree {
 
   /**
    * debugging function to print an index node
+   *
    * @param ind is the list of nodes an index node points to
    * @param ps is where to write the string representation of this index node
    * @throws FileNotFoundException
@@ -231,6 +236,7 @@ public class BTree {
 
   /**
    * debugging function to print an index node
+   *
    * @param leaves is the list of leaf nodes
    * @param ps is where to write the string representation of these leaf nodes
    * @throws FileNotFoundException
@@ -245,6 +251,7 @@ public class BTree {
 
   /**
    * use to initialize a byte buffer
+   *
    * @param b ByteBuffer
    */
   public void init(ByteBuffer b) {
