@@ -251,7 +251,6 @@ public class QueryPlanBuilder {
         result = new ProjectLogOperator(result, selectItems, newSchema);
       }
     }
-
     PhysicalPlanBuilder physicalPlanBuilder = new PhysicalPlanBuilder();
     try {
       result.accept(physicalPlanBuilder);

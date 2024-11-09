@@ -81,28 +81,34 @@ public class PhysicalPlanBuilder {
           new BNLOperator(
               joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
     } else if (DBCatalog.getInstance().if_SMJ()) {
-      ColumnProcessor cp = new ColumnProcessor();
-      List<OrderByElement> leftCond = cp.getOrderByElements(child[0], joinLogOperator.condition);
+      if (joinLogOperator.condition == null) {
+        rootOperator =
+            new JoinOperator(
+                joinLogOperator.outputSchema, child[0], child[1], joinLogOperator.condition);
+      } else {
+        ColumnProcessor cp = new ColumnProcessor();
+        List<OrderByElement> leftCond = cp.getOrderByElements(child[0], joinLogOperator.condition);
 
-      List<OrderByElement> rightCond = cp.getOrderByElements(child[1], joinLogOperator.condition);
-      //  TODO: change buffer pages to accurate one
-
-      SortOperator left =
-          new ExternalSortOperator(
-              child[0].getOutputSchema(),
-              leftCond,
-              child[0],
-              DBCatalog.getInstance().getSortBuff(),
-              joinLogOperator.tempDir);
-      SortOperator right =
-          new ExternalSortOperator(
-              child[1].getOutputSchema(),
-              rightCond,
-              child[1],
-              DBCatalog.getInstance().getSortBuff(),
-              joinLogOperator.tempDir);
-      rootOperator =
-          new SortMergeJoinOperator(joinLogOperator.outputSchema, left, right, leftCond, rightCond);
+        List<OrderByElement> rightCond = cp.getOrderByElements(child[1], joinLogOperator.condition);
+        //  TODO: change buffer pages to accurate one
+        SortOperator left =
+            new ExternalSortOperator(
+                child[0].getOutputSchema(),
+                leftCond,
+                child[0],
+                DBCatalog.getInstance().getSortBuff(),
+                joinLogOperator.tempDir);
+        SortOperator right =
+            new ExternalSortOperator(
+                child[1].getOutputSchema(),
+                rightCond,
+                child[1],
+                DBCatalog.getInstance().getSortBuff(),
+                joinLogOperator.tempDir);
+        rootOperator =
+            new SortMergeJoinOperator(
+                joinLogOperator.outputSchema, left, right, leftCond, rightCond);
+      }
     }
   }
 
