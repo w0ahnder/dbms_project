@@ -14,14 +14,27 @@ public abstract class Node {
     this.address = address;
   }
 
+  /**
+   *
+   * @return the address of this node
+   */
   public int getAddress() {
     return address;
   }
 
+  /**
+   *
+   * @return The child nodes of this node
+   */
   public ArrayList<Node> getChildren() {
     return children;
   }
 
+  /**
+   *
+   * @return the smallest element in this node, if a leaf, or
+   * the smallest element in the leaf level corresponding to an index node
+   */
   public abstract int smallest();
 
   public abstract String toString();

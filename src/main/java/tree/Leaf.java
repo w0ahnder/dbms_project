@@ -18,10 +18,19 @@ public class Leaf extends Node {
     this.addr = addr;
   }
 
+  /**
+
+   * @return all the keys in this leaf node
+   */
   public ArrayList<Integer> getKeys() {
     return keys;
   }
 
+  /**
+   * Creates a serial representation of this leaf node
+   * @param bb ByteBuffer to put integers into
+   * @param fc will write the contents of the buffer
+   */
   public void serial(ByteBuffer bb, FileChannel fc) {
     // Leaf nodes need 0 first
     // number of data entries in node
@@ -49,6 +58,10 @@ public class Leaf extends Node {
     }
   }
 
+  /**
+   *
+   * @return leftmost key in this leaf node
+   */
   public int smallest() {
     return keys.getFirst();
   }
@@ -61,5 +74,4 @@ public class Leaf extends Node {
     return s;
   }
 
-  public void makeLeaf() {}
 }
