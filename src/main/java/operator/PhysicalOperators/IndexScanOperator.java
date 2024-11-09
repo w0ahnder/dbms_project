@@ -62,9 +62,17 @@ public class IndexScanOperator extends ScanOperator {
       // rootToLeaf(lowkey);//get leaf info
       // now have to find the smallest key inside leaf node that is >=lowkey
       while (leafKeys.get(currLeafKeyIndex) < lowkey && currLeafKeyIndex < leafKeys.size()) {
+        int curr = leafKeys.get(currLeafKeyIndex);
         currLeafKeyIndex++;
       }
       RIDindex = 0;
+      if(clustered){
+        ArrayList<Tuple> rids = leafRids.get(currLeafKeyIndex);
+        Tuple curr = rids.get(RIDindex);
+        int page = curr.getElementAtIndex(0);
+        int row = curr.getElementAtIndex(1);
+        tr.reset(page,row);
+      }
     } catch (Exception e) {
 
       e.printStackTrace();
