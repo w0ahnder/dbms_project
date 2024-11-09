@@ -81,11 +81,11 @@ public class BulkLoadTest {
         String path = "src/test/resources/samples-2/bulkload";
         tree.tree_to_file(path + "/BoatsE_bin");
         File index_file = new File(path + "/BoatsE_bin");
-        IndexScanOperator scan = new IndexScanOperator(DBCatalog.getInstance().get_Table("Boats"), Boats, 1, false, Integer.MIN_VALUE, 10000, index_file);
-        scan.dump(new TupleWriter("src/test/resources/samples-2/indexScan/trial1"));
+        IndexScanOperator scan = new IndexScanOperator(DBCatalog.getInstance().get_Table("Boats"), Boats, 1, false, 9265, 9295, index_file);
+        scan.dump(new TupleWriter("src/test/resources/samples-2/indexScan/trial2"));
 
-        String outputDir = "src/test/resources/samples-2/indexScan/trial1_human";
-        String out2 = "src/test/resources/samples-2/indexScan/trial1";
+        String outputDir = "src/test/resources/samples-2/indexScan/trial2_human";
+        String out2 = "src/test/resources/samples-2/indexScan/trial2";
         File outFile = new File(outputDir);
         Convert c = new Convert(out2, new PrintStream(outFile));
         c.bin_to_human();

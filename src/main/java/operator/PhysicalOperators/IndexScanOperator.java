@@ -263,27 +263,33 @@ public class IndexScanOperator extends Operator {
             if (this.numberOfIndexKeys == 0){ //done reading all keys and children in that index
                 return null;
             }
-
             int curr_key = this.pageValues.get(this.currentIndexKeyPosition);
+
 
             while (!((lowKey < curr_key) || this.numberOfIndexKeys == 1)){
                 this.numberOfIndexKeys -= 1;
-                this.currentIndexKeyPosition  += 1;
+                if (this.numberOfIndexKeys > 1){
+                    this.currentIndexKeyPosition  += 1;
+                }
                 curr_key = this.pageValues.get(this.currentIndexKeyPosition);
             }
-            if (lowKey < curr_key){
+            if (lowKey < curr_key && this.numberOfIndexKeys > 1){
                 int child_page = this.pageValues.get(this.currentIndexKeyPosition + untouchedIndexKeyCount);
                 this.numberOfIndexKeys -= 1;
-                this.currentIndexKeyPosition  += 1;
+                if (this.numberOfIndexKeys > 1){
+                    this.currentIndexKeyPosition  += 1;
+                }
                 return child_page;
             }
-            if (curr_key < highKey) {
-                this.numberOfIndexKeys-=1;
-                return this.pageValues.get(this.currentIndexKeyPosition + untouchedIndexKeyCount + 1);
-            } else {
-                return null;
+            if (this.numberOfIndexKeys == 1){
+                this.numberOfIndexKeys -= 1;
+                if (curr_key < highKey){
+                    return this.pageValues.get(this.currentIndexKeyPosition + untouchedIndexKeyCount + 1);
+                }
             }
+            return null;
         }
+
 
 
         public int[] getRIDfromLeaf(){
