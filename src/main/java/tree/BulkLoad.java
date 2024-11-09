@@ -37,6 +37,12 @@ public class BulkLoad {
   // keep reading tuples and add them to a hashmap keeping track of the key, and list of (pageid,
   // tupleid)
   // want to keep track of which page a tuple is read from, and what is the tupleid
+
+  /**
+   * Keeps reading tuples and creates a hashmap containing unique elements in the
+   * index col and their locations in the table we are reading from
+   * @throws IOException
+   */
   public void load() throws IOException {
     // have to have the (pageID, tupleID) sorted first by pageID then tupleID
     HashMap<Integer, ArrayList<Tuple>> data = new HashMap<>();
@@ -66,7 +72,6 @@ public class BulkLoad {
     // case where relation is so small only one leaf node
     // 2 node tree where root node points directly to the leaf node
 
-    // TODO: NEED to make root if 2 node tree
     if (leaves.size() == 1) {
       int address = leaves.get(0).getAddress() + 1;
       ArrayList<Integer> key = new ArrayList<>();
@@ -76,8 +81,6 @@ public class BulkLoad {
       tree.addLayer(root);
       return;
     }
-    // TODO: Now do multilayers, have to find way to keep track of layers so we can make a single
-    // root
     // create index layer right above the leaves; can pass in a Leaf list
     // then create index layer on top of that, can pass in Index List
     ArrayList<Node> indPrint = new ArrayList<>();
@@ -92,6 +95,11 @@ public class BulkLoad {
     ps.close();
   }
 
+  /**
+   * Print the keys and addresses of the elements in a list of index nodes
+   * @param ind list of Index nodes
+   * @throws FileNotFoundException
+   */
   public void printIndex(ArrayList<Node> ind) throws FileNotFoundException {
     for (Node index : ind) {
       if (ind.size() == 1) {
@@ -103,7 +111,11 @@ public class BulkLoad {
       ps.println(s);
     }
   }
-
+  /**
+   * Print the keys and page information for each leaf node
+   * @param leaves list of Leaf nodes
+   * @throws FileNotFoundException
+   */
   public void printLeaves(ArrayList<Node> leaves) throws FileNotFoundException {
     for (Node leaf : leaves) {
       ps.println("Leaf Node");
@@ -112,6 +124,10 @@ public class BulkLoad {
     }
   }
 
+  /**
+   * returns the BTree created from the bulkload
+   * @return
+   */
   public BTree getTree() {
     return this.tree;
   }
@@ -124,7 +140,6 @@ public class BulkLoad {
    * @param col is the col we want to sort the table on
    * @param outputPath is where the sorted relation should be written
    */
-  // TODO: handle clustered index
   public static void sortRelation(
       String tablename, String tablepath, String col, String outputPath) {
     // in memeory sort uses column schema, orderby elements, and use a Scan operator
