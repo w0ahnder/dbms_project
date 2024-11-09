@@ -146,6 +146,7 @@ public class ExternalSortOperator extends SortOperator {
         pass++;
         num = num + numTuples;
       } catch (IOException e) {
+        System.out.println("merge error ");
         e.printStackTrace();
       }
     }
@@ -168,6 +169,7 @@ public class ExternalSortOperator extends SortOperator {
     try {
       reader.reset(index);
     } catch (Exception e) {
+      System.out.println("reset error ");
       e.printStackTrace();
     }
   }

@@ -41,7 +41,8 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    String configFile = args[0];
+    // String configFile = args[0];
+    String configFile = "src/test/resources/samples-2/interpreter_config_file.txt";
     readDirectories(configFile);
     // inputDir = args[0];
     // outputDir = args[1];

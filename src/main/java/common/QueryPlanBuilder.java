@@ -221,7 +221,8 @@ public class QueryPlanBuilder {
     // DISTINCT
     if (isDistinct) {
       if (orderByElements != null) {
-        result = new DuplicateEliminationLogOperator(schema, result);
+        result = new DuplicateEliminationLogOperator(result.getOutputSchema(), result);
+        // result = new DuplicateEliminationLogOperator(schema, result);
       } else {
         SortLogOperator child;
         if (sortConfig.get(0).equals(0)) {
