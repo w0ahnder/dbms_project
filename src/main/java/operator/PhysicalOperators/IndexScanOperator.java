@@ -215,6 +215,19 @@ public class IndexScanOperator extends ScanOperator {
   }
 
   public void reset() {
-    // TODO: resetting
+    try {
+      bufferClear();
+      fc.position(0);
+      currLeafKeyIndex = 0;
+      RIDindex = 0;
+      processNode(rootAddr);
+      while (leafKeys.get(currLeafKeyIndex) < lowkey && currLeafKeyIndex < leafKeys.size()) {
+        currLeafKeyIndex++;
+      }
+
+    } catch (Exception e) {
+
+      e.printStackTrace();
+    }
   }
 }
