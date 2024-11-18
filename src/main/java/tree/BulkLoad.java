@@ -30,7 +30,6 @@ public class BulkLoad {
     this.clustered = clustered;
     reader = new TupleReader(table);
     tree = new BTree(clustered, col, order);
-
   }
 
   // keep reading tuples and add them to a hashmap keeping track of the key, and list of (pageid,
@@ -87,11 +86,11 @@ public class BulkLoad {
     ArrayList<Node> nodes = leaves;
     while (tree.latestSize() > 1) {
       ArrayList<Node> indexes = tree.indexLayer((ArrayList<Node>) nodes);
-      //printIndex(indexes);
+      // printIndex(indexes);
       tree.addLayer(indexes);
       nodes = indexes;
     }
-    //printLeaves(leaves);
+    // printLeaves(leaves);
   }
 
   /**
