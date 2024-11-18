@@ -42,6 +42,7 @@ public class Compiler {
   public static void main(String[] args) {
 
     String configFile = args[0];
+    // String configFile = "src/test/resources/samples-2/interpreter_config_file.txt";
     readDirectories(configFile);
     // inputDir = args[0];
     // outputDir = args[1];
@@ -52,6 +53,10 @@ public class Compiler {
 
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");
     DBCatalog.getInstance().config_file(inputDir);
+    DBCatalog.getInstance().setInterpreter(configFile);
+    if (!DBCatalog.getInstance().isFullScan()) { // we have to use an index
+      DBCatalog.getInstance().processIndex(); // reads
+    }
     try {
       String str = Files.readString(Paths.get(inputDir + "/queries.sql"));
       Statements statements = CCJSqlParserUtil.parseStatements(str);
@@ -72,7 +77,9 @@ public class Compiler {
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
             // File outfile = new File(outputDir + "/query" + counter);
             long start = System.currentTimeMillis();
-            plan.dump(tw);
+            if (plan != null) {
+              plan.dump(tw);
+            }
             // plan.dump(new PrintStream(outfile));
 
             long end = System.currentTimeMillis();

@@ -1,5 +1,6 @@
 package common;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import operator.LogicalOperators.ProjectLogOperator;
 import operator.LogicalOperators.ScanLogOperator;
 import operator.LogicalOperators.SelectLogOperator;
 import operator.LogicalOperators.SortLogOperator;
+import operator.PhysicalOperators.*;
 import operator.PhysicalOperators.Operator;
 
 /**
@@ -47,18 +49,15 @@ public class QueryPlanBuilder {
   ArrayList<String> tables = new ArrayList<>();
   Integer indexFlag;
   Integer queryFlag;
+  Boolean is_sorted = false;
 
   public QueryPlanBuilder() {}
 
-
-
-  public void indexEval(){
-    if(DBCatalog.getInstance().ifBuild()){
+  public void indexEval() {
+    if (DBCatalog.getInstance().ifBuild()) {
+    } else {
+      // means indexes are provided
     }
-    else{
-      //means indexes are provided
-    }
-
   }
 
   /**
@@ -77,17 +76,18 @@ public class QueryPlanBuilder {
       Integer queryFlag)
       throws ExecutionControl.NotImplementedException {
 
+    if (!DBCatalog.getInstance().isEvalQuery()) {
+      return null;
+    }
+
     this.indexFlag = indexFlag;
     this.queryFlag = queryFlag;
+    this.is_sorted = false;
     // List<Integer> joinConfig = planConfList.get(0);
     List<Integer> sortConfig = planConfList.get(1);
 
-    //I think that the temp directory is within the interpreter_config_file.txt
-    //means we have to process this first ^^ to get the tempDir, sort/join types, inputDir, etc
-    if(!DBCatalog.getInstance().isFullScan()){// we have to use an index
-      DBCatalog.getInstance().processIndex(); //reads
-    }
-
+    // I think that the temp directory is within the interpreter_config_file.txt
+    // means we have to process this first ^^ to get the tempDir, sort/join types, inputDir, etc
 
     tables = new ArrayList<>();
     andExpressions = new ArrayList<>();
@@ -189,8 +189,11 @@ public class QueryPlanBuilder {
       schema = copyColumn(DBCatalog.getInstance().get_Table(table), table);
       LogicalOperator op = new ScanLogOperator(schema, table_path);
       ArrayList<Expression> selectExpr = selectExpressions.get(table);
+
+      // SELECT
       if (selectExpr.size() > 0) {
-        op = new SelectLogOperator(createAndExpression(selectExpressions.get(table)), op);
+        // first check if no indexing at all(not sure if necessary)
+        op = filterScanExpressions(schema, table_path, selectExpressions.get(table), tableName, op);
       }
 
       if (tables.get(0) == table) {
@@ -198,7 +201,6 @@ public class QueryPlanBuilder {
       } else {
         ArrayList<Column> outputSchema = new ArrayList<>();
         outputSchema.addAll(result.getOutputSchema());
-        // System.out.println(outputSchema);
         outputSchema.addAll(op.getOutputSchema());
         ArrayList<Expression> joinExpr = joinExpressions.get(table);
         if (joinExpr.size() == 0) {
@@ -212,25 +214,11 @@ public class QueryPlanBuilder {
 
     // ORDER BY
     if (orderByElements != null) {
+      is_sorted = true;
       if (sortConfig.get(0).equals(0)) {
         result = new SortLogOperator(orderByElements, result);
       } else {
         result = new SortLogOperator(orderByElements, result, sortConfig.get(1), tempDir);
-      }
-    }
-
-    // DISTINCT
-    if (isDistinct) {
-      if (orderByElements != null) {
-        result = new DuplicateEliminationLogOperator(schema, result);
-      } else {
-        SortLogOperator child;
-        if (sortConfig.get(0).equals(0)) {
-          child = new SortLogOperator(new ArrayList<>(), result);
-        } else {
-          child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
-        }
-        result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
       }
     }
 
@@ -248,6 +236,22 @@ public class QueryPlanBuilder {
           newSchema.add(c);
         }
         result = new ProjectLogOperator(result, selectItems, newSchema);
+      }
+    }
+
+    // DISTINCT
+    if (isDistinct) {
+      if (is_sorted) {
+        result = new DuplicateEliminationLogOperator(result.getOutputSchema(), result);
+        // result = new DuplicateEliminationLogOperator(schema, result);
+      } else {
+        SortLogOperator child;
+        if (sortConfig.get(0).equals(0)) {
+          child = new SortLogOperator(new ArrayList<>(), result);
+        } else {
+          child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
+        }
+        result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
       }
     }
 
@@ -274,6 +278,62 @@ public class QueryPlanBuilder {
     }
     ands.add(where);
     return ands;
+  }
+
+  public LogicalOperator filterScanExpressions(
+      ArrayList<Column> outputSchema,
+      String table_path,
+      List<Expression> expressions,
+      String tableName,
+      LogicalOperator op) {
+    if (expressions.size() < 1) {
+      return op;
+    }
+
+    String col = DBCatalog.getInstance().getAvailableIndexColumn(tableName);
+    if (col == null) {
+      return new SelectLogOperator(createAndExpression(expressions), op);
+    }
+
+    File indexFile = DBCatalog.getInstance().getAvailableIndex(tableName, col);
+
+    ArrayList<Expression> indexed = new ArrayList<>();
+    ArrayList<Expression> nonIndexed = new ArrayList<>();
+
+    for (Expression expr : expressions) {
+      ScanVisitor visitor = new ScanVisitor(expr, tableName + "." + col);
+      if (visitor.evaluate_expr()) {
+        indexed.add(expr);
+      } else {
+        nonIndexed.add(expr);
+      }
+    }
+    Expression indexedExpr = createAndExpression(indexed);
+    Expression nonIndexedExpr = createAndExpression(nonIndexed);
+    ScanVisitor visitor = new ScanVisitor(indexedExpr, tableName + "." + col);
+    if (indexedExpr != null) {
+      visitor.evaluate_expr();
+    }
+    Integer highKey = visitor.getHighKey();
+    Integer lowKey = visitor.getLowKey();
+    File tableFile = new File(table_path);
+    Integer ind = DBCatalog.getInstance().colIndex(tableName, col);
+    boolean clustered =
+        DBCatalog.getInstance().getClustOrd(tableName, col).getElementAtIndex(0) == 1;
+    op =
+        new SelectLogOperator(
+            indexedExpr,
+            nonIndexedExpr,
+            outputSchema,
+            table_path,
+            tableName,
+            ind,
+            clustered,
+            lowKey,
+            highKey,
+            indexFile,
+            op);
+    return op;
   }
 
   /**

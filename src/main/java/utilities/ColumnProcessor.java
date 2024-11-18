@@ -39,6 +39,9 @@ public class ColumnProcessor {
    * @return list of all the expressions in expr
    */
   private static List<Expression> getAndExpressions(Expression expr) {
+    if (expr == null) {
+      return new ArrayList<>();
+    }
     List<Expression> temp = new ArrayList<>();
     while (expr instanceof AndExpression) {
       AndExpression and = (AndExpression) expr;
