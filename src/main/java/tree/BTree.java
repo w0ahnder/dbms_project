@@ -22,7 +22,12 @@ public class BTree {
     layers = new ArrayList<>();
   }
 
-  // has to create leaf layer
+  /**
+   * Create a leaf layer
+   *
+   * @param data has the keys and pageid,rowid
+   * @return a layer of Leaf nodes
+   */
   public ArrayList<Node> leafLayer(HashMap<Integer, ArrayList<Tuple>> data) {
 
     ArrayList<Node> leaves = new ArrayList<>();
@@ -67,6 +72,12 @@ public class BTree {
     return leaves;
   }
 
+  /**
+   * create a layer of index nodes
+   *
+   * @param nodes list of nodes we include in this layer
+   * @return A new layer of nodes
+   */
   public ArrayList<Node> indexLayer(ArrayList<Node> nodes) {
     int num = nodes.size();
     int processed = 0;
@@ -99,6 +110,15 @@ public class BTree {
     return indexes;
   }
 
+  /**
+   * Creates an index node
+   *
+   * @param nodes list of nodes to put in subtree of this index node
+   * @param start where we start collecting nodes
+   * @param end where we stop getting nodes for subtree
+   * @param address address of index node
+   * @return an Index node
+   */
   public Index makeIndex(ArrayList<Node> nodes, int start, int end, int address) {
     // add pointers to all the nodes in this range
     ArrayList<Node> children = new ArrayList<>();
@@ -116,6 +136,16 @@ public class BTree {
     return new Index(children, address, keys);
   }
 
+  /**
+   * makes a leaf node
+   *
+   * @param data is the pageID, rowID tuples for all the keys
+   * @param start is from where we should start collecting the keys
+   * @param end is where we stop collecting keys to add to a leaf node
+   * @param key_arr list of keys from which we can select to include in a leaf node
+   * @param address address of where the leaf node would be
+   * @return a Leaf node with keys and (pageid, rowid) lists
+   */
   public Leaf makeLeaf(
       HashMap<Integer, ArrayList<Tuple>> data, int start, int end, Integer[] key_arr, int address) {
     // each leaf node has to have the < key, list> structure
@@ -135,6 +165,11 @@ public class BTree {
     return new Leaf(key_list, rid_lists, address);
   }
 
+  /**
+   * adds layers to our tree so we can keep track of when we eventually just reach one root node
+   *
+   * @param l is a layer of nodes to add to our tree
+   */
   public void addLayer(ArrayList<Node> l) {
     layers.add(l);
   }
@@ -155,7 +190,6 @@ public class BTree {
       ByteBuffer bb = ByteBuffer.allocate(4096);
       FileOutputStream out = new FileOutputStream(new File(path));
       FileChannel fc = out.getChannel();
-
       // header page has root address, number of leaves, order
       Node root = this.layers.getLast().get(0);
       int rootAddr = root.getAddress();
@@ -177,53 +211,17 @@ public class BTree {
       fc.close();
       out.close();
     } catch (Exception e) {
-      System.out.println("tree_to_file failed");
+      e.printStackTrace();
     }
   }
 
-  /************ Deserialize file to tree *************/
-
-  public void file_to_tree() {
-    try {
-      ByteBuffer bb = ByteBuffer.allocate(4096);
-      FileInputStream in =
-          new FileInputStream("src/test/resources/samples-2/expected_indexes/Boats.E");
-      FileChannel fc = in.getChannel();
-
-      fc.read(bb);
-      // read the header page root address, num leaves, order
-      int root_addr = bb.getInt(0);
-      int num_leaves = bb.getInt(4);
-      int order = bb.getInt(8);
-      // start processing leaf nodes
-      int page = 1;
-      List<List<Node>> lrs = new ArrayList<>();
-      List<Node> leaf_layer = new ArrayList<>();
-      for (int i = 0; i < num_leaves; i++) {
-        Node leaf = deserializeNode(page);
-        leaf_layer.add(leaf);
-        page++;
-      }
-      // now do index nodes
-      // go from root downwards bc otherwise we dont know how many index nodes are in each layer
-      // keep going down until we hit the leaf node pages
-      ArrayList<Node> index_layers = new ArrayList<>();
-      for (int i = root_addr;
-          i > num_leaves;
-          i--) { // process each page; need to figure out how to distinguish levels
-        index_layers.add(0, deserializeNode(i));
-      }
-      // number of nodes on an index level is
-      fc.close();
-      in.close();
-      PrintStream ps = new PrintStream("src/test/resources/samples-2/bulkload/deserialize_index");
-      printIndex(index_layers, ps);
-      ps.close();
-    } catch (Exception e) {
-      System.out.println("file_to_tree failed");
-    }
-  }
-
+  /**
+   * debugging function to print an index node
+   *
+   * @param ind is the list of nodes an index node points to
+   * @param ps is where to write the string representation of this index node
+   * @throws FileNotFoundException
+   */
   public void printIndex(ArrayList<Node> ind, PrintStream ps) throws FileNotFoundException {
     for (Node index : ind) {
       if (ind.size() == 1) {
@@ -236,6 +234,13 @@ public class BTree {
     }
   }
 
+  /**
+   * debugging function to print an index node
+   *
+   * @param leaves is the list of leaf nodes
+   * @param ps is where to write the string representation of these leaf nodes
+   * @throws FileNotFoundException
+   */
   public void printLeaves(List<Node> leaves, PrintStream ps) throws FileNotFoundException {
     for (Node leaf : leaves) {
       ps.println("Leaf Node");
@@ -244,92 +249,11 @@ public class BTree {
     }
   }
 
-  public Node deserializeNode(int addr) {
-    try {
-      ByteBuffer bb = ByteBuffer.allocate(4096);
-      FileInputStream in =
-          new FileInputStream("src/test/resources/samples-2/expected_indexes/Boats.E");
-      FileChannel fc = in.getChannel();
-      nextPage(bb, fc, addr);
-      int ind = bb.getInt();
-      if (ind == 1) {
-        fc.close();
-        in.close();
-        return deserializeIndex(bb, fc, addr);
-      }
-
-      fc.close();
-      in.close();
-      return deserializeLeaf(bb, fc, addr);
-    } catch (Exception e) {
-      System.out.println("deserialize node failed");
-    }
-    System.out.println("deserialize node returned null");
-    return null;
-  }
-
-  public Node deserializeIndex(ByteBuffer b, FileChannel fc, int page) {
-    // nextPage(b, fc, page);
-    int address = page;
-    int num_keys = b.getInt(); // number of keys
-    ArrayList<Integer> keys = new ArrayList<>();
-    for (int i = 0; i < num_keys; i++) { // get all the keys
-      keys.add(b.getInt());
-    }
-    // now get all the addresses for the children nodes
-    ArrayList<Integer> addresses = new ArrayList<>();
-    // follow the addresses to construct the children for this index node
-
-    ArrayList<Node> children = new ArrayList<>();
-    for (int i = 0;
-        i < num_keys + 1;
-        i++) { // get all the addresses, now follow all of the addresses to deserialize
-      addresses.add(b.getInt());
-    }
-    for (Integer addr : addresses) {
-      Node child = deserializeNode(addr);
-      children.add(child);
-    }
-
-    return new Index(children, page, keys);
-  }
-
-  public Node deserializeLeaf(ByteBuffer b, FileChannel fc, int page) {
-    int numEntries = b.getInt(); // number of data entries in this leaf
-    ArrayList<Integer> keys = new ArrayList<>();
-    ArrayList<ArrayList<Tuple>> rids = new ArrayList<>();
-    for (int i = 0; i < numEntries; i++) { // loop through all of the keys
-      keys.add(b.getInt());
-
-      int numrid = b.getInt(); // number of rids for this key
-      ArrayList<Tuple> list = new ArrayList<>();
-      // get all the data for this specific key
-      for (int r = 0; r < numrid; r++) {
-        int pgid = b.getInt();
-        int tid = b.getInt();
-        ArrayList<Integer> elem = new ArrayList<>();
-        elem.add(pgid);
-        elem.add(tid);
-        list.add(new Tuple(elem));
-      }
-      rids.add(list);
-    }
-    return new Leaf(keys, rids, page);
-  }
-
-  public void nextPage(ByteBuffer bb, FileChannel fc, int pg) {
-    init(bb); // fill with 0's
-    // set file channel to start reading on this new page
-    try {
-      fc.position(4096 * pg);
-      fc.read(bb); // get data on this page
-      bb.flip(); // limit = curr position, position = 0
-    } catch (Exception e) {
-      System.out.println("deserialize next page failed");
-    }
-  }
-
-  // from Tuple writer
+  /**
+   * use to initialize a byte buffer
+   *
+   * @param b ByteBuffer
+   */
   public void init(ByteBuffer b) {
     b.clear();
     b.put(new byte[4096]);

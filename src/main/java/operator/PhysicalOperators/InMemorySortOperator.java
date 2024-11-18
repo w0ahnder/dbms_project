@@ -58,7 +58,15 @@ public class InMemorySortOperator extends SortOperator {
   }
 
   public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
-    result.sort(new TupleComparator());
+    try {
+      result.sort(new TupleComparator());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return result;
+  }
+
+  public ArrayList<Tuple> getResult() {
     return result;
   }
 
@@ -79,6 +87,7 @@ public class InMemorySortOperator extends SortOperator {
     curr += 1;
     return result.get(curr - 1);
   }
+
 
   /** Custom Comparator class to compare two tuples based on columns */
   private class TupleComparator implements Comparator<Tuple> {

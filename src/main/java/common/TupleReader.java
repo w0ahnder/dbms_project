@@ -76,8 +76,32 @@ public class TupleReader {
       // clear out everything from buffer
       bufferClear();
     }
-    // System.out.println("Reader tuple: " + null);
     return null;
+  }
+
+  public void reset(int pageId, int tupleId) {
+
+    try {
+      fc.position((pageId) * 4096);
+      bufferClear(); // clear out all elements from buffer
+      page_start = true;
+      done = false;
+      // have to set position of buffer so that the buffer only reads this page's tuples; dont go
+      // onto
+      // next
+      buff.clear(); // position is at 0, limit is at capacity
+      int reads = fc.read(buff);
+
+      if (reads >= 0) { // we can read from from channel
+        newPage(); // get metadata
+        int offset = tupleId * numAttr * 4;
+        buff.position(offset + 8); // byte to start reading at on this page
+        page_start = false;
+      }
+
+    } catch (IOException e) {
+      System.out.println("Reset to page, tuple failed");
+    }
   }
 
   // set the page up to be read

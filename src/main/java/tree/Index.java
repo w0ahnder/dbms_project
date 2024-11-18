@@ -18,6 +18,11 @@ public class Index extends Node {
     num_keys = keys.size();
   }
 
+  /**
+   * gets the smallest element in leaf level following the subtrees of this index node
+   *
+   * @return the leftmost key in leaf layer for this index node
+   */
   public int smallest() {
     return children.get(0).smallest();
   }
@@ -27,6 +32,12 @@ public class Index extends Node {
   // actual keys in order
   // address of all children nodes
 
+  /**
+   * Creates a serial representation of this index node
+   *
+   * @param bb ByteBuffer to put integers into
+   * @param fc will write the contents of the buffer to the location of our index file
+   */
   public void serial(ByteBuffer bb, FileChannel fc) {
 
     // index node needs 1 first
@@ -48,6 +59,11 @@ public class Index extends Node {
     }
   }
 
+  /**
+   * String representation of this Index that prints its keys and their addresses
+   *
+   * @return
+   */
   public String toString() {
     String s = "";
     s += "keys " + keys.toString() + " addresses ";

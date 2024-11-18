@@ -10,7 +10,7 @@ import operator.PhysicalOperators.*;
 
 public class SelectLogOperator implements LogicalOperator {
 
-  public File table_file;
+  public String table_name;
   public int ind;
   public boolean clustered;
   public File index_file;
@@ -28,7 +28,7 @@ public class SelectLogOperator implements LogicalOperator {
       Expression unIndexedExpr,
       ArrayList<Column> outputSchema,
       String table_path,
-      File table_file,
+      String table_name,
       int ind,
       boolean clustered,
       int low,
@@ -39,7 +39,7 @@ public class SelectLogOperator implements LogicalOperator {
     this.unIndexedExpr = unIndexedExpr;
     this.outputSchema = outputSchema;
     this.table_path = table_path;
-    this.table_file = table_file;
+    this.table_name = table_name;
     this.ind = ind;
     this.clustered = clustered;
     this.lowKey = low;

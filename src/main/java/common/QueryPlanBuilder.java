@@ -49,6 +49,7 @@ public class QueryPlanBuilder {
   ArrayList<String> tables = new ArrayList<>();
   Integer indexFlag;
   Integer queryFlag;
+  Boolean is_sorted = false;
 
   public QueryPlanBuilder() {}
 
@@ -75,16 +76,18 @@ public class QueryPlanBuilder {
       Integer queryFlag)
       throws ExecutionControl.NotImplementedException {
 
+    if (!DBCatalog.getInstance().isEvalQuery()) {
+      return null;
+    }
+
     this.indexFlag = indexFlag;
     this.queryFlag = queryFlag;
+    this.is_sorted = false;
     // List<Integer> joinConfig = planConfList.get(0);
     List<Integer> sortConfig = planConfList.get(1);
 
     // I think that the temp directory is within the interpreter_config_file.txt
     // means we have to process this first ^^ to get the tempDir, sort/join types, inputDir, etc
-    if (!DBCatalog.getInstance().isFullScan()) { // we have to use an index
-      DBCatalog.getInstance().processIndex(); // reads
-    }
 
     tables = new ArrayList<>();
     andExpressions = new ArrayList<>();
@@ -198,7 +201,6 @@ public class QueryPlanBuilder {
       } else {
         ArrayList<Column> outputSchema = new ArrayList<>();
         outputSchema.addAll(result.getOutputSchema());
-        // System.out.println(outputSchema);
         outputSchema.addAll(op.getOutputSchema());
         ArrayList<Expression> joinExpr = joinExpressions.get(table);
         if (joinExpr.size() == 0) {
@@ -212,25 +214,11 @@ public class QueryPlanBuilder {
 
     // ORDER BY
     if (orderByElements != null) {
+      is_sorted = true;
       if (sortConfig.get(0).equals(0)) {
         result = new SortLogOperator(orderByElements, result);
       } else {
         result = new SortLogOperator(orderByElements, result, sortConfig.get(1), tempDir);
-      }
-    }
-
-    // DISTINCT
-    if (isDistinct) {
-      if (orderByElements != null) {
-        result = new DuplicateEliminationLogOperator(schema, result);
-      } else {
-        SortLogOperator child;
-        if (sortConfig.get(0).equals(0)) {
-          child = new SortLogOperator(new ArrayList<>(), result);
-        } else {
-          child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
-        }
-        result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
       }
     }
 
@@ -248,6 +236,22 @@ public class QueryPlanBuilder {
           newSchema.add(c);
         }
         result = new ProjectLogOperator(result, selectItems, newSchema);
+      }
+    }
+
+    // DISTINCT
+    if (isDistinct) {
+      if (is_sorted) {
+        result = new DuplicateEliminationLogOperator(result.getOutputSchema(), result);
+        // result = new DuplicateEliminationLogOperator(schema, result);
+      } else {
+        SortLogOperator child;
+        if (sortConfig.get(0).equals(0)) {
+          child = new SortLogOperator(new ArrayList<>(), result);
+        } else {
+          child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
+        }
+        result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
       }
     }
 
@@ -288,7 +292,6 @@ public class QueryPlanBuilder {
 
     String col = DBCatalog.getInstance().getAvailableIndexColumn(tableName);
     if (col == null) {
-      System.out.println("col should be null obvii");
       return new SelectLogOperator(createAndExpression(expressions), op);
     }
 
@@ -298,7 +301,7 @@ public class QueryPlanBuilder {
     ArrayList<Expression> nonIndexed = new ArrayList<>();
 
     for (Expression expr : expressions) {
-      ScanVisitor visitor = new ScanVisitor(expr, tableName);
+      ScanVisitor visitor = new ScanVisitor(expr, tableName + "." + col);
       if (visitor.evaluate_expr()) {
         indexed.add(expr);
       } else {
@@ -307,7 +310,10 @@ public class QueryPlanBuilder {
     }
     Expression indexedExpr = createAndExpression(indexed);
     Expression nonIndexedExpr = createAndExpression(nonIndexed);
-    ScanVisitor visitor = new ScanVisitor(indexedExpr, tableName);
+    ScanVisitor visitor = new ScanVisitor(indexedExpr, tableName + "." + col);
+    if (indexedExpr != null) {
+      visitor.evaluate_expr();
+    }
     Integer highKey = visitor.getHighKey();
     Integer lowKey = visitor.getLowKey();
     File tableFile = new File(table_path);
@@ -320,7 +326,7 @@ public class QueryPlanBuilder {
             nonIndexedExpr,
             outputSchema,
             table_path,
-            tableFile,
+            tableName,
             ind,
             clustered,
             lowKey,
