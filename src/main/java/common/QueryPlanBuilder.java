@@ -11,7 +11,9 @@ import java.util.Optional;
 import jdk.jshell.spi.ExecutionControl;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
+import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
@@ -142,6 +144,14 @@ public class QueryPlanBuilder {
     if (where != null) {
       andExpressions = getAndExpressions(where);
     }
+
+    SelectPushVisitor pushSelect = new SelectPushVisitor(where);
+    pushSelect.evaluate_expr();
+    //merge the useable_expr with the joins and sameTableSelect to get all expressions
+    System.out.println("Self table select: " + pushSelect.sameTableSelect);
+    System.out.println("Joins: " + pushSelect.joins);
+    System.out.println("Generated select expr: " + pushSelect.usable_expr.generateExpr());
+
 
     // For Project
     List<SelectItem> selectItems = plainSelect.getSelectItems();
