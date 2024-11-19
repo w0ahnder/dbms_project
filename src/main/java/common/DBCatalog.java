@@ -86,6 +86,58 @@ public class DBCatalog {
     }
   }
 
+  public void createStatsFile(String directory){
+      String inputPath = directory + "/db/data";
+      String outputPath = directory + "/stats.txt";
+      try{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath));
+        for (String key : tables.keySet()){
+          String table_stat = analyzeData(inputPath+"/"+key, tables.get(key), key);
+          writer.write(table_stat);
+          writer.newLine();
+        }writer.close();
+
+      }
+      catch (Exception e){
+        e.printStackTrace();
+      }
+
+  }
+
+  public String analyzeData(String path, ArrayList<Column> cols, String table ){
+    try{
+      int numberOfCols = cols.size();
+      int[][] file_stat = new int[numberOfCols][2];
+      int count = 0;
+      TupleReader reader = new TupleReader(new File(path));
+      Tuple tup = reader.read();
+      while (tup != null){
+        for(int i = 0; i < numberOfCols; i++){
+          int val = tup.getElementAtIndex(i);
+          if (count == 0){
+            file_stat[i][0] = val;
+            file_stat[i][1] = val;
+          }else{
+            file_stat[i][0] = Math.min(val, file_stat[i][0]);
+            file_stat[i][1] = Math.max(val, file_stat[i][1]);
+          }
+        }count++;
+        tup = reader.read();
+      }
+      String tableSize = table + " " + count;
+      StringBuilder builder = new StringBuilder();
+      for (int i = 0; i < numberOfCols; i++){
+        String col_name = cols.get(i).toString().split("\\.")[1];
+        builder.append(col_name).append(",").append(file_stat[i][0]).append(",").append(file_stat[i][1]).append(" ");
+      }
+      return tableSize + " " + builder;
+
+    }catch (Exception e){
+      e.printStackTrace();
+    }
+      return null;
+  }
+
   /**
    * Gets path to file where a particular table is stored
    *
@@ -226,7 +278,6 @@ public class DBCatalog {
       logger.error(e.getMessage());
     }
   }
-
   /**
    * @return sort_buff is the number of buffer pages for sorting if external
    */

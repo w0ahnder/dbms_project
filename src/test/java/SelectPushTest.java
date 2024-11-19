@@ -42,6 +42,8 @@ public class SelectPushTest {
         URI queriesFile =
                 Objects.requireNonNull(classLoader.getResource("samples-2/input/selectPush.sql")).toURI();
 
+        DBCatalog.getInstance().createStatsFile("src/test/resources/binary_samples/input");
+
         statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
         queryPlanBuilder = new QueryPlanBuilder();
         statementList = statements.getStatements();
