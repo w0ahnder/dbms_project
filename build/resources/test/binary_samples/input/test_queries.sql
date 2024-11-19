@@ -1,2 +1,0 @@
-SELECT * FROM Boats;
-SELECT * FROM Sailors;
