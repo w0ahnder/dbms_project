@@ -35,7 +35,7 @@ public class DBCatalog {
   private boolean buildIndex = false;
   private boolean evalQuery = false;
   private HashMap<String, Tuple> index_info; //<table.col, (clustered, order)>
-  private HashMap<String, File> availableIndex;// <table.col, file for the index>
+  private HashMap<String, File> availableIndex = new HashMap<>();// <table.col, file for the index>
 
   private int BNLJ_buff;
   private int sort_type; // 0 if in memory
