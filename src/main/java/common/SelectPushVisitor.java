@@ -47,7 +47,6 @@ public class SelectPushVisitor implements ExpressionVisitor {
         String left_str = equalsTo.getLeftExpression().toString();
         String right_str = equalsTo.getRightExpression().toString();
 
-        //Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])
         try {
             Integer eq = Integer.parseInt(right_str);
             usable_expr.setEquality(left_str, eq);
@@ -73,7 +72,6 @@ public class SelectPushVisitor implements ExpressionVisitor {
             usable_expr.setLower(left_str, lower);
 
         }catch(NumberFormatException e){
-            usable_expr.mergeElements(left_str, right_str);
             if(Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])){
                 sameTableSelect.add(greaterThan);
             }else{
@@ -91,7 +89,6 @@ public class SelectPushVisitor implements ExpressionVisitor {
             usable_expr.setLower(left_str, lower);
 
         }catch(NumberFormatException e){
-            usable_expr.mergeElements(left_str, right_str);
             if(Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])){
                 sameTableSelect.add(greaterThanEquals);
             }else{
@@ -109,7 +106,6 @@ public class SelectPushVisitor implements ExpressionVisitor {
             usable_expr.setUpper(left_str, upper);
 
         }catch(NumberFormatException e){
-            usable_expr.mergeElements(left_str, right_str);
             if(Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])){
                 sameTableSelect.add(minorThan);
             }else{
@@ -127,7 +123,6 @@ public class SelectPushVisitor implements ExpressionVisitor {
             usable_expr.setUpper(left_str, upper);
 
         }catch(NumberFormatException e){
-            usable_expr.mergeElements(left_str, right_str);
             if(Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])){
                 sameTableSelect.add(minorThanEquals);
             }else{
