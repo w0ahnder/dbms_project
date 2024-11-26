@@ -36,6 +36,7 @@ public class DBCatalog {
   private boolean evalQuery = false;
   private HashMap<String, Tuple> index_info; //<table.col, (clustered, order)>
   private HashMap<String, File> availableIndex = new HashMap<>();// <table.col, file for the index>
+  private HashMap<String, TableStats> tableStats = new HashMap<>();
 
   private int BNLJ_buff;
   private int sort_type; // 0 if in memory
@@ -107,6 +108,8 @@ public class DBCatalog {
   public String analyzeData(String path, ArrayList<Column> cols, String table ){
     try{
       int numberOfCols = cols.size();
+      //number of rows equal to the number of columns in the table
+      //each row holds min and high fo each column
       int[][] file_stat = new int[numberOfCols][2];
       int count = 0;
       TupleReader reader = new TupleReader(new File(path));
@@ -115,6 +118,7 @@ public class DBCatalog {
         for(int i = 0; i < numberOfCols; i++){
           int val = tup.getElementAtIndex(i);
           if (count == 0){
+            //first time enetering loop, init the min and max for each column
             file_stat[i][0] = val;
             file_stat[i][1] = val;
           }else{
@@ -124,12 +128,17 @@ public class DBCatalog {
         }count++;
         tup = reader.read();
       }
+      reader.reset();
+      TableStats stats = new TableStats(table, count); /********/
       String tableSize = table + " " + count;
       StringBuilder builder = new StringBuilder();
       for (int i = 0; i < numberOfCols; i++){
         String col_name = cols.get(i).toString().split("\\.")[1];
         builder.append(col_name).append(",").append(file_stat[i][0]).append(",").append(file_stat[i][1]).append(" ");
+
+        stats.addColumnInfo(col_name,file_stat[i][0], file_stat[i][1]);/********/
       }
+      tableStats.put(table, stats);/********/
       return tableSize + " " + builder;
 
     }catch (Exception e){
@@ -390,33 +399,33 @@ public class DBCatalog {
         String attribute = splits[1];
         int clust = Integer.parseInt(splits[2]);
         int order = Integer.parseInt(splits[3]);
-        // can name file table.col and catch a file not found exception
-
-        // find index of attribute in table schema
         int cindex = colIndex(table, attribute);
         ArrayList<Integer> elements = new ArrayList<>();
         elements.add(clust);
         elements.add(order);
         index_info.put(table + "." + attribute, new Tuple(elements));
         // if index not available, have to build
-        if (buildIndex) {
-          boolean clustered = clust == 1; // 1 if clustered
-          File relation = new File(dbDirectory + "/data/" + table);
-          if (clustered) {
-            String tablePath = dbDirectory + "/data/" + table;
-            BulkLoad.sortRelation(table, tablePath, attribute, tablePath);
-          }
+        //Boats E 1 10
+        //Boats D 0 9 ... //have to keep track of all indexes for a table
 
-          BulkLoad bl = new BulkLoad(relation, order, cindex, clustered);
-          bl.load();
-          BTree btree = bl.getTree();
-          String p = dbDirectory + "/indexes/" + table + "." + attribute;
-          btree.tree_to_file(p); // serialize the tree and write to File
-          availableIndex.put(table + "." + attribute, new File(p));
-        } else {
-          File givenIndex = new File(dbDirectory + "/indexes/" + table + "." + attribute);
-          availableIndex.put(table + "." + attribute, givenIndex);
+        boolean clustered = clust == 1; // 1 if clustered
+        File relation = new File(dbDirectory + "/data/" + table);
+        if (clustered) {
+          String tablePath = dbDirectory + "/data/" + table;
+          BulkLoad.sortRelation(table, tablePath, attribute, tablePath);
         }
+        BulkLoad bl = new BulkLoad(relation, order, cindex, clustered);
+        bl.load();
+        BTree btree = bl.getTree();
+        tableStats.get(table).setColLeaves(attribute, btree);
+
+        String p = dbDirectory + "/indexes/" + table + "." + attribute;
+        btree.tree_to_file(p); // serialize the tree and write to File
+        availableIndex.put(table + "." + attribute, new File(p));
+
+          //File givenIndex = new File(dbDirectory + "/indexes/" + table + "." + attribute);
+          //availableIndex.put(table + "." + attribute, givenIndex);
+
         //if index available have to set correct path
 
       }
@@ -426,6 +435,9 @@ public class DBCatalog {
     }
   }
 
+  public Tuple getIndexInfo(String table, String col){
+    return index_info.get(table + "." +col);
+  }
   /**
    * Returns the indexed File for table.col if it exists
    * @param table that we want to check if there is an index for
@@ -440,6 +452,9 @@ public class DBCatalog {
     return null;
   }
 
+  public TableStats getTableStats(String table){
+    return tableStats.get(table);
+  }
   /**
    * Return the column name part after "table." if it exists
    *
@@ -448,12 +463,16 @@ public class DBCatalog {
    */
   public String getAvailableIndexColumn(String table) {
     String prefix = table + ".";
+    ArrayList<String> indexes = new ArrayList<>();
     for (String indexName : availableIndex.keySet()) {
       if (indexName.startsWith(prefix)) {
         return indexName.substring(prefix.length());
+        //indexes.add(indexName);
       }
     }
-    return null; // Return null if no match found
+    //
+    // return !indexes.isEmpty() ? indexes: null; // Return null if no match found
+    return null;
   }
 
   /**

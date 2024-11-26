@@ -26,17 +26,21 @@ public class PhysicalPlanBuilder {
 
   public void visit(SelectLogOperator selectLogOperator) throws FileNotFoundException {
     selectLogOperator.scan.accept(this);
-    if (selectLogOperator.where != null) {
+    if (selectLogOperator.where != null) {// the table has no index, so just use regular scan, this is okay
       rootOperator =
           new SelectOperator(
               rootOperator.getOutputSchema(), (ScanOperator) rootOperator, selectLogOperator.where);
-    } else if (selectLogOperator.indexedExpr == null) {
+    }
+    else if (selectLogOperator.indexedExpr == null) {//only have unindexed expressions, should also be okay
       rootOperator =
           new SelectOperator(
               rootOperator.getOutputSchema(),
               (ScanOperator) rootOperator,
               selectLogOperator.unIndexedExpr);
-    } else if (selectLogOperator.unIndexedExpr == null) {
+    }
+    //if we reach this point, then we know that there are indexes and that we have expressions we can use them on
+    //so have to check which is more optimal, a full scan or index scan
+    else if (selectLogOperator.unIndexedExpr == null) {//only have expressions that can be evaluated with an index
       rootOperator =
           new IndexScanOperator(
               selectLogOperator.outputSchema,
@@ -47,7 +51,11 @@ public class PhysicalPlanBuilder {
               selectLogOperator.lowKey,
               selectLogOperator.highKey,
               selectLogOperator.clustered);
-    } else {
+    } else { //some expressions have indexes, the other's don't
+      System.out.println("unindexed and indexed expressions");
+      System.out.println("unindexed: " + selectLogOperator.unIndexedExpr);
+      System.out.println("indexed low, high: " +
+              selectLogOperator.lowKey+", " + selectLogOperator.highKey);
       ScanOperator childOperator =
           new IndexScanOperator(
               selectLogOperator.outputSchema,

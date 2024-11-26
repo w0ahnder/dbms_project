@@ -2,6 +2,7 @@ package common;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -180,10 +181,10 @@ public class QueryPlanBuilder {
       tablesInExpression = tablesNamesFinder.getTableList(expr);
       if (tablesInExpression.size() == 0) {
         // ADDING EXPRESSIONS WITH NO TABLE TO THE FIRST TABLE
-        selectExpressions.get(tables.get(0)).add(expr);
-      } else if (tablesInExpression.size() == 1) {
+        selectExpressions.get(tables.get(0)).add(expr); //means select expressions for a table, only have one table in them
+      } else if (tablesInExpression.size() == 1) {//get the tablein the expression and add the expression
         selectExpressions.get(tablesInExpression.get(0).trim()).add(expr);
-      } else {
+      } else {//if expression has more than one table, get the last table and put the expression for it
         Integer firstTableIndex = tables.indexOf(tablesInExpression.get(0).trim());
         Integer secondTableIndex = tables.indexOf(tablesInExpression.get(1).trim());
         String lastTable = tables.get(Integer.max(firstTableIndex, secondTableIndex));
@@ -203,8 +204,12 @@ public class QueryPlanBuilder {
       // SELECT
       if (selectExpr.size() > 0) {
         // first check if no indexing at all(not sure if necessary)
-        op = filterScanExpressions(schema, table_path, selectExpressions.get(table), tableName, op);
-      }
+        //op = filterScanExpressions(schema, table_path, selectExpressions.get(table), tableName, op);
+        SelectPlan selectPlan = new SelectPlan(tableName, schema, table_path, selectExpressions.get(table), op);
+        selectPlan.plan(createAndExpression(selectExpressions.get(table)));
+        op = selectPlan.optimalPlan();
+
+      }//for each table, check if can use index scan or need regular select
 
       if (tables.get(0) == table) {
         result = op;
@@ -299,38 +304,44 @@ public class QueryPlanBuilder {
     if (expressions.size() < 1) {
       return op;
     }
+    //have to change since, can now support more than one column
+
+    // TODO: have to change catalog to have multiple indexes for a table
 
     String col = DBCatalog.getInstance().getAvailableIndexColumn(tableName);
-    if (col == null) {
+    if (col == null) { //no index available for the columns
       return new SelectLogOperator(createAndExpression(expressions), op);
     }
 
     File indexFile = DBCatalog.getInstance().getAvailableIndex(tableName, col);
-
     ArrayList<Expression> indexed = new ArrayList<>();
     ArrayList<Expression> nonIndexed = new ArrayList<>();
 
-    for (Expression expr : expressions) {
-      ScanVisitor visitor = new ScanVisitor(expr, tableName + "." + col);
-      if (visitor.evaluate_expr()) {
-        indexed.add(expr);
-      } else {
-        nonIndexed.add(expr);
+    for (Expression expr : expressions) {//if expression only has columns in same table add to index
+      for(Column c: outputSchema) {
+        ScanVisitor visitor = new ScanVisitor(expr, tableName + "." + c);
+        //eval is true when the expression only has columns that are equal to tableName.col =>can use an index
+        if (visitor.evaluate_expr()) {
+          indexed.add(expr);
+        } else {
+          nonIndexed.add(expr);
+        }
       }
     }
     Expression indexedExpr = createAndExpression(indexed);
     Expression nonIndexedExpr = createAndExpression(nonIndexed);
     ScanVisitor visitor = new ScanVisitor(indexedExpr, tableName + "." + col);
-    if (indexedExpr != null) {
+    if (indexedExpr != null) {//get high and low for the expression
       visitor.evaluate_expr();
     }
     Integer highKey = visitor.getHighKey();
     Integer lowKey = visitor.getLowKey();
     File tableFile = new File(table_path);
-    Integer ind = DBCatalog.getInstance().colIndex(tableName, col);
+    Integer ind = DBCatalog.getInstance().colIndex(tableName, col);//get the index for col in tableName
     boolean clustered =
         DBCatalog.getInstance().getClustOrd(tableName, col).getElementAtIndex(0) == 1;
-    op =
+    //i can use the plan thing here and use a boolean to indicate whether to use index or full scan
+    op =//just take all of the indexed and unindexed expressisons
         new SelectLogOperator(
             indexedExpr,
             nonIndexedExpr,

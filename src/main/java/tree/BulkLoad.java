@@ -67,6 +67,7 @@ public class BulkLoad {
 
     // have to create leaf layer
     ArrayList<Node> leaves = tree.leafLayer(data);
+    tree.setNumLeaves(leaves.size());
     tree.addLayer(leaves);
     // now have to make index layer
 
