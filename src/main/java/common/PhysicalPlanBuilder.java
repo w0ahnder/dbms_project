@@ -56,6 +56,7 @@ public class PhysicalPlanBuilder {
       System.out.println("unindexed: " + selectLogOperator.unIndexedExpr);
       System.out.println("indexed low, high: " +
               selectLogOperator.lowKey+", " + selectLogOperator.highKey);
+      //TODO: change lowkey from Integer.MIN_VALUE to the minimum value of that column
       ScanOperator childOperator =
           new IndexScanOperator(
               selectLogOperator.outputSchema,

@@ -28,11 +28,20 @@ public class Element {
     }
 
     void setUpper(Integer val){
-        this.upper = val;
+        if (this.upper == null){
+            this.upper = val;
+        }else{
+            this.upper = Integer.min(val, this.upper);
+        }
+
     }
 
-    void setLower(Integer val){
-        this.lower = val;
+    void setLower(Integer val) {
+        if (this.lower == null) {
+            this.lower = val;
+        } else {
+            this.lower = Integer.max(val, this.lower);
+        }
     }
 
     void setEquality(Integer val){
