@@ -1,6 +1,4 @@
 package operator.LogicalOperators;
-
-import common.IndexInfo;
 import common.PhysicalPlanBuilder;
 import java.io.File;
 import java.io.FileNotFoundException;

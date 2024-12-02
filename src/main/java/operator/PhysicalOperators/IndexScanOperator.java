@@ -256,6 +256,13 @@ public class IndexScanOperator extends ScanOperator {
       while (leafKeys.get(currLeafKeyIndex) < lowkey && currLeafKeyIndex < leafKeys.size()) {
         currLeafKeyIndex++;
       }
+      if(clustered){
+        ArrayList<Tuple> rids = leafRids.get(currLeafKeyIndex);
+        Tuple curr = rids.get(RIDindex);
+        int page = curr.getElementAtIndex(0);
+        int row = curr.getElementAtIndex(1);
+        tr.reset(page, row);
+      }
 
     } catch (Exception e) {
 

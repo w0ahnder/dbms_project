@@ -205,7 +205,7 @@ public class QueryPlanBuilder {
       if (selectExpr.size() > 0) {
         // first check if no indexing at all(not sure if necessary)
         //op = filterScanExpressions(schema, table_path, selectExpressions.get(table), tableName, op);
-        SelectPlan selectPlan = new SelectPlan(tableName, schema, table_path, selectExpressions.get(table), op);
+        SelectPlan selectPlan = new SelectPlan(table, schema, table_path, selectExpressions.get(table), op);
         selectPlan.plan(createAndExpression(selectExpressions.get(table)));
         op = selectPlan.optimalPlan();
 

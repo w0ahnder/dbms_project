@@ -95,6 +95,7 @@ public class SelectPlan {
     public LogicalOperator optimalPlan(){
         int pages = ((numTuples*numCols*4)/4096) +1;//
         double indexScan = pages;
+        System.out.println("regular scan cost: " + indexScan);
         for(String col: colMinMax.keySet()){
             /***computing reduction factor*/
             Integer[] colRange = stats.getColumnInfo(col);
@@ -115,6 +116,7 @@ public class SelectPlan {
                 indexScan = 3 + (numLeaves*numTuples)/redFactor;
             }
             //now keep track of cost for each index on available column
+            System.out.println("index scan cost for " + col + ": " + indexScan);
             colIndexCost.put(col, indexScan);
         }
 
@@ -142,6 +144,7 @@ public class SelectPlan {
         //an index for (indexed expressions)
         //and the ones we cant unindexed exp
         Expression unindexed = combineUnindexed(minCol);
+
         return createOP(unindexed, minCol);
 
 
@@ -156,6 +159,9 @@ public class SelectPlan {
         boolean clustered =
                 DBCatalog.getInstance().getClustOrd(tableName, col).getElementAtIndex(0) == 1;
         File indexFile = DBCatalog.getInstance().getAvailableIndex(tableName, col);
+        System.out.println("IndexedExpr: " + indexedExpr);
+        System.out.println("Unindexed Expr: " + unIndexedExpr);
+        System.out.println("Indexing column: " + col);
         return new SelectLogOperator(indexedExpr, unIndexedExpr, schema, tablePath, tableName,
                 ind, clustered, low, high, indexFile, scan);
     }
