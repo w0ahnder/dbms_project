@@ -165,4 +165,37 @@ public class SelectPlanTest {
         c.bin_to_human();
 
     }
+    @Test
+    public void testQuery7()
+            throws ExecutionControl.NotImplementedException,
+            JSQLParserException,
+            IOException,
+            URISyntaxException {
+        DBCatalog.getInstance().processIndex();
+        Statement stmt = statementList.get(6);
+        Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+        String binaryDir = "src/test/resources/samples-2/selectPlanTest/output";//directory for binary files
+        TupleWriter tw = new TupleWriter(binaryDir + "/query7");
+        plan.dump(tw);
+        File humanFile = new File("src/test/resources/samples-2/selectPlanTest/human/query7_human");
+        Convert c = new Convert(binaryDir + "/query7", new PrintStream(humanFile));
+        c.bin_to_human();
+    }
+    @Test
+    public void testQuery8()
+            throws ExecutionControl.NotImplementedException,
+            JSQLParserException,
+            IOException,
+            URISyntaxException {
+        DBCatalog.getInstance().processIndex();
+        Statement stmt = statementList.get(7);
+        Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+        String binaryDir = "src/test/resources/samples-2/selectPlanTest/output";//directory for binary files
+        TupleWriter tw = new TupleWriter(binaryDir + "/query8");
+        plan.dump(tw);
+        File humanFile = new File("src/test/resources/samples-2/selectPlanTest/human/query8_human");
+        Convert c = new Convert(binaryDir + "/query8", new PrintStream(humanFile));
+        c.bin_to_human();
+
+    }
 }

@@ -33,16 +33,18 @@ public class SelectPushTest {
     @BeforeAll
     static void setupBeforeAllTests() throws IOException, JSQLParserException, URISyntaxException {
         ClassLoader classLoader = SelectPushTest.class.getClassLoader();
-        URI path = Objects.requireNonNull(classLoader.getResource("binary_samples/input")).toURI();
+        URI path = Objects.requireNonNull(classLoader.getResource("samples-2/input")).toURI();
         Path resourcePath = Paths.get(path);
         // System.out.println("DB path" + resourcePath.resolve("db").toString());
         DBCatalog.getInstance().setDataDirectory(resourcePath.resolve("db").toString());
-        DBCatalog.getInstance().config_file(resourcePath.toString());
+        //DBCatalog.getInstance().config_file(resourcePath.toString());
         DBCatalog.getInstance().setEvalQuery(true);
+
         URI queriesFile =
                 Objects.requireNonNull(classLoader.getResource("samples-2/input/selectPush.sql")).toURI();
 
         DBCatalog.getInstance().createStatsFile("src/test/resources/binary_samples/input");
+        DBCatalog.getInstance().processIndex();
 
         statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
         queryPlanBuilder = new QueryPlanBuilder();
@@ -63,6 +65,7 @@ public class SelectPushTest {
             JSQLParserException,
             IOException,
             URISyntaxException {
+        DBCatalog.getInstance().processIndex();
         Statement stmt = statementList.get(0);
         Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
         // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
@@ -84,6 +87,7 @@ public class SelectPushTest {
             JSQLParserException,
             IOException,
             URISyntaxException {
+        DBCatalog.getInstance().processIndex();
         Statement stmt = statementList.get(1);
         Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
         // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());

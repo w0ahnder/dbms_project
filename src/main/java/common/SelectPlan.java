@@ -88,6 +88,9 @@ public class SelectPlan {
                         unindexedExpressions.add(exp);
                     }
                 }
+                else{
+                        unindexedExpressions.add(exp);
+                }
         }
         //optimalPlan();
     }
