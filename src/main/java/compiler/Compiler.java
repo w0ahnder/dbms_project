@@ -54,6 +54,7 @@ public class Compiler {
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");
     DBCatalog.getInstance().config_file(inputDir);
     DBCatalog.getInstance().setInterpreter(configFile);
+    DBCatalog.getInstance().createStatsFile(inputDir);
     if (!DBCatalog.getInstance().isFullScan()) { // we have to use an index
       DBCatalog.getInstance().processIndex(); // reads
     }
@@ -64,7 +65,7 @@ public class Compiler {
       List<List<Integer>> planConfig = readNumbersFromFile(inputDir + "/plan_builder_config.txt");
       if (outputToFiles) {
         for (File file : (new File(tempDir).listFiles())) file.delete();
-        for (File file : (new File(outputDir).listFiles())) file.delete(); // clean output directory
+        for (File file : (new File(outputDir).listFiles())) file.delete();
       }
 
       int counter = 1; // for numbering output files
@@ -73,11 +74,10 @@ public class Compiler {
           Operator plan =
               queryPlanBuilder.buildPlan(statement, tempDir, planConfig, indexFlag, queryFlag);
           if (outputToFiles) {
-            // TODO: change to Binary format
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
-            // File outfile = new File(outputDir + "/query" + counter);
             long start = System.currentTimeMillis();
             if (plan != null) {
+              System.out.println(plan);
               plan.dump(tw);
             }
             // plan.dump(new PrintStream(outfile));

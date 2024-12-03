@@ -2,7 +2,6 @@ package common;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,17 +11,15 @@ import java.util.Optional;
 import jdk.jshell.spi.ExecutionControl;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 import operator.LogicalOperators.DuplicateEliminationLogOperator;
-import operator.LogicalOperators.JoinLogOperator;
 import operator.LogicalOperators.LogicalOperator;
+import operator.LogicalOperators.NewJoinLogOperator;
 import operator.LogicalOperators.ProjectLogOperator;
 import operator.LogicalOperators.ScanLogOperator;
 import operator.LogicalOperators.SelectLogOperator;
@@ -96,6 +93,7 @@ public class QueryPlanBuilder {
     andExpressions = new ArrayList<>();
     if_alias = false;
     DBCatalog.getInstance().resetDB();
+    DBCatalog.getInstance().setBNLbuff(4);
     Select select = (Select) stmt;
     PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
     Table fromItemT = (Table) plainSelect.getFromItem();
@@ -148,11 +146,7 @@ public class QueryPlanBuilder {
 
     SelectPushVisitor pushSelect = new SelectPushVisitor(where);
     pushSelect.evaluate_expr();
-    //merge the useable_expr with the joins and sameTableSelect to get all expressions
-    System.out.println("Self table select: " + pushSelect.sameTableSelect);
-    System.out.println("Joins: " + pushSelect.joins);
-    System.out.println("Generated select expr: " + pushSelect.usable_expr.generateExpr());
-
+    // merge the useable_expr with the joins and sameTableSelect to get all expressions
 
     // For Project
     List<SelectItem> selectItems = plainSelect.getSelectItems();
@@ -181,10 +175,14 @@ public class QueryPlanBuilder {
       tablesInExpression = tablesNamesFinder.getTableList(expr);
       if (tablesInExpression.size() == 0) {
         // ADDING EXPRESSIONS WITH NO TABLE TO THE FIRST TABLE
-        selectExpressions.get(tables.get(0)).add(expr); //means select expressions for a table, only have one table in them
-      } else if (tablesInExpression.size() == 1) {//get the tablein the expression and add the expression
+        selectExpressions
+            .get(tables.get(0))
+            .add(expr); // means select expressions for a table, only have one table in them
+      } else if (tablesInExpression.size()
+          == 1) { // get the tablein the expression and add the expression
         selectExpressions.get(tablesInExpression.get(0).trim()).add(expr);
-      } else {//if expression has more than one table, get the last table and put the expression for it
+      } else { // if expression has more than one table, get the last table and put the expression
+        // for it
         Integer firstTableIndex = tables.indexOf(tablesInExpression.get(0).trim());
         Integer secondTableIndex = tables.indexOf(tablesInExpression.get(1).trim());
         String lastTable = tables.get(Integer.max(firstTableIndex, secondTableIndex));
@@ -193,8 +191,14 @@ public class QueryPlanBuilder {
     }
 
     LogicalOperator result = null;
-
+    // TODO: 1. Make a list of all expressions for each table
+    // TODO: 2. Make upper - lower limit + 1 for each table
+    ArrayList<LogicalOperator> tableExprs = new ArrayList<>();
+    Map<String, LogicalOperator> tableToOp = new HashMap<>();
+    ArrayList<Column> outputSchema = new ArrayList<>();
+    // outputSchema.addAll(result.getOutputSchema());
     // SCAN, SELECT, AND JOIN
+    HashMap<String, HashMap<String, Integer[]>> vvalues = new HashMap<>();
     for (String table : tables) {
       table_path = DBCatalog.getInstance().getFileForTable(table).getPath();
       schema = copyColumn(DBCatalog.getInstance().get_Table(table), table);
@@ -204,28 +208,46 @@ public class QueryPlanBuilder {
       // SELECT
       if (selectExpr.size() > 0) {
         // first check if no indexing at all(not sure if necessary)
-        //op = filterScanExpressions(schema, table_path, selectExpressions.get(table), tableName, op);
-        SelectPlan selectPlan = new SelectPlan(table, schema, table_path, selectExpressions.get(table), op);
+        // op = filterScanExpressions(schema, table_path, selectExpressions.get(table), tableName,
+        // op);
+        SelectPlan selectPlan =
+            new SelectPlan(table, schema, table_path, selectExpressions.get(table), op);
+
         selectPlan.plan(createAndExpression(selectExpressions.get(table)));
+        HashMap<String, Integer[]> colMinMax = selectPlan.getColMinMax();
         op = selectPlan.optimalPlan();
-
-      }//for each table, check if can use index scan or need regular select
-
-      if (tables.get(0) == table) {
-        result = op;
-      } else {
-        ArrayList<Column> outputSchema = new ArrayList<>();
-        outputSchema.addAll(result.getOutputSchema());
+        vvalues.put(table, colMinMax);
         outputSchema.addAll(op.getOutputSchema());
-        ArrayList<Expression> joinExpr = joinExpressions.get(table);
-        if (joinExpr.size() == 0) {
-          result = new JoinLogOperator(outputSchema, result, op, null, null);
-        } else {
-          result =
-              new JoinLogOperator(outputSchema, result, op, createAndExpression(joinExpr), tempDir);
-        }
-      }
+      } // for each table, check if can use index scan or need regular select
+
+      tableExprs.add(op);
+      tableToOp.put(table, op);
     }
+    if (tables.size() > 1) {
+      System.out.println(joinExpressions);
+      result =
+          new NewJoinLogOperator(
+              outputSchema,
+              tableExprs,
+              tables,
+              selectExpressions,
+              joinExpressions,
+              tableToOp,
+              vvalues);
+      // TODO: REMOVE!! these lines
+      // PhysicalPlanBuilder physicalPlanBuilder = new PhysicalPlanBuilder();
+      // try {
+      //   result.accept(physicalPlanBuilder);
+      // } catch (FileNotFoundException e) {
+      //   throw new RuntimeException(e);
+      // }
+      // return physicalPlanBuilder.returnResultTuple();
+      // return result;
+    }
+    // WE NEED:
+    // UPPER AND LOWER LIMITS FOR EACH TABLE COLUMN
+    // LIST OF TABLES TO BE JOINED
+    // MAP OF TABLE -> UPPER AND LOWER LIMIT
 
     // ORDER BY
     if (orderByElements != null) {
@@ -304,12 +326,12 @@ public class QueryPlanBuilder {
     if (expressions.size() < 1) {
       return op;
     }
-    //have to change since, can now support more than one column
+    // TODO: have to change since, can now support more than one column
 
     // TODO: have to change catalog to have multiple indexes for a table
 
     String col = DBCatalog.getInstance().getAvailableIndexColumn(tableName);
-    if (col == null) { //no index available for the columns
+    if (col == null) { // no index available for the columns
       return new SelectLogOperator(createAndExpression(expressions), op);
     }
 
@@ -317,10 +339,12 @@ public class QueryPlanBuilder {
     ArrayList<Expression> indexed = new ArrayList<>();
     ArrayList<Expression> nonIndexed = new ArrayList<>();
 
-    for (Expression expr : expressions) {//if expression only has columns in same table add to index
-      for(Column c: outputSchema) {
+    for (Expression expr :
+        expressions) { // if expression only has columns in same table add to index
+      for (Column c : outputSchema) {
         ScanVisitor visitor = new ScanVisitor(expr, tableName + "." + c);
-        //eval is true when the expression only has columns that are equal to tableName.col =>can use an index
+        // eval is true when the expression only has columns that are equal to tableName.col =>can
+        // use an index
         if (visitor.evaluate_expr()) {
           indexed.add(expr);
         } else {
@@ -331,17 +355,18 @@ public class QueryPlanBuilder {
     Expression indexedExpr = createAndExpression(indexed);
     Expression nonIndexedExpr = createAndExpression(nonIndexed);
     ScanVisitor visitor = new ScanVisitor(indexedExpr, tableName + "." + col);
-    if (indexedExpr != null) {//get high and low for the expression
+    if (indexedExpr != null) { // get high and low for the expression
       visitor.evaluate_expr();
     }
     Integer highKey = visitor.getHighKey();
     Integer lowKey = visitor.getLowKey();
     File tableFile = new File(table_path);
-    Integer ind = DBCatalog.getInstance().colIndex(tableName, col);//get the index for col in tableName
+    Integer ind =
+        DBCatalog.getInstance().colIndex(tableName, col); // get the index for col in tableName
     boolean clustered =
         DBCatalog.getInstance().getClustOrd(tableName, col).getElementAtIndex(0) == 1;
-    //i can use the plan thing here and use a boolean to indicate whether to use index or full scan
-    op =//just take all of the indexed and unindexed expressisons
+    // i can use the plan thing here and use a boolean to indicate whether to use index or full scan
+    op = // just take all of the indexed and unindexed expressisons
         new SelectLogOperator(
             indexedExpr,
             nonIndexedExpr,

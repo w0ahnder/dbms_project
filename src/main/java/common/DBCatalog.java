@@ -34,8 +34,8 @@ public class DBCatalog {
   private boolean fullScan;
   private boolean buildIndex = false;
   private boolean evalQuery = false;
-  private HashMap<String, Tuple> index_info; //<table.col, (clustered, order)>
-  private HashMap<String, File> availableIndex = new HashMap<>();// <table.col, file for the index>
+  private HashMap<String, Tuple> index_info; // <table.col, (clustered, order)>
+  private HashMap<String, File> availableIndex = new HashMap<>(); // <table.col, file for the index>
   private HashMap<String, TableStats> tableStats = new HashMap<>();
 
   private int BNLJ_buff;
@@ -87,64 +87,70 @@ public class DBCatalog {
     }
   }
 
-  public void createStatsFile(String directory){
-      String inputPath = directory + "/db/data";
-      String outputPath = directory + "/stats.txt";
-      try{
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath));
-        for (String key : tables.keySet()){
-          String table_stat = analyzeData(inputPath+"/"+key, tables.get(key), key);
-          writer.write(table_stat);
-          writer.newLine();
-        }writer.close();
-
+  public void createStatsFile(String directory) {
+    String inputPath = directory + "/db/data";
+    String outputPath = directory + "/stats.txt";
+    try {
+      BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath));
+      for (String key : tables.keySet()) {
+        String table_stat = analyzeData(inputPath + "/" + key, tables.get(key), key);
+        writer.write(table_stat);
+        writer.newLine();
       }
-      catch (Exception e){
-        e.printStackTrace();
-      }
+      writer.close();
 
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
-  public String analyzeData(String path, ArrayList<Column> cols, String table ){
-    try{
+  public String analyzeData(String path, ArrayList<Column> cols, String table) {
+    try {
       int numberOfCols = cols.size();
-      //number of rows equal to the number of columns in the table
-      //each row holds min and high fo each column
+      // number of rows equal to the number of columns in the table
+      // each row holds min and high fo each column
       int[][] file_stat = new int[numberOfCols][2];
       int count = 0;
       TupleReader reader = new TupleReader(new File(path));
       Tuple tup = reader.read();
-      while (tup != null){
-        for(int i = 0; i < numberOfCols; i++){
+      while (tup != null) {
+        for (int i = 0; i < numberOfCols; i++) {
           int val = tup.getElementAtIndex(i);
-          if (count == 0){
-            //first time enetering loop, init the min and max for each column
+          if (count == 0) {
+            // first time enetering loop, init the min and max for each column
             file_stat[i][0] = val;
             file_stat[i][1] = val;
-          }else{
+          } else {
             file_stat[i][0] = Math.min(val, file_stat[i][0]);
             file_stat[i][1] = Math.max(val, file_stat[i][1]);
           }
-        }count++;
+        }
+        count++;
         tup = reader.read();
       }
       reader.reset();
       TableStats stats = new TableStats(table, count); /********/
       String tableSize = table + " " + count;
       StringBuilder builder = new StringBuilder();
-      for (int i = 0; i < numberOfCols; i++){
+      for (int i = 0; i < numberOfCols; i++) {
         String col_name = cols.get(i).toString().split("\\.")[1];
-        builder.append(col_name).append(",").append(file_stat[i][0]).append(",").append(file_stat[i][1]).append(" ");
+        builder
+            .append(col_name)
+            .append(",")
+            .append(file_stat[i][0])
+            .append(",")
+            .append(file_stat[i][1])
+            .append(" ");
 
-        stats.addColumnInfo(col_name,file_stat[i][0], file_stat[i][1]);/********/
+        stats.addColumnInfo(col_name, file_stat[i][0], file_stat[i][1]); /********/
       }
-      tableStats.put(table, stats);/********/
+      tableStats.put(table, stats); /********/
       return tableSize + " " + builder;
 
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
-      return null;
+    return null;
   }
 
   /**
@@ -254,39 +260,41 @@ public class DBCatalog {
    */
   public void config_file(String input_dir) {
     try {
-      String txt = "/plan_builder_config.txt";
-      String config = input_dir + txt;
-      BufferedReader br = new BufferedReader(new FileReader(config));
-      String l1 = br.readLine();
-      String l2 = br.readLine();
-      String l3 = br.readLine();
+      // String txt = "/plan_builder_config.txt";
+      // String config = input_dir + txt;
+      // BufferedReader br = new BufferedReader(new FileReader(config));
+      // String l1 = br.readLine();
+      // String l2 = br.readLine();
+      // String l3 = br.readLine();
       // first line is join method; 0 for TNLJ, 1 for BNLJ, 2 for SMJ
       // if BNL, second number on line is number of buffer pages
-      String[] line1 = l1.split("\\s");
-      int join = Integer.parseInt(line1[0]);
+      int join = 1;
+      // String[] line1 = l1.split("\\s");
+      // int join = Integer.parseInt(line1[0]);
       TNLJ = join == 0;
       BNLJ = join == 1;
       SMJ = join == 2;
       if (BNLJ) {
-        BNLJ_buff = Integer.parseInt(line1[1]);
+        // BNLJ_buff = Integer.parseInt(line1[1]);
+        BNLJ_buff = 4;
       }
 
       // 0 for in-memory, 1 for external
       // if external, second int is number of buffer pages >=3
-      String[] line2 = l2.split("\\s");
-      int sort = Integer.parseInt(line2[0]);
-      sort_type = sort;
-      if (sort_type == 1) sort_buff = Integer.parseInt(line2[1]);
+      // String[] line2 = l2.split("\\s");
+      // int sort = Integer.parseInt(line2[0]);
+      // sort_type = sort;
+      // if (sort_type == 1) sort_buff = Integer.parseInt(line2[1]);
 
-
-      String[] line3 = l3.split("\\s");
-      fullScan= Integer.parseInt(line3[0]) ==0 ;//if we do a full scan then it is 0, no index
-      br.close();
+      // String[] line3 = l3.split("\\s");
+      fullScan = false; // if we do a full scan then it is 0, no index
+      // br.close();
 
     } catch (Exception e) {
       logger.error(e.getMessage());
     }
   }
+
   /**
    * @return sort_buff is the number of buffer pages for sorting if external
    */
@@ -352,48 +360,46 @@ public class DBCatalog {
 
   /**
    * Reads interpreter configuration file
+   *
    * @param path is path to interpreter configuration file
    * @return
    */
-  public void setInterpreter(String path){
+  public void setInterpreter(String path) {
     try {
       BufferedReader br = new BufferedReader(new FileReader(path));
-      String inputDir = br.readLine();//contains db, plan_builder, queries
-      setDataDirectory(inputDir +"/db");
+      String inputDir = br.readLine(); // contains db, plan_builder, queries
+      setDataDirectory(inputDir + "/db");
       String outputDir = br.readLine();
       String tempDir = br.readLine();
-      buildIndex = Integer.parseInt(br.readLine())==1;
-      evalQuery= Integer.parseInt(br.readLine())==1;
-      //1,0 means build index, but dont run query
-      //1,1 means build index, run queries
-      //0,1 means don't build(index given), and run query
+      buildIndex = Integer.parseInt(br.readLine()) == 1;
+      evalQuery = Integer.parseInt(br.readLine()) == 1;
+      // 1,0 means build index, but dont run query
+      // 1,1 means build index, run queries
+      // 0,1 means don't build(index given), and run query
       br.close();
     } catch (Exception e) {
-      System.out.println("Failed to read Interpreter Configuration File");
+      e.printStackTrace();
     }
   }
 
-
-  /**We use this when fullScan is false. We find out what indexes we have to build or
-   * which are provided for us depending on whether or not we have to build
-   * We use this to find out for which tables we have available indexes,
-   * for which we have to build an index. Each line has
-   * tablename attribute clustered order
-   *
+  /**
+   * We use this when fullScan is false. We find out what indexes we have to build or which are
+   * provided for us depending on whether or not we have to build We use this to find out for which
+   * tables we have available indexes, for which we have to build an index. Each line has tablename
+   * attribute clustered order
    */
-  public void processIndex(){
+  public void processIndex() {
     try {
-      BufferedReader br = new BufferedReader(
-              new FileReader(dbDirectory+ "/index_info.txt"));
+      BufferedReader br = new BufferedReader(new FileReader(dbDirectory + "/index_info.txt"));
       String str;
-      //has <table.col, (clustered, order)>
+      // has <table.col, (clustered, order)>
       index_info = new HashMap<>();
-      //if we build an index has <table.col, tree>
-      //HashMap<String, BTree> trees = new HashMap<>();
-      //<table.col, file for index relation>
+      // if we build an index has <table.col, tree>
+      // HashMap<String, BTree> trees = new HashMap<>();
+      // <table.col, file for index relation>
       availableIndex = new HashMap<>();
 
-      while((str = br.readLine())!=null){
+      while ((str = br.readLine()) != null) {
         String[] splits = str.split("\\s");
         String table = splits[0];
         String attribute = splits[1];
@@ -405,8 +411,8 @@ public class DBCatalog {
         elements.add(order);
         index_info.put(table + "." + attribute, new Tuple(elements));
         // if index not available, have to build
-        //Boats E 1 10
-        //Boats D 0 9 ... //have to keep track of all indexes for a table
+        // Boats E 1 10
+        // Boats D 0 9 ... //have to keep track of all indexes for a table
 
         boolean clustered = clust == 1; // 1 if clustered
         File relation = new File(dbDirectory + "/data/" + table);
@@ -423,38 +429,41 @@ public class DBCatalog {
         btree.tree_to_file(p); // serialize the tree and write to File
         availableIndex.put(table + "." + attribute, new File(p));
 
-          //File givenIndex = new File(dbDirectory + "/indexes/" + table + "." + attribute);
-          //availableIndex.put(table + "." + attribute, givenIndex);
+        // File givenIndex = new File(dbDirectory + "/indexes/" + table + "." + attribute);
+        // availableIndex.put(table + "." + attribute, givenIndex);
 
-        //if index available have to set correct path
+        // if index available have to set correct path
 
       }
       br.close();
     } catch (Exception e) {
-      System.out.println("Failed to read Interpreter Configuration File");
+      e.printStackTrace();
     }
   }
 
-  public Tuple getIndexInfo(String table, String col){
-    return index_info.get(table + "." +col);
+  public Tuple getIndexInfo(String table, String col) {
+    return index_info.get(table + "." + col);
   }
+
   /**
    * Returns the indexed File for table.col if it exists
+   *
    * @param table that we want to check if there is an index for
    * @param col in table that we want to check index for
    * @return the File for the index if it exists, null o/w
    */
-  public File getAvailableIndex(String table, String col){
+  public File getAvailableIndex(String table, String col) {
     String indexName = table + "." + col;
-    if(availableIndex.containsKey(indexName)){
+    if (availableIndex.containsKey(indexName)) {
       return availableIndex.get(indexName);
     }
     return null;
   }
 
-  public TableStats getTableStats(String table){
+  public TableStats getTableStats(String table) {
     return tableStats.get(table);
   }
+
   /**
    * Return the column name part after "table." if it exists
    *
@@ -467,7 +476,7 @@ public class DBCatalog {
     for (String indexName : availableIndex.keySet()) {
       if (indexName.startsWith(prefix)) {
         return indexName.substring(prefix.length());
-        //indexes.add(indexName);
+        // indexes.add(indexName);
       }
     }
     //
@@ -483,27 +492,28 @@ public class DBCatalog {
    * @param col in table that we want to get index ifo for
    * @returns Tuple with (int clustered, order)
    */
-  public Tuple getClustOrd(String table, String col){
+  public Tuple getClustOrd(String table, String col) {
     String indexName = table + "." + col;
-    if(index_info.containsKey(indexName)){
+    if (index_info.containsKey(indexName)) {
       return index_info.get(indexName);
     }
-    return  null;
+    return null;
   }
+
   /**
    * Finds the index of a column in a table's schema
+   *
    * @param table is the table whose column index we want to find
    * @param col the column to find the index of
    * @return index of col in table
    */
-  public int colIndex(String table, String col){
+  public int colIndex(String table, String col) {
     ArrayList<Column> cols = tables.get(table);
-    for(int i=0; i<cols.size();i++){
-      if(cols.get(i).getColumnName().equalsIgnoreCase(col)){
+    for (int i = 0; i < cols.size(); i++) {
+      if (cols.get(i).getColumnName().equalsIgnoreCase(col)) {
         return i;
       }
     }
-    System.out.println("Column index not found");
     return -1;
   }
 

@@ -33,15 +33,15 @@ public class IndexScanOperator extends ScanOperator {
   int col;
 
   public IndexScanOperator(
-          ArrayList<Column> schema,
-          String tablepath,
-          String table,
-          File indexFile,
-          int col,
-          Integer low,
-          Integer high,
-          boolean clustered)
-          throws FileNotFoundException {
+      ArrayList<Column> schema,
+      String tablepath,
+      String table,
+      File indexFile,
+      int col,
+      Integer low,
+      Integer high,
+      boolean clustered)
+      throws FileNotFoundException {
     super(schema, tablepath);
     lowkey = low;
     highkey = high;
@@ -207,7 +207,7 @@ public class IndexScanOperator extends ScanOperator {
         // bounds
 
         int currentRidsize =
-                leafRids.get(currLeafKeyIndex).size(); // number of <pg,tid> for a given key
+            leafRids.get(currLeafKeyIndex).size(); // number of <pg,tid> for a given key
         if (RIDindex >= currentRidsize) { // means we looked at all of the rids for this key
           // get next key, and reset the rid to start from pageid_0, tid_0
           RIDindex = 0;
@@ -256,7 +256,7 @@ public class IndexScanOperator extends ScanOperator {
       while (leafKeys.get(currLeafKeyIndex) < lowkey && currLeafKeyIndex < leafKeys.size()) {
         currLeafKeyIndex++;
       }
-      if(clustered){
+      if (clustered) {
         ArrayList<Tuple> rids = leafRids.get(currLeafKeyIndex);
         Tuple curr = rids.get(RIDindex);
         int page = curr.getElementAtIndex(0);

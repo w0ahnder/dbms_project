@@ -22,10 +22,12 @@ public class BTree {
     d = order;
     layers = new ArrayList<>();
   }
-  public void setNumLeaves(int size){
+
+  public void setNumLeaves(int size) {
     numLeaves = size;
   }
-  public int getNumLeaves(){
+
+  public int getNumLeaves() {
     return numLeaves;
   }
 
@@ -53,9 +55,9 @@ public class BTree {
     while (!(2 * d < rem && rem < 3 * d) && processed < tot) {
       // means k>=2d  (so we can use 2d) , k<2d ( we have to use k), k>=3d (can use 2d)
       int collect =
-              (tot - processed) < 2 * d
-                      ? (tot - processed)
-                      : 2 * d; // how many keys to put in this node
+          (tot - processed) < 2 * d
+              ? (tot - processed)
+              : 2 * d; // how many keys to put in this node
       int end = start + collect;
       leaves.add(makeLeaf(data, start, end, key_arr, addr));
       start = end;
@@ -94,7 +96,7 @@ public class BTree {
     int rem = num;
     while (!(2 * d + 1 < rem && rem < 3 * d + 2) && processed < num) {
       int collect =
-              rem < 2 * d + 1 ? rem : 2 * d + 1; // how many nodes we include in this index node
+          rem < 2 * d + 1 ? rem : 2 * d + 1; // how many nodes we include in this index node
       int end = start + collect;
       indexes.add(makeIndex(nodes, start, end, addr));
       addr++;
@@ -154,7 +156,7 @@ public class BTree {
    * @return a Leaf node with keys and (pageid, rowid) lists
    */
   public Leaf makeLeaf(
-          HashMap<Integer, ArrayList<Tuple>> data, int start, int end, Integer[] key_arr, int address) {
+      HashMap<Integer, ArrayList<Tuple>> data, int start, int end, Integer[] key_arr, int address) {
     // each leaf node has to have the < key, list> structure
     ArrayList<Leaf> leaves = new ArrayList<>();
     ArrayList<Integer> key_list = new ArrayList<>();

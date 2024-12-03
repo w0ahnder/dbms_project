@@ -84,7 +84,6 @@ public class InMemorySortOperator extends SortOperator {
     return result.get(curr - 1);
   }
 
-
   /** Custom Comparator class to compare two tuples based on columns */
   private class TupleComparator implements Comparator<Tuple> {
     public TupleComparator() {}
