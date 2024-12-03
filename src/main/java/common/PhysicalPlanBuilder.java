@@ -26,6 +26,13 @@ public class PhysicalPlanBuilder {
 
   public void visit(SelectLogOperator selectLogOperator) throws FileNotFoundException {
     selectLogOperator.scan.accept(this);
+    //String table = selectLogOperator.scan.
+    SelectPlan selectPlan = new SelectPlan(selectLogOperator.table_name,
+            selectLogOperator.outputSchema, selectLogOperator.table_path,
+           selectLogOperator.scan);
+   selectPlan.plan(selectLogOperator.where);
+    rootOperator = selectPlan.optimalPlan();
+    /*
     if (selectLogOperator.where != null) {// the table has no index, so just use regular scan, this is okay
       rootOperator =
           new SelectOperator(
@@ -71,6 +78,7 @@ public class PhysicalPlanBuilder {
           new SelectOperator(
               rootOperator.getOutputSchema(), childOperator, selectLogOperator.unIndexedExpr);
     }
+     */
   }
 
   public void visit(JoinLogOperator joinLogOperator) throws FileNotFoundException {

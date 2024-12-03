@@ -6,9 +6,14 @@ import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.schema.Column;
 import operator.LogicalOperators.LogicalOperator;
 import operator.LogicalOperators.SelectLogOperator;
+import operator.PhysicalOperators.IndexScanOperator;
+import operator.PhysicalOperators.Operator;
+import operator.PhysicalOperators.ScanOperator;
+import operator.PhysicalOperators.SelectOperator;
 import tree.Index;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +35,8 @@ public class SelectPlan {
     //if we have indexed expressions, then we can check if indexes are better than full scan
     //have to check if we have an index for the column tho
     //if expressions can't be indexed, then full scan?
-    public SelectPlan(String tableName, ArrayList<Column> schema, String tablePath, ArrayList<Expression> expressions, LogicalOperator scan) {
-        this.expressions = expressions;
+    public SelectPlan(String tableName, ArrayList<Column> schema, String tablePath, LogicalOperator scan) {
+        //this.expressions = expressions;
         this.tableName = tableName;
         stats = DBCatalog.getInstance().getTableStats(tableName);
         numTuples = DBCatalog.getInstance().getTableStats(tableName).getNumTuples();
@@ -95,10 +100,10 @@ public class SelectPlan {
         //optimalPlan();
     }
 
-    public LogicalOperator optimalPlan(){
+    public Operator optimalPlan() throws FileNotFoundException {
         int pages = ((numTuples*numCols*4)/4096) +1;//
         double indexScan = pages;
-        System.out.println("regular scan cost: " + indexScan);
+        System.out.println("regular scan cost for table " + tableName+ ": " + indexScan);
         for(String col: colMinMax.keySet()){
             /***computing reduction factor*/
             Integer[] colRange = stats.getColumnInfo(col);
@@ -107,21 +112,23 @@ public class SelectPlan {
             Integer[] selectRange =  colMinMax.get(col);
             double redFactor = (double) (selectRange[1] - selectRange[0]) /rangeSize;
             System.out.println("reduction factor before for  " + col + " is: " + redFactor);
-            //redFactor = redFactor<1 ? 1.0 : redFactor;
             //calc cost for clustered and unclustered indexes
             Tuple index_info = DBCatalog.getInstance().getIndexInfo(tableName, col);
             boolean clustered = index_info.getElementAtIndex(0) ==1;
             //tree_height + pages*reduction factos
             int treeHeight = stats.getHeightforCol(col);
             System.out.println("Tree height for column " + col + " is: " + treeHeight);
-            System.out.println("reduction factor afterwards for  " + col + " is: " + redFactor);
             if(clustered){
                 System.out.println("clustered");
                 indexScan = treeHeight + pages*redFactor;
             }
             else{
+                System.out.println("not clustered on column " + col);
                 int numLeaves = stats.getNumLeaves(col);
-                indexScan = treeHeight + (numLeaves*numTuples)/redFactor;
+                //if(redFactor==0){
+                  //  redFactor = 1;
+                //}
+                indexScan = treeHeight + (numLeaves*redFactor) + (numTuples*redFactor);
             }
             //now keep track of cost for each index on available column
             System.out.println("index scan cost for " + col + ": " + indexScan);
@@ -130,7 +137,7 @@ public class SelectPlan {
             }
         }
 
-        if(colIndexCost.size() ==0){
+        if(colIndexCost.size() ==0 || indexedExpressions==null){
             //means we just do a full scan
             ArrayList<Expression>  allExp = new ArrayList<>();
             allExp.addAll(unindexedExpressions);
@@ -138,8 +145,10 @@ public class SelectPlan {
                 allExp.add((indexedExpressions.get(col)));
             }
             Expression finalExp = createAndExpression(allExp);
-            System.out.println("Just doing regular full scan");
-            return new SelectLogOperator(finalExp, scan);
+            System.out.println("Just doing regular full scan because more efficient");
+            //case when it is more efficient to do a full scan, or no available index
+            ScanOperator scanOp = new ScanOperator(schema, tablePath);
+            return new SelectOperator(schema, scanOp,finalExp);
         }
         String minCol = (String) colIndexCost.keySet().toArray()[0];
         double minCost = colIndexCost.get(minCol);
@@ -155,13 +164,18 @@ public class SelectPlan {
         //an index for (indexed expressions)
         //and the ones we cant unindexed exp
         Expression unindexed = combineUnindexed(minCol);
-
-        return createOP(unindexed, minCol);
-
-
+        //if uindexed expressions non existent, then can just use an index scan op
+        if(unindexed==null && indexedExpressions!=null){
+            System.out.println("Just using a regular index scan operator because only have indexed expressions");
+            return createOP(unindexed, minCol);
+        }
+        //now cover case when there are unindexed and indexed expressions
+        System.out.println("Uisng IndexScan as a child because we have unindexed and indexed expressions");
+        ScanOperator childOperator = createOP(unindexed, minCol);
+        return new SelectOperator(schema, childOperator, unindexed);
         //actually want to return the column we want to index on and
     }
-    public LogicalOperator createOP(Expression unindexed, String col){
+    public ScanOperator createOP(Expression unindexed, String col) throws FileNotFoundException {
         Expression indexedExpr = indexedExpressions.get(col);
         Expression unIndexedExpr = unindexed;
         int low = colMinMax.get(col)[0];
@@ -173,8 +187,8 @@ public class SelectPlan {
         System.out.println("IndexedExpr: " + indexedExpr);
         System.out.println("Unindexed Expr: " + unIndexedExpr);
         System.out.println("Indexing column: " + col);
-        return new SelectLogOperator(indexedExpr, unIndexedExpr, schema, tablePath, tableName,
-                ind, clustered, low, high, indexFile, scan);
+        return new IndexScanOperator( schema, tablePath, tableName, indexFile, ind, low, high,
+                 clustered);
     }
 
 

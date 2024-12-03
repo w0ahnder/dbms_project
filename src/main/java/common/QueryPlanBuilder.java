@@ -205,11 +205,7 @@ public class QueryPlanBuilder {
 
       // SELECT
       if (selectExpr.size() > 0) {
-        // first check if no indexing at all(not sure if necessary)
-        //op = filterScanExpressions(schema, table_path, selectExpressions.get(table), tableName, op);
-        SelectPlan selectPlan = new SelectPlan(table, schema, table_path, selectExpressions.get(table), op);
-        selectPlan.plan(createAndExpression(selectExpressions.get(table)));
-        op = selectPlan.optimalPlan();
+        op = new SelectLogOperator(createAndExpression(selectExpressions.get(table)), op, table,table_path);
 
       }//for each table, check if can use index scan or need regular select
 
@@ -313,7 +309,7 @@ public class QueryPlanBuilder {
     return ands;
   }
 
-  public LogicalOperator filterScanExpressions(
+  /*public LogicalOperator filterScanExpressions(
       ArrayList<Column> outputSchema,
       String table_path,
       List<Expression> expressions,
@@ -374,7 +370,7 @@ public class QueryPlanBuilder {
             op);
     return op;
   }
-
+*/
   /**
    * Takes in a list of expressions and connects them with an and clause
    *

@@ -1,0 +1,2 @@
+Select[Sailors.B <= 5000 AND Sailors.A <> 0]
+-Leaf[ Sailors]

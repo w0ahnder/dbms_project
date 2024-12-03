@@ -37,6 +37,8 @@ public class JoinLogOperator implements LogicalOperator {
   }
 
   public void printLog(PrintStream ps, int level){
-
+      ps.println("Join [" + condition + "]");
+      leftOperator.printLog(ps,level+1);
+      rightOperator.printLog(ps, level+1);
   }
 }

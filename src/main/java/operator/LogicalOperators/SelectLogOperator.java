@@ -52,10 +52,12 @@ public class SelectLogOperator implements LogicalOperator {
     this.scan = scan;
   }
 
-  public SelectLogOperator(Expression where, LogicalOperator scan) {
+  public SelectLogOperator(Expression where, LogicalOperator scan, String table_name,String table_path) {
     this.where = where;
     this.scan = scan;
     this.outputSchema = scan.getOutputSchema();
+    this.table_name = table_name;
+    this.table_path = table_path;
   }
 
   @Override
