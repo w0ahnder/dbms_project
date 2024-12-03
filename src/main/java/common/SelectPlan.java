@@ -106,21 +106,28 @@ public class SelectPlan {
 
             Integer[] selectRange =  colMinMax.get(col);
             double redFactor = (double) (selectRange[1] - selectRange[0]) /rangeSize;
-            redFactor = redFactor<1 ? 1.0 : redFactor;
+            System.out.println("reduction factor before for  " + col + " is: " + redFactor);
+            //redFactor = redFactor<1 ? 1.0 : redFactor;
             //calc cost for clustered and unclustered indexes
             Tuple index_info = DBCatalog.getInstance().getIndexInfo(tableName, col);
             boolean clustered = index_info.getElementAtIndex(0) ==1;
             //tree_height + pages*reduction factos
+            int treeHeight = stats.getHeightforCol(col);
+            System.out.println("Tree height for column " + col + " is: " + treeHeight);
+            System.out.println("reduction factor afterwards for  " + col + " is: " + redFactor);
             if(clustered){
-                indexScan = 3 + pages*redFactor;
+                System.out.println("clustered");
+                indexScan = treeHeight + pages*redFactor;
             }
             else{
                 int numLeaves = stats.getNumLeaves(col);
-                indexScan = 3 + (numLeaves*numTuples)/redFactor;
+                indexScan = treeHeight + (numLeaves*numTuples)/redFactor;
             }
             //now keep track of cost for each index on available column
             System.out.println("index scan cost for " + col + ": " + indexScan);
-            colIndexCost.put(col, indexScan);
+            if(indexScan<=pages) {//means better than doing a full scan
+                colIndexCost.put(col, indexScan);
+            }
         }
 
         if(colIndexCost.size() ==0){
@@ -143,6 +150,7 @@ public class SelectPlan {
                 minCol = c;
             }
         }
+
         //now we have to separate all of the expressions into the one we can use
         //an index for (indexed expressions)
         //and the ones we cant unindexed exp
@@ -184,6 +192,13 @@ public class SelectPlan {
     public void colRange(String col, int low, int high){
         if(!colMinMax.containsKey(col)){
             Integer [] range = new Integer[2];
+            Integer[] actual_range = stats.getColumnInfo(col);
+            if(low<actual_range[0]){
+                low = actual_range[0];
+            }
+            if(high>actual_range[1]){
+                high = actual_range[1];
+            }
             range[0] = low;
             range[1] = high;
             colMinMax.put(col, range);

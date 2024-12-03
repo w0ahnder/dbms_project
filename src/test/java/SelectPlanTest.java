@@ -43,7 +43,7 @@ public class SelectPlanTest {
         URI queriesFile =
                 Objects.requireNonNull(classLoader.getResource("samples-2/input/selectplan.sql")).toURI();
 
-        DBCatalog.getInstance().createStatsFile("src/test/resources/binary_samples/input");
+        DBCatalog.getInstance().createStatsFile("src/test/resources/samples-2/input");
 
         statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
         queryPlanBuilder = new QueryPlanBuilder();

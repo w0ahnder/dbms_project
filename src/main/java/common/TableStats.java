@@ -40,4 +40,8 @@ public class TableStats {
     public int getNumLeaves(String col){
         return colTree.get(col).getNumLeaves();
     }
+
+    public int getHeightforCol(String col){
+        return colTree.get(col).getHeight();
+    }
 }

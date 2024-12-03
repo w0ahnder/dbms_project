@@ -15,12 +15,19 @@ public class BTree {
   int d;
   List<List<Node>> layers;
   int numLeaves;
-
+  int height;
   public BTree(boolean clust, int col, int order) {
     clustered = clust;
     attribute = col;
     d = order;
     layers = new ArrayList<>();
+  }
+
+  public void setHeight(){
+    height = layers.size();
+  }
+  public int getHeight(){
+    return height;
   }
   public void setNumLeaves(int size){
     numLeaves = size;
