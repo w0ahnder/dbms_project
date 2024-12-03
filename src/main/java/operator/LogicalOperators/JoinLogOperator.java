@@ -2,6 +2,7 @@ package operator.LogicalOperators;
 
 import common.PhysicalPlanBuilder;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
@@ -33,5 +34,9 @@ public class JoinLogOperator implements LogicalOperator {
 
   public ArrayList<Column> getOutputSchema() {
     return this.outputSchema;
+  }
+
+  public void printLog(PrintStream ps, int level){
+
   }
 }

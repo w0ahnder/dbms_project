@@ -1,0 +1,2 @@
+Select[Sailors.A >= 9969]
+-Leaf[ Sailors]

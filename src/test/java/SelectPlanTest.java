@@ -59,8 +59,6 @@ public class SelectPlanTest {
         configList.add(secondList);
     }
 
-
-
     @Test
     public void testQuery1()
             throws ExecutionControl.NotImplementedException,
@@ -76,6 +74,8 @@ public class SelectPlanTest {
         File humanFile = new File("src/test/resources/samples-2/selectPlanTest/human/query1_human");
         Convert c = new Convert(binaryDir + "/query1", new PrintStream(humanFile));
         c.bin_to_human();
+        queryPlanBuilder.printLogicalPlan("src/test/resources/samples-2/selectPlanTest/query1_logicalplan");
+
     }
 
     @Test
