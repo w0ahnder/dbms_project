@@ -1,6 +1,8 @@
 package operator.PhysicalOperators;
 
 import common.Tuple;
+
+import java.io.PrintStream;
 import java.util.ArrayList;
 import net.sf.jsqlparser.schema.Column;
 
@@ -17,6 +19,9 @@ public class NewJoinOperator extends Operator {
     this.child = child;
   }
 
+  public void printPhys(PrintStream ps, int level){
+    child.printPhys(ps, level);
+  }
   public ArrayList<Column> getOutputSchema() {
     return this.outputSchema;
   }
