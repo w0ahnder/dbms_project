@@ -17,14 +17,21 @@ public class UnionFind {
     this.sameTableSelect = new ArrayList<>();
   }
 
-  /** Finds an element in the collection given an atttribute. If element not found, creates one */
-  public Element findElement(String attr) {
+
+/**
+ *Finds an element in the collection given an atttribute. If element not found, creates one
+ */
+  public Element findElement(String attr, boolean makeNew) {
     for (Element e : elements) {
       if (e.attributes.contains(attr)) {
         return e;
       }
     }
-    return new Element(null, null, null, attr);
+    if (makeNew){
+      return new Element(null, null, null, attr);
+    }
+    return null;
+
   }
 
   /** Adds an element to the UnionFind collection */
@@ -39,7 +46,7 @@ public class UnionFind {
 
   /** Sets the lower bound for an element containing an attribute */
   public void setLower(String attr, Integer lower) {
-    Element elem = findElement(attr);
+    Element elem = findElement(attr, true);
     removeElementFromList(elem);
     elem.setLower(lower);
     updateElementsList(elem);
@@ -47,7 +54,7 @@ public class UnionFind {
 
   /** Sets the upper bound for an element containing an attribute */
   public void setUpper(String attr, Integer higher) {
-    Element elem = findElement(attr);
+    Element elem = findElement(attr, true);
     removeElementFromList(elem);
     elem.setUpper(higher);
     updateElementsList(elem);
@@ -55,7 +62,7 @@ public class UnionFind {
 
   /** Sets the equality contraint for an element containing an attribute */
   public void setEquality(String attr, Integer eq) {
-    Element elem = findElement(attr);
+    Element elem = findElement(attr, true);
     removeElementFromList(elem);
     elem.setUpper(eq);
     elem.setLower(eq);
@@ -65,8 +72,8 @@ public class UnionFind {
 
   /** Merges the corresponding elements for the attributes */
   public void mergeElements(String attr_1, String attr_2) {
-    Element left = findElement(attr_1);
-    Element right = findElement(attr_2);
+    Element left = findElement(attr_1, true);
+    Element right = findElement(attr_2, true);
     removeElementFromList(left);
     removeElementFromList(right);
     Element merged = left.merge(right);
@@ -85,17 +92,20 @@ public class UnionFind {
 
   public String printLogHelper(String attr) {
     StringBuilder line = new StringBuilder();
-    Element elem = findElement(attr);
-    line.append("[[");
-    for (String att : elem.attributes) {
-      line.append(att);
-    }
-    line.append("], ");
-    line.append("equals ").append(elem.equality).append(", ");
-    line.append("min ").append(elem.lower).append(", ");
-    line.append("max ").append(elem.upper);
+    Element elem  = findElement(attr, false);
+    if (elem != null) {
+      line.append("[[");
+      for(String att:elem.attributes){
+        line.append(att);
+      }
+      line.append("], ");
+      line.append("equals ").append(elem.equality).append(", ");
+      line.append("min ").append(elem.lower).append(", ");
+      line.append("max ").append(elem.upper).append(" ]");
 
-    return line.toString();
+      return line.toString();
+    }
+    return "";
   }
 
   public String toString() {

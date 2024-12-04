@@ -1,0 +1,2 @@
+Select[Sailors.B = Sailors.A AND Sailors.A >= Sailors.B]
+-TableScan[Sailors]

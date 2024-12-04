@@ -168,6 +168,7 @@ public class SelectPlanTest {
     File humanFile = new File("src/test/resources/samples-2/selectPlanTest/human/query6_human");
     Convert c = new Convert(binaryDir + "/query6", new PrintStream(humanFile));
     c.bin_to_human();
+    queryPlanBuilder.printLogicalPlan("src/test/resources/samples-2/selectPlanTest/query6_");
   }
 
   @Test
@@ -186,6 +187,7 @@ public class SelectPlanTest {
     File humanFile = new File("src/test/resources/samples-2/selectPlanTest/human/query7_human");
     Convert c = new Convert(binaryDir + "/query7", new PrintStream(humanFile));
     c.bin_to_human();
+    queryPlanBuilder.printLogicalPlan("src/test/resources/samples-2/selectPlanTest/query7_");
   }
 
   @Test
@@ -205,5 +207,25 @@ public class SelectPlanTest {
     Convert c = new Convert(binaryDir + "/query8", new PrintStream(humanFile));
     c.bin_to_human();
     queryPlanBuilder.printLogicalPlan("src/test/resources/samples-2/selectPlanTest/query8_");
+  }
+
+
+  @Test
+  public void testQuery9()
+          throws ExecutionControl.NotImplementedException,
+          JSQLParserException,
+          IOException,
+          URISyntaxException {
+    DBCatalog.getInstance().processIndex();
+    Statement stmt = statementList.get(8);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
+    String binaryDir =
+            "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
+    TupleWriter tw = new TupleWriter(binaryDir + "/query9");
+    plan.dump(tw);
+    File humanFile = new File("src/test/resources/samples-2/selectPlanTest/human/query9_human");
+    Convert c = new Convert(binaryDir + "/query9", new PrintStream(humanFile));
+    c.bin_to_human();
+    queryPlanBuilder.printLogicalPlan("src/test/resources/samples-2/selectPlanTest/query9_");
   }
 }

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class SelectPlanTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class SelectPlanTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/default-package.html">default-package</a> &gt; SelectPlanTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">9</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">1.338s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">testQuery1()</td>
+<td class="success">0.433s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testQuery2()</td>
+<td class="success">0.124s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testQuery3()</td>
+<td class="success">0.108s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testQuery4()</td>
+<td class="success">0.151s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testQuery5()</td>
+<td class="success">0.176s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testQuery6()</td>
+<td class="success">0.074s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testQuery7()</td>
+<td class="success">0.123s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testQuery8()</td>
+<td class="success">0.076s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testQuery9()</td>
+<td class="success">0.073s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Sailors.A &gt;= 9969
+Unindexed Expr: null
+Indexing column: A
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+reduction factor before for  B is: 0.0031
+Tree height for column B is: 3
+not clustered on column B
+index scan cost for B: 34.6603
+Uisng IndexScan as a child because we have unindexed and indexed expressions
+IndexedExpr: Sailors.A &gt;= 9969
+Unindexed Expr: Sailors.B &gt;= 9969 AND Sailors.B = Sailors.A
+Indexing column: A
+regular scan cost for table Sailors: 30.0
+Just doing regular full scan because more efficient
+regular scan cost for table Sailors: 30.0
+reduction factor before for  B is: 0.5
+Tree height for column B is: 3
+not clustered on column B
+index scan cost for B: 5109.5
+Just doing regular full scan because more efficient
+cost is 0
+cost is 0
+best join order: [Sailors, Boats]
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 2.0002000200020003E-4
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.006000600060006
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Sailors.A &gt;= 9998
+Unindexed Expr: null
+Indexing column: A
+regular scan cost for table Boats: 30.0
+reduction factor before for  E is: 0.0
+Tree height for column E is: 3
+not clustered on column E
+index scan cost for E: 3.0
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Boats.E &gt;= 9999
+Unindexed Expr: null
+Indexing column: E
+cost is 0
+cost is 0
+best join order: [Sailors, Boats]
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Sailors.A &gt;= 9969
+Unindexed Expr: null
+Indexing column: A
+regular scan cost for table Boats: 30.0
+reduction factor before for  E is: 0.0026013006503251626
+Tree height for column E is: 3
+not clustered on column E
+index scan cost for E: 29.83501750875438
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Boats.E &gt;= 9973
+Unindexed Expr: null
+Indexing column: E
+cost is 0
+cost is 0
+best join order: [Sailors, Boats]
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+Uisng IndexScan as a child because we have unindexed and indexed expressions
+IndexedExpr: Sailors.A &gt;= 9969
+Unindexed Expr: Sailors.A &gt; Sailors.B
+Indexing column: A
+regular scan cost for table Boats: 30.0
+reduction factor before for  E is: 0.0026013006503251626
+Tree height for column E is: 3
+not clustered on column E
+index scan cost for E: 29.83501750875438
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Boats.E &gt;= 9973
+Unindexed Expr: null
+Indexing column: E
+cost is 0
+cost is 0
+best join order: [Sailors, Boats]
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Sailors.A &gt;= 9969
+Unindexed Expr: null
+Indexing column: A
+regular scan cost for table Boats: 30.0
+reduction factor before for  E is: 0.0026013006503251626
+Tree height for column E is: 3
+not clustered on column E
+index scan cost for E: 29.83501750875438
+Uisng IndexScan as a child because we have unindexed and indexed expressions
+IndexedExpr: Boats.E &gt;= 9973
+Unindexed Expr: Boats.E &gt; Boats.D
+Indexing column: E
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 8.10.1</a> at Dec 4, 2024, 12:30:08 AM</p>
+</div>
+</div>
+</body>
+</html>
