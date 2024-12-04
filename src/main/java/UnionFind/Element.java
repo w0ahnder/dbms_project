@@ -1,9 +1,8 @@
 package UnionFind;
 
+import common.DBCatalog;
 import java.util.ArrayList;
 import java.util.HashSet;
-
-import common.DBCatalog;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
@@ -96,14 +95,13 @@ public class Element {
       String alias = null;
       if (DBCatalog.getInstance().getUseAlias()) {
         alias = table;
-        table = DBCatalog.getInstance().getTableName(alias);//actual table name
+        table = DBCatalog.getInstance().getTableName(alias); // actual table name
       }
 
       Column c = new Column(new Table(alias, table), col);
       if (equality != null) {
         Expression expr =
-            (new EqualsTo().withLeftExpression(c))
-                .withRightExpression(new LongValue(equality));
+            (new EqualsTo().withLeftExpression(c)).withRightExpression(new LongValue(equality));
         expressions.add(expr);
       } else {
         if (lower != null) {

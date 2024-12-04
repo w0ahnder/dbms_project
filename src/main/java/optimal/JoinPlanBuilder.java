@@ -2,6 +2,8 @@ package optimal;
 
 import common.*;
 import java.util.*;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.schema.Column;
 import operator.LogicalOperators.*;
 import operator.PhysicalOperators.*;
@@ -33,7 +35,12 @@ public class JoinPlanBuilder {
         if (op == null) {
           op = plan.returnResultTuple();
         } else {
-          op = new BNLOperator(outputSchema, op, plan.returnResultTuple(), null);
+          op =
+              new BNLOperator(
+                  outputSchema,
+                  op,
+                  plan.returnResultTuple(),
+                  createAndExpression(this.newJoinLogOperator.joinExpressions.get(table)));
         }
       }
       return op;
@@ -41,5 +48,21 @@ public class JoinPlanBuilder {
       e.printStackTrace();
     }
     return op;
+  }
+
+  private Expression createAndExpression(List<Expression> expressions) {
+    if (expressions.size() < 1) {
+      return null;
+    } else if (expressions.size() == 1) {
+      return expressions.get(0);
+    }
+    AndExpression andExpression = new AndExpression(expressions.get(0), expressions.get(1));
+    expressions.remove(0);
+    expressions.remove(0);
+    while (!expressions.isEmpty()) {
+      andExpression = new AndExpression(andExpression, expressions.get(0));
+      expressions.remove(0);
+    }
+    return andExpression;
   }
 }
