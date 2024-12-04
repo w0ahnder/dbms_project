@@ -13,15 +13,18 @@ public class JoinPlanBuilder {
   List<String> optimalOrder;
   NewJoinLogOperator newJoinLogOperator;
   PhysicalPlanBuilder plan;
+  ArrayList<Column> realSchema;
 
   public JoinPlanBuilder(
       Map<String, LogicalOperator> tableToOp,
       List<String> optimalOrder,
-      NewJoinLogOperator newJoinLogOperator) {
+      NewJoinLogOperator newJoinLogOperator,
+      ArrayList<Column> realSchema) {
     this.tableToOp = tableToOp;
     this.optimalOrder = optimalOrder;
     this.newJoinLogOperator = newJoinLogOperator;
     this.plan = new PhysicalPlanBuilder();
+    this.realSchema = realSchema;
   }
 
   public Operator buildPlan() {
@@ -43,7 +46,7 @@ public class JoinPlanBuilder {
                   createAndExpression(this.newJoinLogOperator.joinExpressions.get(table)));
         }
       }
-      return op;
+      return new NewJoinOperator(op, outputSchema, this.realSchema);
     } catch (Exception e) {
       e.printStackTrace();
     }

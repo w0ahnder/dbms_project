@@ -184,7 +184,11 @@ public class PhysicalPlanBuilder {
     List<String> bestOrder = calcu.findOptimalJoinOrder(NewJoinLogOperator.tables);
     System.out.println("best join order: " + bestOrder);
     JoinPlanBuilder plan =
-        new JoinPlanBuilder(NewJoinLogOperator.tableToOp, bestOrder, NewJoinLogOperator);
+        new JoinPlanBuilder(
+            NewJoinLogOperator.tableToOp,
+            bestOrder,
+            NewJoinLogOperator,
+            NewJoinLogOperator.outputSchema);
     rootOperator = plan.buildPlan();
   }
 }

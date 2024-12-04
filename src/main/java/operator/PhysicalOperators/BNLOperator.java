@@ -22,6 +22,7 @@ public class BNLOperator extends Operator {
   public Tuple s;
   public Tuple check;
   public Tuple check_t;
+  ArrayList<Column> realSchema;
 
   /**
    * Creates a BNLOperator Object
