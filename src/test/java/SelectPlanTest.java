@@ -75,6 +75,7 @@ public class SelectPlanTest {
     Convert c = new Convert(binaryDir + "/query1", new PrintStream(humanFile));
     c.bin_to_human();
     queryPlanBuilder.printLogicalPlan("src/test/resources/samples-2/selectPlanTest/query1_");
+
   }
 
   @Test

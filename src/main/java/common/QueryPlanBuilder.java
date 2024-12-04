@@ -310,8 +310,6 @@ public class QueryPlanBuilder {
       PrintStream ps = new PrintStream(queryi);
       rootOperator.printPhys(ps, 0);
       ps.close();
-      printPhysicalPlan(path);
-
     } catch (Exception e) {
       System.out.println("Failed to print physical plan");
     }
