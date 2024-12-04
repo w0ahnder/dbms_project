@@ -7,6 +7,11 @@ The top level class is the Compiler class.
 Path: src/main/java/compiler/Compiler.java
 
 
+The optimal select plan is chosen by first iterating through each of the select expressions for a table. If the table has an index and
+also has an index on the column mentioned in the expression, we keep track of the column, all of the indexed expressions it's
+involved in, and update its range. Once we have all the unindexed expressions (which are those that involve unindexed columns, or operations other than >=, =, <=, <, >), 
+we compute the indexed scan costs and compare it to the cost of a full scan. We find the column that gives us the minimum cost scan and create an index scan operator, and
+and a select operator if we have expressions not covered by the column we chose
 1. high key is set to be the inclusive upper bound and lowkey is set to be the inclusive lower bound. In cases when they are not specified, we use max and min integer value, which we go through the select expressions to update by comparison
 2. In src/main/tree/BulkLoad.java , sortRelation method is only called when it is clustered. It sorts the table in memory and overrides the original table
 3. When first setting up the logical operator, we separate the expressions in the Select condition using an implementation of ExpressionVisitor to see which queries can be processed by index and which cannot. 
