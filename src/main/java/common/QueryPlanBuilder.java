@@ -141,7 +141,7 @@ public class QueryPlanBuilder {
       //              + pushSelect.sameTableSelect); // for select have same columns on either side
       //      System.out.println("Joins: " + pushSelect.joins);
       //      System.out.println("Generated select expr: " + pushSelect.unionFind.generateExpr());
-      //System.out.println("Generated select expr: " + pushSelect.unionFind.toString());
+      // System.out.println("Generated select expr: " + pushSelect.unionFind.toString());
       andExpressions.addAll(pushSelect.unionFind.sameTableSelect);
       andExpressions.addAll(pushSelect.unionFind.joins);
       andExpressions.addAll(pushSelect.unionFind.generateExpr());

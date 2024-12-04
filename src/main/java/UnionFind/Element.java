@@ -1,6 +1,5 @@
 package UnionFind;
 
-import common.DBCatalog;
 import java.util.ArrayList;
 import java.util.HashSet;
 import net.sf.jsqlparser.expression.Expression;
@@ -103,10 +102,10 @@ public class Element {
       String col = table_col[1].trim();
       String alias = null;
       /*if (DBCatalog.getInstance().getUseAlias()) {
-        alias = table;
-        table = DBCatalog.getInstance().getTableName(alias); // actual table name
-      }
-*/
+              alias = table;
+              table = DBCatalog.getInstance().getTableName(alias); // actual table name
+            }
+      */
       Column c = new Column(new Table(table), col);
       if (equality != null) {
         Expression expr =

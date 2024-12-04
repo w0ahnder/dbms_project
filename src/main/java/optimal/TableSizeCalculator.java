@@ -35,7 +35,8 @@ public class TableSizeCalculator {
   public Integer getTableSize(List<String> rightTable, String leftTable) {
     Integer den = 1;
     if (rightTable == null) {
-      TableStats stats = DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(leftTable));
+      TableStats stats =
+          DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(leftTable));
       List<String> myList = new ArrayList<>();
       myList.add(leftTable);
       Integer result = stats.getNumTuples();
@@ -44,7 +45,8 @@ public class TableSizeCalculator {
     } else if (rightTable.size() == 1) {
       String right = rightTable.get(0);
       String left = leftTable;
-      TableStats stats = DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(left));
+      TableStats stats =
+          DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(left));
       Integer leftSize = stats.getNumTuples();
       stats = DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(right));
       Integer rightSize = stats.getNumTuples();
@@ -54,7 +56,8 @@ public class TableSizeCalculator {
     } else {
       List<Expression> joins = joinExpressions.get(leftTable);
       Integer rightCost = this.joinTableCost.get(rightTable);
-      TableStats stats = DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(leftTable));
+      TableStats stats =
+          DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(leftTable));
       List<String> myList = new ArrayList<>();
       myList.addAll(rightTable);
       myList.add(leftTable);

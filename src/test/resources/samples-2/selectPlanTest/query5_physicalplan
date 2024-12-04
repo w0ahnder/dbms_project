@@ -1,2 +1,2 @@
 Select[Sailors.A <> 0 AND Sailors.B <= 5000]
--Leaf[ Sailors]
+-TableScan[Sailors]
