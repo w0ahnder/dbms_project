@@ -345,71 +345,7 @@ public class QueryPlanBuilder {
     return ands;
   }
 
-  /*public LogicalOperator filterScanExpressions(
-        ArrayList<Column> outputSchema,
-        String table_path,
-        List<Expression> expressions,
-        String tableName,
-        LogicalOperator op) {
-      if (expressions.size() < 1) {
-        return op;
-      }
-      // TODO: have to change since, can now support more than one column
 
-      // TODO: have to change catalog to have multiple indexes for a table
-
-      String col = DBCatalog.getInstance().getAvailableIndexColumn(tableName);
-      if (col == null) { // no index available for the columns
-        return new SelectLogOperator(createAndExpression(expressions), op);
-      }
-
-      File indexFile = DBCatalog.getInstance().getAvailableIndex(tableName, col);
-      ArrayList<Expression> indexed = new ArrayList<>();
-      ArrayList<Expression> nonIndexed = new ArrayList<>();
-
-      for (Expression expr :
-          expressions) { // if expression only has columns in same table add to index
-        for (Column c : outputSchema) {
-          ScanVisitor visitor = new ScanVisitor(expr, tableName + "." + c);
-          // eval is true when the expression only has columns that are equal to tableName.col =>can
-          // use an index
-          if (visitor.evaluate_expr()) {
-            indexed.add(expr);
-          } else {
-            nonIndexed.add(expr);
-          }
-        }
-      }
-      Expression indexedExpr = createAndExpression(indexed);
-      Expression nonIndexedExpr = createAndExpression(nonIndexed);
-      ScanVisitor visitor = new ScanVisitor(indexedExpr, tableName + "." + col);
-      if (indexedExpr != null) { // get high and low for the expression
-        visitor.evaluate_expr();
-      }
-      Integer highKey = visitor.getHighKey();
-      Integer lowKey = visitor.getLowKey();
-      File tableFile = new File(table_path);
-      Integer ind =
-          DBCatalog.getInstance().colIndex(tableName, col); // get the index for col in tableName
-      boolean clustered =
-          DBCatalog.getInstance().getClustOrd(tableName, col).getElementAtIndex(0) == 1;
-      // i can use the plan thing here and use a boolean to indicate whether to use index or full scan
-      op = // just take all of the indexed and unindexed expressisons
-          new SelectLogOperator(
-              indexedExpr,
-              nonIndexedExpr,
-              outputSchema,
-              table_path,
-              tableName,
-              ind,
-              clustered,
-              lowKey,
-              highKey,
-              indexFile,
-              op);
-      return op;
-    }
-  */
   /**
    * Takes in a list of expressions and connects them with an and clause
    *

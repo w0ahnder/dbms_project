@@ -87,6 +87,10 @@ public class DBCatalog {
     }
   }
 
+  /**
+   * Creates a stats file for our data directory
+   * @param directory the directoru for the input
+   */
   public void createStatsFile(String directory) {
     String inputPath = directory + "/db/data";
     String outputPath = directory + "/stats.txt";
@@ -104,6 +108,13 @@ public class DBCatalog {
     }
   }
 
+  /**
+   * Sets the min and max for each of the columns in the table
+   * @param path path for the table
+   * @param cols the schema for the table
+   * @param table the name of the table
+   * @return
+   */
   public String analyzeData(String path, ArrayList<Column> cols, String table) {
     try {
       int numberOfCols = cols.size();
@@ -371,11 +382,7 @@ public class DBCatalog {
       setDataDirectory(inputDir + "/db");
       String outputDir = br.readLine();
       String tempDir = br.readLine();
-      buildIndex = Integer.parseInt(br.readLine()) == 1;
-      evalQuery = Integer.parseInt(br.readLine()) == 1;
-      // 1,0 means build index, but dont run query
-      // 1,1 means build index, run queries
-      // 0,1 means don't build(index given), and run query
+
       br.close();
     } catch (Exception e) {
       e.printStackTrace();
