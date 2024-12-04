@@ -62,7 +62,6 @@ public class Compiler {
       String str = Files.readString(Paths.get(inputDir + "/queries.sql"));
       Statements statements = CCJSqlParserUtil.parseStatements(str);
       QueryPlanBuilder queryPlanBuilder = new QueryPlanBuilder();
-      List<List<Integer>> planConfig = readNumbersFromFile(inputDir + "/plan_builder_config.txt");
       if (outputToFiles) {
         for (File file : (new File(tempDir).listFiles())) file.delete();
         for (File file : (new File(outputDir).listFiles())) file.delete();
@@ -71,8 +70,7 @@ public class Compiler {
       int counter = 1; // for numbering output files
       for (Statement statement : statements.getStatements()) {
         try {
-          Operator plan =
-              queryPlanBuilder.buildPlan(statement, tempDir, planConfig, indexFlag, queryFlag);
+          Operator plan = queryPlanBuilder.buildPlan(statement, tempDir, indexFlag, queryFlag);
           if (outputToFiles) {
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
             long start = System.currentTimeMillis();

@@ -71,12 +71,7 @@ public class QueryPlanBuilder {
    * @precondition stmt is a Select having a body that is a PlainSelect
    */
   @SuppressWarnings("unchecked")
-  public Operator buildPlan(
-      Statement stmt,
-      String tempDir,
-      List<List<Integer>> planConfList,
-      Integer indexFlag,
-      Integer queryFlag)
+  public Operator buildPlan(Statement stmt, String tempDir, Integer indexFlag, Integer queryFlag)
       throws ExecutionControl.NotImplementedException {
 
     if (!DBCatalog.getInstance().isEvalQuery()) {
@@ -87,7 +82,6 @@ public class QueryPlanBuilder {
     this.queryFlag = queryFlag;
     this.is_sorted = false;
     // List<Integer> joinConfig = planConfList.get(0);
-    List<Integer> sortConfig = planConfList.get(1);
 
     // I think that the temp directory is within the interpreter_config_file.txt
     // means we have to process this first ^^ to get the tempDir, sort/join types, inputDir, etc
@@ -264,11 +258,7 @@ public class QueryPlanBuilder {
     // ORDER BY
     if (orderByElements != null) {
       is_sorted = true;
-      if (sortConfig.get(0).equals(0)) {
-        result = new SortLogOperator(orderByElements, result);
-      } else {
-        result = new SortLogOperator(orderByElements, result, sortConfig.get(1), tempDir);
-      }
+      result = new SortLogOperator(orderByElements, result, 4, tempDir);
     }
 
     // PROJECT
@@ -295,11 +285,7 @@ public class QueryPlanBuilder {
         // result = new DuplicateEliminationLogOperator(schema, result);
       } else {
         SortLogOperator child;
-        if (sortConfig.get(0).equals(0)) {
-          child = new SortLogOperator(new ArrayList<>(), result);
-        } else {
-          child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
-        }
+        child = new SortLogOperator(new ArrayList<>(), result, 4, tempDir);
         result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
       }
     }
