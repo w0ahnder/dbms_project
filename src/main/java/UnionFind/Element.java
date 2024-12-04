@@ -2,12 +2,15 @@ package UnionFind;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import common.DBCatalog;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.GreaterThanEquals;
 import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
 
 public class Element {
   Integer upper;
@@ -87,21 +90,31 @@ public class Element {
   public ArrayList<Expression> generateExpression() {
     ArrayList<Expression> expressions = new ArrayList<>();
     for (String attr : attributes) {
+      String[] table_col = attr.split("\\.");
+      String table = table_col[0].trim();
+      String col = table_col[1].trim();
+      String alias = null;
+      if (DBCatalog.getInstance().getUseAlias()) {
+        alias = table;
+        table = DBCatalog.getInstance().getTableName(alias);//actual table name
+      }
+
+      Column c = new Column(new Table(alias, table), col);
       if (equality != null) {
         Expression expr =
-            (new EqualsTo().withLeftExpression(new Column(attr)))
+            (new EqualsTo().withLeftExpression(c))
                 .withRightExpression(new LongValue(equality));
         expressions.add(expr);
       } else {
         if (lower != null) {
           Expression expr =
-              (new GreaterThanEquals().withLeftExpression(new Column(attr)))
+              (new GreaterThanEquals().withLeftExpression(c))
                   .withRightExpression(new LongValue(lower));
           expressions.add(expr);
         }
         if (upper != null) {
           Expression expr =
-              (new MinorThanEquals().withLeftExpression(new Column(attr)))
+              (new MinorThanEquals().withLeftExpression(c))
                   .withRightExpression(new LongValue(upper));
           expressions.add(expr);
         }

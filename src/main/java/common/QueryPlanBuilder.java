@@ -145,26 +145,20 @@ public class QueryPlanBuilder {
     if (where != null) {
       SelectPushVisitor pushSelect = new SelectPushVisitor(where);
       pushSelect.evaluate_expr();
-      System.out.println("Self table select: " + pushSelect.sameTableSelect);//for select have same columns on either side
+      System.out.println(
+          "Self table select: "
+              + pushSelect.sameTableSelect); // for select have same columns on either side
       System.out.println("Joins: " + pushSelect.joins);
       System.out.println("Generated select expr: " + pushSelect.usable_expr.generateExpr());
       andExpressions.addAll(pushSelect.sameTableSelect);
       andExpressions.addAll(pushSelect.joins);
       andExpressions.addAll(pushSelect.usable_expr.generateExpr());
-
     }
-    // maybe have to check before hand if the where expression is null???
-    SelectPushVisitor pushSelect = new SelectPushVisitor(where);
-    pushSelect.evaluate_expr();
-    // merge the useable_expr with the joins and sameTableSelect to get all expressions
-    System.out.println(
-        "Self table select: "
-            + pushSelect.sameTableSelect); // for select have same columns on either side
-    System.out.println("Joins: " + pushSelect.joins);
-    System.out.println(
-        "Generated select expr: "
-            + pushSelect.usable_expr
-                .generateExpr()); // inferred expressions, only one table in them
+
+    /*if (where != null) {
+      andExpressions = getAndExpressions(where);
+    }
+    */
 
     // For Project
     List<SelectItem> selectItems = plainSelect.getSelectItems();
@@ -186,7 +180,6 @@ public class QueryPlanBuilder {
       selectExpressions.put(table, new ArrayList<>());
       joinExpressions.put(table, new ArrayList<>());
     }
-
 
     for (Expression expr : andExpressions) {
       // GETS ALL TABLE NAMES IN THE EXPRESSION

@@ -17,6 +17,7 @@ public class TableStats {
 
   /**
    * Sets the range of values that column col takes in the base table
+   *
    * @param col col we want to set the range for
    * @param min lowest value column can take
    * @param max highest value column can take
@@ -30,6 +31,7 @@ public class TableStats {
 
   /**
    * Returns an Integer array with the min and max values of col in the base table
+   *
    * @param col the column we want to get the range for
    * @return
    */
@@ -45,7 +47,6 @@ public class TableStats {
   }
 
   /**
-   *
    * @return the number of columns in this table
    */
   public int numCols() {
@@ -54,6 +55,7 @@ public class TableStats {
 
   /**
    * Sets tree that is built on column col
+   *
    * @param col the col that the index was built on
    * @param tree the index for the column
    */
@@ -63,25 +65,27 @@ public class TableStats {
 
   /**
    * Gets the number of leaves in the index built on this column
+   *
    * @param col the column the index was built on
    * @return the number of leaves in the tree
    */
-    public int getNumLeaves(String col){
-        return colTree.get(col).getNumLeaves();
-    }
+  public int getNumLeaves(String col) {
+    return colTree.get(col).getNumLeaves();
+  }
 
   /**
    * Get the height of the tree
+   *
    * @param col the column the index was built on
    * @return the height of the index tree built on this col
    */
-  public int getHeightforCol(String col){
-        return colTree.get(col).getHeight();
-    }
+  public int getHeightforCol(String col) {
+    return colTree.get(col).getHeight();
+  }
 
   /**
-   * @return the col_infos HashMap that holds the name of the column
-   * and an Integer array holding its range
+   * @return the col_infos HashMap that holds the name of the column and an Integer array holding
+   *     its range
    */
   public HashMap<String, Integer[]> getColumnInfos() {
     return this.col_infos;

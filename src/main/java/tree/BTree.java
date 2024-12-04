@@ -26,32 +26,33 @@ public class BTree {
 
   /**
    * Sets the height of the tree
+   *
    * @return
    */
-  public void setHeight(){
+  public void setHeight() {
     height = layers.size();
   }
 
   /**
    * @return the height of the tree
    */
-  public int getHeight(){
+  public int getHeight() {
     return height;
   }
 
   /**
    * Sets the number of leaves that this tree has
+   *
    * @param size is the number of leaves
    */
-  public void setNumLeaves(int size){
+  public void setNumLeaves(int size) {
     numLeaves = size;
   }
 
   /**
-   *
    * @return The number of leaves in this tree
    */
-  public int getNumLeaves(){
+  public int getNumLeaves() {
     return numLeaves;
   }
 

@@ -44,16 +44,17 @@ public class SelectPlan {
     this.schema = schema;
   }
 
-    /**
-     * Takes in an expression that can be a conjunction of multiple expressions. It loops through
-     * each of them and checks if one side is a column and the other is a value. If so, it gets the
-     * column name and checks if the table has an index, and if there is an index on that column.
-     * If there's an index, using ScanVisitor, we check if the op is one we can use an index for,
-     * and if so, get the low and high values, then add the expression and column to our
-     * HashMap of indexed expressions. If there's no index or the op is not one we can use
-     * an index for, the expression is added to a list of unindexed expressions.
-     * @param expression
-     */
+  /**
+   * Takes in an expression that can be a conjunction of multiple expressions. It loops through each
+   * of them and checks if one side is a column and the other is a value. If so, it gets the column
+   * name and checks if the table has an index, and if there is an index on that column. If there's
+   * an index, using ScanVisitor, we check if the op is one we can use an index for, and if so, get
+   * the low and high values, then add the expression and column to our HashMap of indexed
+   * expressions. If there's no index or the op is not one we can use an index for, the expression
+   * is added to a list of unindexed expressions.
+   *
+   * @param expression
+   */
   public void plan(Expression expression) {
     // each expression in here will have the table in it?
     ArrayList<Expression> expressions = getAndExpressions(expression);
@@ -103,23 +104,25 @@ public class SelectPlan {
     }
     // optimalPlan();
   }
-    public HashMap<String, Integer[]> getColMinMax() {
-        return this.colMinMax;
-    }
 
-    /**
-     * Computes the optimal Select plan for the given expressions.
-     * @return an Operator that provides the lowest cost plan
-     * @throws FileNotFoundException
-     */
-    public Operator optimalPlan() throws FileNotFoundException {
-        int pages = ((numTuples*numCols*4)/4096) +1;//
-        double indexScan = pages;
-        System.out.println("regular scan cost for table " + tableName+ ": " + indexScan);
-        for(String col: colMinMax.keySet()){
-            /***computing reduction factor*/
-            Integer[] colRange = stats.getColumnInfo(col);
-            int rangeSize = colRange[1] - colRange[0];
+  public HashMap<String, Integer[]> getColMinMax() {
+    return this.colMinMax;
+  }
+
+  /**
+   * Computes the optimal Select plan for the given expressions.
+   *
+   * @return an Operator that provides the lowest cost plan
+   * @throws FileNotFoundException
+   */
+  public Operator optimalPlan() throws FileNotFoundException {
+    int pages = ((numTuples * numCols * 4) / 4096) + 1; //
+    double indexScan = pages;
+    System.out.println("regular scan cost for table " + tableName + ": " + indexScan);
+    for (String col : colMinMax.keySet()) {
+      /***computing reduction factor*/
+      Integer[] colRange = stats.getColumnInfo(col);
+      int rangeSize = colRange[1] - colRange[0];
 
       Integer[] selectRange = colMinMax.get(col);
       double redFactor = (double) (selectRange[1] - selectRange[0]) / rangeSize;
@@ -171,123 +174,130 @@ public class SelectPlan {
       }
     }
 
-        //now we have to separate all of the expressions into the one we can use
-        //an index for (indexed expressions)
-        //and the ones we cant unindexed exp
-        Expression unindexed = combineUnindexed(minCol);
-        //if uindexed expressions non existent, then can just use an index scan op
-        if(unindexed==null && indexedExpressions!=null){
-            System.out.println("Just using a regular index scan operator because only have indexed expressions");
-            return createOP(unindexed, minCol);
-        }
-        //now cover case when there are unindexed and indexed expressions
-        System.out.println("Uisng IndexScan as a child because we have unindexed and indexed expressions");
-        ScanOperator childOperator = createOP(unindexed, minCol);
-        return new SelectOperator(schema, childOperator, unindexed);
-        //actually want to return the column we want to index on and
+    // now we have to separate all of the expressions into the one we can use
+    // an index for (indexed expressions)
+    // and the ones we cant unindexed exp
+    Expression unindexed = combineUnindexed(minCol);
+    // if uindexed expressions non existent, then can just use an index scan op
+    if (unindexed == null && indexedExpressions != null) {
+      System.out.println(
+          "Just using a regular index scan operator because only have indexed expressions");
+      return createOP(unindexed, minCol);
     }
+    // now cover case when there are unindexed and indexed expressions
+    System.out.println(
+        "Uisng IndexScan as a child because we have unindexed and indexed expressions");
+    ScanOperator childOperator = createOP(unindexed, minCol);
+    return new SelectOperator(schema, childOperator, unindexed);
+    // actually want to return the column we want to index on and
+  }
 
-    /**
-     * Creates an IndexScanOperator using the column that we found to have the smallest index scan cost.
-     * @param unindexed All of the unindexed expressions that cannot be evaluated with an index on col
-     * @param col The col whose index provides the lowest cost plan
-     * @return A ScanOperator that is an IndexScan with high and low set for col
-     * @throws FileNotFoundException
-     */
-    public ScanOperator createOP(Expression unindexed, String col) throws FileNotFoundException {
-        Expression indexedExpr = indexedExpressions.get(col);
-        Expression unIndexedExpr = unindexed;
-        int low = colMinMax.get(col)[0];
-        int high = colMinMax.get(col)[1];
-        Integer ind = DBCatalog.getInstance().colIndex(tableName, col);
-        boolean clustered =
-                DBCatalog.getInstance().getClustOrd(tableName, col).getElementAtIndex(0) == 1;
-        File indexFile = DBCatalog.getInstance().getAvailableIndex(tableName, col);
-        System.out.println("IndexedExpr: " + indexedExpr);
-        System.out.println("Unindexed Expr: " + unIndexedExpr);
-        System.out.println("Indexing column: " + col);
-        return new IndexScanOperator( schema, tablePath, tableName, indexFile, ind, low, high,
-                 clustered);
-    }
+  /**
+   * Creates an IndexScanOperator using the column that we found to have the smallest index scan
+   * cost.
+   *
+   * @param unindexed All of the unindexed expressions that cannot be evaluated with an index on col
+   * @param col The col whose index provides the lowest cost plan
+   * @return A ScanOperator that is an IndexScan with high and low set for col
+   * @throws FileNotFoundException
+   */
+  public ScanOperator createOP(Expression unindexed, String col) throws FileNotFoundException {
+    Expression indexedExpr = indexedExpressions.get(col);
+    Expression unIndexedExpr = unindexed;
+    int low = colMinMax.get(col)[0];
+    int high = colMinMax.get(col)[1];
+    Integer ind = DBCatalog.getInstance().colIndex(tableName, col);
+    boolean clustered =
+        DBCatalog.getInstance().getClustOrd(tableName, col).getElementAtIndex(0) == 1;
+    File indexFile = DBCatalog.getInstance().getAvailableIndex(tableName, col);
+    System.out.println("IndexedExpr: " + indexedExpr);
+    System.out.println("Unindexed Expr: " + unIndexedExpr);
+    System.out.println("Indexing column: " + col);
+    return new IndexScanOperator(
+        schema, tablePath, tableName, indexFile, ind, low, high, clustered);
+  }
 
-    /**
-     * Combines all Expressions that do not included indexedCol or cannot be evaluated with an index
-     * on indexedCol into one Expression
-     * @param indexedCol the column the index is built on
-     * @return a single expression that is the conjunction of all unindexed expressions
-     */
-    public Expression combineUnindexed(String indexedCol){
-        ArrayList<Expression> unindexed = new ArrayList<>();
-        for(String col: indexedExpressions.keySet()){
-            if(!col.equalsIgnoreCase(indexedCol)){
-                unindexed.add(indexedExpressions.get(col));
-            }
-        }
-        unindexed.addAll(unindexedExpressions);
-        return createAndExpression(unindexed);
+  /**
+   * Combines all Expressions that do not included indexedCol or cannot be evaluated with an index
+   * on indexedCol into one Expression
+   *
+   * @param indexedCol the column the index is built on
+   * @return a single expression that is the conjunction of all unindexed expressions
+   */
+  public Expression combineUnindexed(String indexedCol) {
+    ArrayList<Expression> unindexed = new ArrayList<>();
+    for (String col : indexedExpressions.keySet()) {
+      if (!col.equalsIgnoreCase(indexedCol)) {
+        unindexed.add(indexedExpressions.get(col));
+      }
     }
+    unindexed.addAll(unindexedExpressions);
+    return createAndExpression(unindexed);
+  }
 
-    /**
-     * Sets the column range for col to [low,high]
-     * @param col The column we want to update the range on
-     * @param low The lower bound for the column range
-     * @param high The upper bound for the column range
-     */
-    public void colRange(String col, int low, int high){
-        if(!colMinMax.containsKey(col)){
-            Integer [] range = new Integer[2];
-            Integer[] actual_range = stats.getColumnInfo(col);
-            if(low<actual_range[0]){
-                low = actual_range[0];
-            }
-            if(high>actual_range[1]){
-                high = actual_range[1];
-            }
-            range[0] = low;
-            range[1] = high;
-            colMinMax.put(col, range);
-        }
-        else{
-            Integer [] range = colMinMax.get(col);
-            range[0] = Math.max(range[0], low);
-            range[1] = Math.min(range[1], high);
-            colMinMax.put(col, range);
-        }
+  /**
+   * Sets the column range for col to [low,high]
+   *
+   * @param col The column we want to update the range on
+   * @param low The lower bound for the column range
+   * @param high The upper bound for the column range
+   */
+  public void colRange(String col, int low, int high) {
+    if (!colMinMax.containsKey(col)) {
+      Integer[] range = new Integer[2];
+      Integer[] actual_range = stats.getColumnInfo(col);
+      if (low < actual_range[0]) {
+        low = actual_range[0];
+      }
+      if (high > actual_range[1]) {
+        high = actual_range[1];
+      }
+      range[0] = low;
+      range[1] = high;
+      colMinMax.put(col, range);
+    } else {
+      Integer[] range = colMinMax.get(col);
+      range[0] = Math.max(range[0], low);
+      range[1] = Math.min(range[1], high);
+      colMinMax.put(col, range);
     }
+  }
 
-    /**
-     * Combines all the individual expressions into a single expression that is a conjunction
-     * @param expressions A list of expressions we want to 'AND' together
-     * @return An expression with all individual expressions 'AND'-ed together
-     */
-    private Expression createAndExpression(List<Expression> expressions) {
-        if (expressions.size() < 1) {
-            return null;
-        } else if (expressions.size() == 1) {
-            return expressions.get(0);
-        }
-        AndExpression andExpression = new AndExpression(expressions.get(0), expressions.get(1));
-        expressions.remove(0);
-        expressions.remove(0);
-        while (!expressions.isEmpty()) {
-            andExpression = new AndExpression(andExpression, expressions.get(0));
-            expressions.remove(0);
-        }
-        return andExpression;
+  /**
+   * Combines all the individual expressions into a single expression that is a conjunction
+   *
+   * @param expressions A list of expressions we want to 'AND' together
+   * @return An expression with all individual expressions 'AND'-ed together
+   */
+  private Expression createAndExpression(List<Expression> expressions) {
+    if (expressions.size() < 1) {
+      return null;
+    } else if (expressions.size() == 1) {
+      return expressions.get(0);
     }
+    AndExpression andExpression = new AndExpression(expressions.get(0), expressions.get(1));
+    expressions.remove(0);
+    expressions.remove(0);
+    while (!expressions.isEmpty()) {
+      andExpression = new AndExpression(andExpression, expressions.get(0));
+      expressions.remove(0);
+    }
+    return andExpression;
+  }
 
-    /**
-     * Get the individual expressions that are being 'AND'-ed toegther
-     * @param where the expression we want to decompose
-     * @return A list containing the individual expressions in the where
-     */
-    public ArrayList<Expression> getAndExpressions(Expression where) {
-        ArrayList<Expression> ands = new ArrayList<>();
-        while (where instanceof AndExpression) {
-            ands.add(((AndExpression) where).getRightExpression());
-            where = ((AndExpression) where).getLeftExpression();
-        }
-        ands.add(where);
-        return ands;
+  /**
+   * Get the individual expressions that are being 'AND'-ed toegther
+   *
+   * @param where the expression we want to decompose
+   * @return A list containing the individual expressions in the where
+   */
+  public ArrayList<Expression> getAndExpressions(Expression where) {
+    ArrayList<Expression> ands = new ArrayList<>();
+    while (where instanceof AndExpression) {
+      ands.add(((AndExpression) where).getRightExpression());
+      where = ((AndExpression) where).getLeftExpression();
     }
+    ands.add(where);
+    return ands;
+  }
 }
