@@ -41,8 +41,8 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-//    String configFile = args[0];
-     String configFile = "src/test/resources/binary_samples/configFile.txt";
+   String configFile = args[0];
+   //String configFile = "src/test/resources/binary_samples/configFile.txt";
     readDirectories(configFile);
     // inputDir = args[0];
     // outputDir = args[1];
@@ -71,6 +71,7 @@ public class Compiler {
       for (Statement statement : statements.getStatements()) {
         try {
           Operator plan = queryPlanBuilder.buildPlan(statement, tempDir, indexFlag, queryFlag);
+          queryPlanBuilder.printLogicalPlan(outputDir + "/query" + counter + "_");
           if (outputToFiles) {
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
             long start = System.currentTimeMillis();
