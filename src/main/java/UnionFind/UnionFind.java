@@ -17,21 +17,17 @@ public class UnionFind {
     this.sameTableSelect = new ArrayList<>();
   }
 
-
-/**
- *Finds an element in the collection given an atttribute. If element not found, creates one
- */
+  /** Finds an element in the collection given an atttribute. If element not found, creates one */
   public Element findElement(String attr, boolean makeNew) {
     for (Element e : elements) {
       if (e.attributes.contains(attr)) {
         return e;
       }
     }
-    if (makeNew){
+    if (makeNew) {
       return new Element(null, null, null, attr);
     }
     return null;
-
   }
 
   /** Adds an element to the UnionFind collection */
@@ -92,10 +88,10 @@ public class UnionFind {
 
   public String printLogHelper(String attr) {
     StringBuilder line = new StringBuilder();
-    Element elem  = findElement(attr, false);
+    Element elem = findElement(attr, false);
     if (elem != null) {
       line.append("[[");
-      for(String att:elem.attributes){
+      for (String att : elem.attributes) {
         line.append(att);
       }
       line.append("], ");

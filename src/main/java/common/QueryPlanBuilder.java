@@ -232,10 +232,9 @@ public class QueryPlanBuilder {
       if (where != null) {
         unionFind = new SelectPushVisitor(where);
         unionFind.evaluate_expr();
-
       }
 
-        result =
+      result =
           new NewJoinLogOperator(
               outputSchema,
               tableExprs,

@@ -209,10 +209,9 @@ public class SelectPlanTest {
     queryPlanBuilder.printLogicalPlan("src/test/resources/samples-2/selectPlanTest/query8_");
   }
 
-
   @Test
   public void testQuery9()
-          throws ExecutionControl.NotImplementedException,
+      throws ExecutionControl.NotImplementedException,
           JSQLParserException,
           IOException,
           URISyntaxException {
@@ -220,7 +219,7 @@ public class SelectPlanTest {
     Statement stmt = statementList.get(8);
     Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     String binaryDir =
-            "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
+        "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
     TupleWriter tw = new TupleWriter(binaryDir + "/query9");
     plan.dump(tw);
     File humanFile = new File("src/test/resources/samples-2/selectPlanTest/human/query9_human");
