@@ -67,7 +67,7 @@ public class SelectPushTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(0);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/samples-2/selectPush";
     // File outfile = new File(outputDir + "/query1");
@@ -90,7 +90,7 @@ public class SelectPushTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(1);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/samples-2/selectPush";
     // File outfile = new File(outputDir + "/query1");

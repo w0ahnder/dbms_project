@@ -59,7 +59,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(0);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     // File outfile = new File(outputDir + "/query1");
@@ -81,7 +81,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(1);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query2");
@@ -100,7 +100,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(2);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query3");
@@ -120,7 +120,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(3);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query4");
@@ -140,7 +140,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(4);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(481, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query5");
@@ -160,7 +160,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(5);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(481, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query6");
@@ -180,7 +180,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(6);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(0, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     File outfile = new File(outputDir + "/query7");
@@ -200,7 +200,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(7);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(5019, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query8");
@@ -219,7 +219,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(8);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(25224, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     // plan.dump(new PrintStream(outputDir + "/query9_human"));
@@ -239,7 +239,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(9);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(19225, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query10");
@@ -260,7 +260,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(10);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query11");
@@ -279,7 +279,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(11);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(496964, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query12");
@@ -301,7 +301,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(12);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(1000, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query13");
@@ -320,7 +320,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(13);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(25224, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query14");
@@ -339,7 +339,7 @@ public class P2CheckpointTest {
           IOException,
           URISyntaxException {
     Statement stmt = statementList.get(14);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     // Assertions.assertEquals(24764, HelperMethods.collectAllTuples(plan).size());
     String outputDir = "src/test/resources/binary_samples/p2checkpoint_outputs";
     TupleWriter tw = new TupleWriter(outputDir + "/query15");

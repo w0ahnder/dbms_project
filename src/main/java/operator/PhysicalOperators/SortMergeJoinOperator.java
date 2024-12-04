@@ -4,11 +4,8 @@ import common.DBCatalog;
 import common.Tuple;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Array;
 import java.util.*;
-
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.schema.Column;
@@ -74,21 +71,22 @@ public class SortMergeJoinOperator extends Operator {
 
   /**
    * build the equality conditions for the SMJ operator
+   *
    * @return the "AND"-ed expression formed using the order by elements for left and right
    */
-  public Expression buildSMJExpr(){
+  public Expression buildSMJExpr() {
     ArrayList<Expression> expList = new ArrayList<>();
-    for(int i=0;i<orderElements_left.size();i++){
+    for (int i = 0; i < orderElements_left.size(); i++) {
       OrderByElement left = orderElements_left.get(i);
       OrderByElement right = orderElements_right.get(i);
       Expression leftexp = (Expression) left;
       Expression rightexp = (Expression) right;
-      Expression expr =
-              new EqualsTo().withLeftExpression((leftexp)).withRightExpression(rightexp);
+      Expression expr = new EqualsTo().withLeftExpression((leftexp)).withRightExpression(rightexp);
       expList.add(expr);
     }
     return createAndExpression(expList);
   }
+
   /**
    * Resets pointer on the operator object to the beginning. Achieves this by resetting its left and
    * right children
@@ -219,6 +217,7 @@ public class SortMergeJoinOperator extends Operator {
       return columnToIndexMap_right;
     }
   }
+
   private Expression createAndExpression(List<Expression> expressions) {
     if (expressions.size() < 1) {
       return null;

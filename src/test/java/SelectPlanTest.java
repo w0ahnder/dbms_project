@@ -66,7 +66,7 @@ public class SelectPlanTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(0);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     String binaryDir =
         "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
     TupleWriter tw = new TupleWriter(binaryDir + "/query1");
@@ -85,7 +85,7 @@ public class SelectPlanTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(1);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     String binaryDir =
         "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
     TupleWriter tw = new TupleWriter(binaryDir + "/query2");
@@ -103,7 +103,7 @@ public class SelectPlanTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(2);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     String binaryDir =
         "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
     TupleWriter tw = new TupleWriter(binaryDir + "/query3");
@@ -121,7 +121,7 @@ public class SelectPlanTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(3);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     String binaryDir =
         "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
     TupleWriter tw = new TupleWriter(binaryDir + "/query4");
@@ -140,7 +140,7 @@ public class SelectPlanTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(4);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     String binaryDir =
         "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
     TupleWriter tw = new TupleWriter(binaryDir + "/query5");
@@ -159,7 +159,7 @@ public class SelectPlanTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(5);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     String binaryDir =
         "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
     TupleWriter tw = new TupleWriter(binaryDir + "/query6");
@@ -177,7 +177,7 @@ public class SelectPlanTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(6);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     String binaryDir =
         "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
     TupleWriter tw = new TupleWriter(binaryDir + "/query7");
@@ -195,7 +195,7 @@ public class SelectPlanTest {
           URISyntaxException {
     DBCatalog.getInstance().processIndex();
     Statement stmt = statementList.get(7);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, 0, 1);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, 0, 1);
     String binaryDir =
         "src/test/resources/samples-2/selectPlanTest/output"; // directory for binary files
     TupleWriter tw = new TupleWriter(binaryDir + "/query8");

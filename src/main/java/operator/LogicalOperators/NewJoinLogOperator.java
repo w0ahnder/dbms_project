@@ -44,8 +44,7 @@ public class NewJoinLogOperator implements LogicalOperator {
   }
 
   public void printLog(PrintStream ps, int level) {
-    StringBuilder builder  = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     builder.append("-".repeat(level));
-
   }
 }

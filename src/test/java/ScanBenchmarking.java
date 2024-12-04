@@ -62,7 +62,7 @@ public class ScanBenchmarking {
     Statement stmt = statementList.get(s_ind);
     String outputDir = "src/test/resources/samples-2/scan_benchmark";
     TupleWriter tw = new TupleWriter(outputDir + "/query" + s_ind + type);
-    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, configList, index, query);
+    Operator plan = queryPlanBuilder.buildPlan(stmt, tempDir, index, query);
     long start = System.currentTimeMillis();
     plan.dump(tw);
     // tw.close();
