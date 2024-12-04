@@ -45,4 +45,7 @@ public class TableStats {
     public int getHeightforCol(String col){
         return colTree.get(col).getHeight();
     }
+  public HashMap<String, Integer[]> getColumnInfos() {
+    return this.col_infos;
+  }
 }

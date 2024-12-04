@@ -1,5 +1,0 @@
-Join [null]
--Select[Sailors.A >= 9998]
---Leaf[ Sailors]
--Select[Boats.E >= 9999]
---Leaf[ Boats]
