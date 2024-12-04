@@ -24,19 +24,34 @@ public class BTree {
     layers = new ArrayList<>();
   }
 
-  public void setHeight() {
+  /**
+   * Sets the height of the tree
+   * @return
+   */
+  public void setHeight(){
     height = layers.size();
   }
 
-  public int getHeight() {
+  /**
+   * @return the height of the tree
+   */
+  public int getHeight(){
     return height;
   }
 
-  public void setNumLeaves(int size) {
+  /**
+   * Sets the number of leaves that this tree has
+   * @param size is the number of leaves
+   */
+  public void setNumLeaves(int size){
     numLeaves = size;
   }
 
-  public int getNumLeaves() {
+  /**
+   *
+   * @return The number of leaves in this tree
+   */
+  public int getNumLeaves(){
     return numLeaves;
   }
 
