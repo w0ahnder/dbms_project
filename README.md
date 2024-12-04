@@ -1,7 +1,7 @@
 [![Java CI with Gradle](https://github.com/CornellDB/db_practicum/actions/workflows/gradle.yml/badge.svg)](https://github.com/CornellDB/db_practicum/actions/workflows/gradle.yml)
 
 # Cornell Database Systems Practicum - CS 4321/5321
-### Phase 3
+### Phase 4
 
 The top level class is the Compiler class.
 Path: src/main/java/compiler/Compiler.java
@@ -17,3 +17,7 @@ and a select operator if we have expressions not covered by the column we chose
 3. When first setting up the logical operator, we separate the expressions in the Select condition using an implementation of ExpressionVisitor to see which queries can be processed by index and which cannot. 
 Then we pass two separate conditions, one indexed and one unindexed. If indexed is null, we just run a normal scan. If unindexed is null, we just use the IndexScan operator. Or else, we create a SelectOperator that takes  IndexScan operator as a child operator. 
 So getNextTuple in this case will call IndexScan operator nextTuple(). For returned tuple, if it passes unindexed conditions, it returns the tuple. Else, it calls nextTuple() on IndexScan until it finds a tuple that passes both conditions. Same as how we did for joinOperator.
+
+4. For the choice of join Order, we followed the instruction in implementing the DP algorithm in selecting the optimal order based on the cost. The cost was calculated based on the left cost and size of left child. After finding the optimal order we combined the tables left to right and reOrdered the column order later in getnextTuple() method. 
+5. We used BNLJ as a choice of join implementation because we could not get to implement SMJ for certain conditions before the deadline. Our thought idea, however, was to only use SMJ in cases of equality join and BNLJ in all other cases. 
+
