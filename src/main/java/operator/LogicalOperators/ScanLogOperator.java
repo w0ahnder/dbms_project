@@ -27,8 +27,8 @@ public class ScanLogOperator implements LogicalOperator {
     return this.outputSchema;
   }
 
-  public void printLog(PrintStream ps, int level){
-    //TDOO: have to get table name for the scan operator
+  public void printLog(PrintStream ps, int level) {
+    // TDOO: have to get table name for the scan operator
     StringBuilder builder = new StringBuilder();
     builder.append("-".repeat(Math.max(0, level)));
     builder.append("Leaf[ ").append(table).append("]");

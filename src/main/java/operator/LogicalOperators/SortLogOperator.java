@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
-import org.apache.logging.log4j.core.config.Order;
 
 public class SortLogOperator implements LogicalOperator {
   public List<OrderByElement> orderByElements;
@@ -44,19 +43,20 @@ public class SortLogOperator implements LogicalOperator {
     return this.outputSchema;
   }
 
-  public void printLog(PrintStream ps, int level){
+  public void printLog(PrintStream ps, int level) {
     String res = "";
     StringBuilder builder = new StringBuilder();
     builder.append("-".repeat(Math.max(0, level)));
     builder.append("Sort[");
-    for(int i=0; i<orderByElements.size();i++){
+    for (int i = 0; i < orderByElements.size(); i++) {
       String ob = orderByElements.get(i).toString();
       builder.append(ob);
-      if(i<=orderByElements.size()-1);
+      if (i <= orderByElements.size() - 1)
+        ;
       builder.append(", ");
     }
     builder.append("]");
     ps.println(builder);
-    child.printLog(ps, level+1);
+    child.printLog(ps, level + 1);
   }
 }

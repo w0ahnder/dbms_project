@@ -3,6 +3,7 @@ package operator.LogicalOperators;
 import common.PhysicalPlanBuilder;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.io.PrintStream;
 import java.util.*;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;

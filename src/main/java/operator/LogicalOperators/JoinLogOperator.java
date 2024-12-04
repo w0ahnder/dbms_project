@@ -36,9 +36,9 @@ public class JoinLogOperator implements LogicalOperator {
     return this.outputSchema;
   }
 
-  public void printLog(PrintStream ps, int level){
-      ps.println("Join [" + condition + "]");
-      leftOperator.printLog(ps,level+1);
-      rightOperator.printLog(ps, level+1);
+  public void printLog(PrintStream ps, int level) {
+    ps.println("Join [" + condition + "]");
+    leftOperator.printLog(ps, level + 1);
+    rightOperator.printLog(ps, level + 1);
   }
 }

@@ -25,9 +25,8 @@ public class DuplicateEliminationLogOperator implements LogicalOperator {
     return this.outputSchema;
   }
 
-  public void printLog(PrintStream ps, int level){
+  public void printLog(PrintStream ps, int level) {
     ps.println("DupElim");
-    sort.printLog(ps, level+1);
-
+    sort.printLog(ps, level + 1);
   }
 }

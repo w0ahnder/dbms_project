@@ -30,20 +30,20 @@ public class ProjectLogOperator implements LogicalOperator {
     return this.outputSchema;
   }
 
-  public void printLog(PrintStream ps, int level){
+  public void printLog(PrintStream ps, int level) {
     String res = "";
     StringBuilder builder = new StringBuilder();
     builder.append("-".repeat(Math.max(0, level)));
     builder.append("Project[");
-    for(int i=0; i<selectItems.size();i++){
+    for (int i = 0; i < selectItems.size(); i++) {
       String ob = selectItems.get(i).toString();
       builder.append(ob);
-      if(i<=selectItems.size()-1);
+      if (i <= selectItems.size() - 1)
+        ;
       builder.append(", ");
     }
     builder.append("]");
     ps.println(builder);
-    child.printLog(ps, level+1);
-
+    child.printLog(ps, level + 1);
   }
 }

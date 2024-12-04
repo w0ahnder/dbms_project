@@ -49,7 +49,7 @@ public class TableSizeCalculator {
       stats = DBCatalog.getInstance().getTableStats(right);
       Integer rightSize = stats.getNumTuples();
       Integer denom = processJoin(joinExpressions.get(right));
-      System.out.println((leftSize * rightSize) / denom);
+      System.out.println("denom " + ((leftSize * rightSize) / denom));
       return (leftSize * rightSize) / denom;
     } else {
       List<Expression> joins = joinExpressions.get(leftTable);

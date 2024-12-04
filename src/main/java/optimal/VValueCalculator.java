@@ -6,9 +6,9 @@ import net.sf.jsqlparser.expression.Expression;
 import operator.LogicalOperators.*;
 
 public class VValueCalculator {
-  private Map<String, ArrayList<Expression>> selectExpressions;
-  private Map<String, ArrayList<Expression>> joinExpressions;
-  private Map<String, LogicalOperator> tableToOp;
+  public Map<String, ArrayList<Expression>> selectExpressions;
+  public Map<String, ArrayList<Expression>> joinExpressions;
+  public Map<String, LogicalOperator> tableToOp;
   public HashMap<String, HashMap<String, Integer>> vvalues;
   public HashMap<String, HashMap<String, Integer[]>> colMinMax;
 

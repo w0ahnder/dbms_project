@@ -41,7 +41,7 @@ public class CostCalculator {
           }
 
           int cost = dp.get(left) + joinCost;
-
+          System.out.println("cost is " + cost);
           if (cost < minCost) {
             minCost = cost;
             bestSplit = new Pair<>(left, right);
