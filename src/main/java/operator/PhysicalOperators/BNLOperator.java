@@ -3,6 +3,7 @@ package operator.PhysicalOperators;
 import common.DBCatalog;
 import common.SelectVisitor;
 import common.Tuple;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
@@ -128,6 +129,17 @@ public class BNLOperator extends Operator {
     right.reset();
     fill();
     return this.getNextTuple();
+  }
+
+  public void printPhys(PrintStream ps, int level) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("-".repeat(level));
+    builder.append("BNLJ[");
+    builder.append(condition);
+    builder.append("]");
+    ps.println(builder);
+    left.printPhys(ps, level + 1);
+    right.printPhys(ps, level + 1);
   }
 
   /** Concatenates the schema of the two tuples */

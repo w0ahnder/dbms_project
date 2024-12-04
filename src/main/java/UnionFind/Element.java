@@ -86,6 +86,7 @@ public class Element {
         + equality;
   }
 
+
   public ArrayList<Expression> generateExpression() {
     ArrayList<Expression> expressions = new ArrayList<>();
     for (String attr : attributes) {

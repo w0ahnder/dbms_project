@@ -5,6 +5,7 @@ import common.TupleReader;
 import common.TupleWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -55,6 +56,15 @@ public class ExternalSortOperator extends SortOperator {
     this.numTuples = this.bufferSize / tupleSize;
     this.orderByElements = orderElements;
     sort();
+  }
+
+  public void printPhys(PrintStream ps, int level) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("-".repeat(level));
+    String res = "ExternalSort[" + orderByElements.toString() + "]";
+    builder.append(res);
+    ps.println(builder);
+    op.printPhys(ps, level + 1);
   }
 
   /** Sorts the tuples loaded into memory. */

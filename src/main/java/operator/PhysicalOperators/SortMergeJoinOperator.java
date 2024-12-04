@@ -3,6 +3,7 @@ package operator.PhysicalOperators;
 import common.DBCatalog;
 import common.Tuple;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -52,6 +53,17 @@ public class SortMergeJoinOperator extends Operator {
     tuple_count_right = 0;
     left_curr = left.getNextTuple();
     right_curr = right.getNextTuple();
+  }
+
+  public void printPhys(PrintStream ps, int level) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("-".repeat(level));
+    builder.append("SMJ[");
+    // TODO
+    builder.append("]");
+    ps.println(builder);
+    left.printPhys(ps, level + 1);
+    right.printPhys(ps, level + 1);
   }
 
   /**

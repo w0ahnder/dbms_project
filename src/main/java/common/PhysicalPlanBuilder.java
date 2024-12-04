@@ -191,4 +191,8 @@ public class PhysicalPlanBuilder {
             NewJoinLogOperator.outputSchema);
     rootOperator = plan.buildPlan();
   }
+
+  public Operator getRootOp() {
+    return rootOperator;
+  }
 }

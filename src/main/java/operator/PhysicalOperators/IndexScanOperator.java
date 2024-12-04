@@ -3,10 +3,7 @@ package operator.PhysicalOperators;
 import common.DBCatalog;
 import common.Tuple;
 import common.TupleReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -31,6 +28,8 @@ public class IndexScanOperator extends ScanOperator {
   int currLeafKeyIndex;
   int RIDindex;
   int col;
+  String tableName;
+  String colName;
 
   public IndexScanOperator(
       ArrayList<Column> schema,
@@ -46,6 +45,7 @@ public class IndexScanOperator extends ScanOperator {
     lowkey = low;
     highkey = high;
     try {
+      this.tableName = table;
       tr = new TupleReader(DBCatalog.getInstance().getFileForTable(table));
       fin = new FileInputStream(indexFile);
       fc = fin.getChannel();
@@ -53,6 +53,7 @@ public class IndexScanOperator extends ScanOperator {
       this.clustered = clustered;
       currLeafKeyIndex = 0;
       this.col = col;
+      this.colName = schema.get(col).getColumnName();
       // have to deserialize from root to leaf layer
       processHeader();
       processNode(rootAddr);
@@ -77,6 +78,18 @@ public class IndexScanOperator extends ScanOperator {
 
       e.printStackTrace();
     }
+  }
+
+  public void printPhys(PrintStream ps, int level) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("-".repeat(level));
+    builder.append("IndexScan[");
+    builder.append(tableName + ",");
+    builder.append(colName + ",");
+    builder.append(lowkey + ",");
+    builder.append(highkey);
+    builder.append("]");
+    ps.println(builder);
   }
 
   /***

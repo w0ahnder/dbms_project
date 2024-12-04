@@ -52,6 +52,7 @@ public class QueryPlanBuilder {
   Integer queryFlag;
   Boolean is_sorted = false;
   LogicalOperator logicalOP;
+  Operator rootOperator;
 
   public QueryPlanBuilder() {}
 
@@ -307,18 +308,36 @@ public class QueryPlanBuilder {
     PhysicalPlanBuilder physicalPlanBuilder = new PhysicalPlanBuilder();
     try {
       result.accept(physicalPlanBuilder);
+      rootOperator = physicalPlanBuilder.getRootOp();
+
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
+
     return physicalPlanBuilder.returnResultTuple();
   }
 
-  public void printLogicalPlan(String path) {
-    File queryi = new File(path);
+  public void printPhysicalPlan(String path) {
+    File queryi = new File(path + "physicalplan");
     try {
       PrintStream ps = new PrintStream(queryi);
       logicalOP.printLog(ps, 0);
       ps.close();
+      printPhysicalPlan(path);
+
+    } catch (Exception e) {
+      System.out.println("Failed to print physical plan");
+    }
+  }
+
+  public void printLogicalPlan(String path) {
+    File queryi = new File(path + "logicalplan");
+    try {
+      PrintStream ps = new PrintStream(queryi);
+      logicalOP.printLog(ps, 0);
+      ps.close();
+      printPhysicalPlan(path);
+
     } catch (Exception e) {
       System.out.println("Failed to print logical plan");
     }

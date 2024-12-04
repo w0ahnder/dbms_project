@@ -3,6 +3,7 @@ package operator.PhysicalOperators;
 import common.DBCatalog;
 import common.Tuple;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import net.sf.jsqlparser.schema.Column;
@@ -25,6 +26,15 @@ public class ProjectOperator extends Operator {
     this.childOperator = childOperator;
     this.selectItems = selectItems;
     this.oldSchema = oldSchema;
+  }
+
+  public void printPhys(PrintStream ps, int level) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("-".repeat(level));
+    String res = "Project[" + selectItems.toString() + "]";
+    builder.append(res);
+    ps.println(builder);
+    childOperator.printPhys(ps, level + 1);
   }
 
   /** resets the child operator */

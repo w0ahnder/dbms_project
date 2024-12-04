@@ -27,6 +27,15 @@ public class ScanOperator extends Operator {
     reader = DBCatalog.getInstance().getReader(path);
   }
 
+  public void printPhys(PrintStream ps, int level) {
+    String table = outputSchema.get(0).getTable().getName();
+    StringBuilder builder = new StringBuilder();
+    builder.append("-".repeat(level));
+    String res = "TableScan[" + table + "]";
+    builder.append(res);
+    ps.println(builder);
+  }
+
   /** close the Buffered Reader after we reach the end of the file */
   public void reset() {
     try {

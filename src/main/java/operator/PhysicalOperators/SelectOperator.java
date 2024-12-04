@@ -23,6 +23,16 @@ public class SelectOperator extends Operator {
     scanOp.reset();
   }
 
+  public void printPhys(PrintStream ps, int level) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("-".repeat(level));
+    builder.append("Select[");
+    builder.append(expression);
+    builder.append("]");
+    ps.println(builder);
+    scanOp.printPhys(ps, level + 1);
+  }
+
   /**
    * Keeps calling the child's getNextTuple() and evaluates the expression. If the expression is
    * true, we return the tuple. Otherwise, keep calling the child's getNextTuple() until there are

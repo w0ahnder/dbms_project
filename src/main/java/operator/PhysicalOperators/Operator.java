@@ -71,4 +71,7 @@ public abstract class Operator {
     }
     tw.close();
   }
+
+  public void printPhys(PrintStream ps, int level) {}
+  ;
 }

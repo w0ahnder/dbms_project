@@ -1,6 +1,7 @@
 package operator.PhysicalOperators;
 
 import common.Tuple;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import net.sf.jsqlparser.schema.Column;
 
@@ -21,6 +22,11 @@ public class DuplicateEliminationOperator extends Operator {
     super(outputSchema);
     so = sortOp;
     curr = null;
+  }
+
+  public void printPhys(PrintStream ps, int level) {
+    ps.println("DupElim");
+    so.printPhys(ps, level + 1);
   }
 
   /**
