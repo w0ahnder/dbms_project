@@ -2,6 +2,8 @@ package operator.PhysicalOperators;
 
 import common.SelectVisitor;
 import common.Tuple;
+
+import java.io.PrintStream;
 import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
@@ -108,5 +110,9 @@ public class JoinOperator extends Operator {
     }
     leftOperator.reset();
     return leftTuple;
+  }
+
+  public void printPhys(PrintStream ps, int level){
+
   }
 }
