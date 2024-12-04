@@ -361,7 +361,7 @@ public class DBCatalog {
    * @return true if we have to actually evaluate query
    */
   public boolean isEvalQuery() {
-    return evalQuery;
+    return true;
   }
 
   /**

@@ -46,5 +46,10 @@ public class NewJoinLogOperator implements LogicalOperator {
   public void printLog(PrintStream ps, int level) {
     StringBuilder builder = new StringBuilder();
     builder.append("-".repeat(level));
+    builder.append("Join");
+    ps.println(builder);
+    for (LogicalOperator op : childOperators) {
+      op.printLog(ps, level + 1);
+    }
   }
 }

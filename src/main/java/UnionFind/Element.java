@@ -102,12 +102,12 @@ public class Element {
       String table = table_col[0].trim();
       String col = table_col[1].trim();
       String alias = null;
-      if (DBCatalog.getInstance().getUseAlias()) {
+      /*if (DBCatalog.getInstance().getUseAlias()) {
         alias = table;
         table = DBCatalog.getInstance().getTableName(alias); // actual table name
       }
-
-      Column c = new Column(new Table(alias, table), col);
+*/
+      Column c = new Column(new Table(table), col);
       if (equality != null) {
         Expression expr =
             (new EqualsTo().withLeftExpression(c)).withRightExpression(new LongValue(equality));

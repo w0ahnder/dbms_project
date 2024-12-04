@@ -41,8 +41,8 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    String configFile = args[0];
-    // String configFile = "src/test/resources/samples-2/interpreter_config_file.txt";
+//    String configFile = args[0];
+     String configFile = "src/test/resources/binary_samples/configFile.txt";
     readDirectories(configFile);
     // inputDir = args[0];
     // outputDir = args[1];
@@ -135,8 +135,6 @@ public class Compiler {
       inputDir = lines.get(0);
       outputDir = lines.get(1);
       tempDir = lines.get(2);
-      indexFlag = Integer.parseInt(lines.get(3));
-      queryFlag = Integer.parseInt(lines.get(4));
     } catch (IOException e) {
       System.err.println("Error reading the file: " + e.getMessage());
     }

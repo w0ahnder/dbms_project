@@ -37,8 +37,8 @@ public class SelectPlan {
     // this.expressions = expressions;
     this.tableName = tableName;
     stats = DBCatalog.getInstance().getTableStats(tableName);
-    numTuples = DBCatalog.getInstance().getTableStats(tableName).getNumTuples();
-    numCols = DBCatalog.getInstance().getTableStats(tableName).numCols();
+    numTuples = DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(tableName)).getNumTuples();
+    numCols = DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(tableName)).numCols();
     this.scan = scan;
     this.tablePath = tablePath;
     this.schema = schema;

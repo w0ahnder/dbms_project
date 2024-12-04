@@ -48,7 +48,7 @@ public class VValueCalculator {
     for (String table : tables) {
       // DBCatalog.getInstance().getTableStats(table).getColumnInfos();
       HashMap<String, Integer> tval = new HashMap();
-      TableStats stats = DBCatalog.getInstance().getTableStats(table);
+      TableStats stats = DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(table));
       HashMap<String, Integer[]> columnInfo = stats.getColumnInfos();
       for (String col : columnInfo.keySet()) {
         Integer[] range = stats.getColumnInfo(col);
@@ -64,7 +64,7 @@ public class VValueCalculator {
   public void processSelection() {
     for (String table : this.selectExpressions.keySet()) {
       List<Expression> exprs = this.selectExpressions.get(table);
-      TableStats stats = DBCatalog.getInstance().getTableStats(table);
+      TableStats stats = DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(table));
       HashMap<String, Integer[]> columnInfo = stats.getColumnInfos();
       for (Expression expr : exprs) {
         for (String col : columnInfo.keySet()) {

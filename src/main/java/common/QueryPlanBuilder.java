@@ -74,12 +74,8 @@ public class QueryPlanBuilder {
   public Operator buildPlan(Statement stmt, String tempDir, Integer indexFlag, Integer queryFlag)
       throws ExecutionControl.NotImplementedException {
 
-    if (!DBCatalog.getInstance().isEvalQuery()) {
-      return null;
-    }
-
-    this.indexFlag = indexFlag;
-    this.queryFlag = queryFlag;
+    this.indexFlag = 1;
+    this.queryFlag = 1;
     this.is_sorted = false;
     // List<Integer> joinConfig = planConfList.get(0);
 
@@ -145,7 +141,7 @@ public class QueryPlanBuilder {
       //              + pushSelect.sameTableSelect); // for select have same columns on either side
       //      System.out.println("Joins: " + pushSelect.joins);
       //      System.out.println("Generated select expr: " + pushSelect.unionFind.generateExpr());
-      System.out.println("Generated select expr: " + pushSelect.unionFind.toString());
+      //System.out.println("Generated select expr: " + pushSelect.unionFind.toString());
       andExpressions.addAll(pushSelect.unionFind.sameTableSelect);
       andExpressions.addAll(pushSelect.unionFind.joins);
       andExpressions.addAll(pushSelect.unionFind.generateExpr());
