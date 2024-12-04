@@ -21,3 +21,5 @@ So getNextTuple in this case will call IndexScan operator nextTuple(). For retur
 For the choice of join Order, we followed the instruction in implementing the DP algorithm in selecting the optimal order based on the cost. The cost was calculated based on the left cost and size of left child. After finding the optimal order we combined the tables left to right and reOrdered the column order later in getnextTuple() method. 
 We used BNLJ as a choice of join implementation because we could not get to implement SMJ for certain conditions before the deadline. Our thought idea, however, was to only use SMJ in cases of equality join and BNLJ in all other cases. 
 
+###SelectPush
+For select push we implemented it by creating an element class that stored sets of columns that were bound together by equality signs and then a union find that is a collection of the elements. After modifying the elements based on selection condions to set their upper, lower or equality constraint, we converted it back to expressions to be used for processing scans and selects.
