@@ -37,7 +37,6 @@ public class PhysicalPlanBuilder {
             selectLogOperator.scan);
     selectPlan.plan(selectLogOperator.where);
     rootOperator = selectPlan.optimalPlan();
-
   }
 
   public void visit(JoinLogOperator joinLogOperator) throws FileNotFoundException {

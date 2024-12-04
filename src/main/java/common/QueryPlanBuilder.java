@@ -140,11 +140,11 @@ public class QueryPlanBuilder {
     if (where != null) {
       SelectPushVisitor pushSelect = new SelectPushVisitor(where);
       pushSelect.evaluate_expr();
-//      System.out.println(
-//          "Self table select: "
-//              + pushSelect.sameTableSelect); // for select have same columns on either side
-//      System.out.println("Joins: " + pushSelect.joins);
-//      System.out.println("Generated select expr: " + pushSelect.unionFind.generateExpr());
+      //      System.out.println(
+      //          "Self table select: "
+      //              + pushSelect.sameTableSelect); // for select have same columns on either side
+      //      System.out.println("Joins: " + pushSelect.joins);
+      //      System.out.println("Generated select expr: " + pushSelect.unionFind.generateExpr());
       System.out.println("Generated select expr: " + pushSelect.unionFind.toString());
       andExpressions.addAll(pushSelect.unionFind.sameTableSelect);
       andExpressions.addAll(pushSelect.unionFind.joins);
@@ -308,7 +308,7 @@ public class QueryPlanBuilder {
     File queryi = new File(path + "physicalplan");
     try {
       PrintStream ps = new PrintStream(queryi);
-      logicalOP.printLog(ps, 0);
+      rootOperator.printPhys(ps, 0);
       ps.close();
       printPhysicalPlan(path);
 
@@ -345,7 +345,6 @@ public class QueryPlanBuilder {
     ands.add(where);
     return ands;
   }
-
 
   /**
    * Takes in a list of expressions and connects them with an and clause

@@ -1,7 +1,6 @@
 package common;
 
 import UnionFind.UnionFind;
-import java.util.ArrayList;
 import java.util.Objects;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.arithmetic.*;

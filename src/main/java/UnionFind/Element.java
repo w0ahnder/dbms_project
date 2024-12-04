@@ -12,10 +12,9 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 
 /**
- *Element class represents objects that make up the union find collections. An element contains a set of attributes,
- * an upper bound, an equality and a lower bound
+ * Element class represents objects that make up the union find collections. An element contains a
+ * set of attributes, an upper bound, an equality and a lower bound
  */
-
 public class Element {
   Integer upper;
 
@@ -55,7 +54,6 @@ public class Element {
   void setEquality(Integer val) {
     this.equality = val;
   }
-
 
   /** merges two elements together to become one */
   Element merge(Element elem) {

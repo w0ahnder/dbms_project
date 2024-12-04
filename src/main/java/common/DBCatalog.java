@@ -89,6 +89,7 @@ public class DBCatalog {
 
   /**
    * Creates a stats file for our data directory
+   *
    * @param directory the directoru for the input
    */
   public void createStatsFile(String directory) {
@@ -110,6 +111,7 @@ public class DBCatalog {
 
   /**
    * Sets the min and max for each of the columns in the table
+   *
    * @param path path for the table
    * @param cols the schema for the table
    * @param table the name of the table
