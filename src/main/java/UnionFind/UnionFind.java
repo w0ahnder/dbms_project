@@ -3,13 +3,26 @@ package UnionFind;
 import java.util.ArrayList;
 import net.sf.jsqlparser.expression.Expression;
 
+/**
+ *Union class is a collection of elements
+ */
+
 public class UnionFind {
-  ArrayList<Element> elements;
+  public ArrayList<Element> elements;
+
+  public ArrayList<Expression> joins;
+
+  public ArrayList<Expression> sameTableSelect;
 
   public UnionFind() {
     this.elements = new ArrayList<>();
+    this.joins = new ArrayList<>();
+    this.sameTableSelect = new ArrayList<>();
   }
 
+/**
+ *Finds an element in the collection given an atttribute. If element not found, creates one
+ */
   public Element findElement(String attr) {
     for (Element e : elements) {
       if (e.attributes.contains(attr)) {
@@ -19,14 +32,24 @@ public class UnionFind {
     return new Element(null, null, null, attr);
   }
 
+
+  /**
+   *Adds an element to the UnionFind collection
+   */
   public void updateElementsList(Element elem) {
     this.elements.add(elem); // remember to call when you do a setfunction and mergeElements
   }
 
+  /**
+   *Removes an element from the UnionFind collection
+   */
   public void removeElementFromList(Element elem) {
     this.elements.remove(elem); // remember to call when you do a findfunction
   }
 
+  /**
+   *Sets the lower bound for an element containing an attribute
+   */
   public void setLower(String attr, Integer lower) {
     Element elem = findElement(attr);
     removeElementFromList(elem);
@@ -34,6 +57,9 @@ public class UnionFind {
     updateElementsList(elem);
   }
 
+  /**
+   *Sets the upper bound for an element containing an attribute
+   */
   public void setUpper(String attr, Integer higher) {
     Element elem = findElement(attr);
     removeElementFromList(elem);
@@ -41,6 +67,9 @@ public class UnionFind {
     updateElementsList(elem);
   }
 
+  /**
+   *Sets the equality contraint for an element containing an attribute
+   */
   public void setEquality(String attr, Integer eq) {
     Element elem = findElement(attr);
     removeElementFromList(elem);
@@ -50,6 +79,9 @@ public class UnionFind {
     updateElementsList(elem);
   }
 
+  /**
+   *Merges the corresponding elements for the attributes
+   */
   public void mergeElements(String attr_1, String attr_2) {
     Element left = findElement(attr_1);
     Element right = findElement(attr_2);
@@ -58,7 +90,9 @@ public class UnionFind {
     Element merged = left.merge(right);
     updateElementsList(merged);
   }
-
+  /**
+   *Converts the UnionFind Collection into a list of expressions
+   */
   public ArrayList<Expression> generateExpr() {
     ArrayList<Expression> expr = new ArrayList<>();
     for (Element e : elements) {
@@ -66,6 +100,22 @@ public class UnionFind {
       expr.addAll(elem_expr);
     }
     return expr;
+  }
+
+  public String printLogHelper(String attr){
+    StringBuilder line = new StringBuilder();
+    Element elem  = findElement(attr);
+    line.append("[[");
+    for(String att:elem.attributes){
+      line.append(att);
+    }
+    line.append("], ");
+    line.append("equals ").append(elem.equality).append(", ");
+    line.append("min ").append(elem.lower).append(", ");
+    line.append("max ").append(elem.upper);
+
+    return line.toString();
+
   }
 
   public String toString() {

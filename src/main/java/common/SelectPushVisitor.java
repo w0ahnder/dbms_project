@@ -15,18 +15,13 @@ import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.SubSelect;
 
 public class SelectPushVisitor implements ExpressionVisitor {
-  ArrayList<Expression> joins;
 
-  ArrayList<Expression> sameTableSelect;
-
-  UnionFind usable_expr;
+  UnionFind unionFind;
 
   Expression expression;
 
   public SelectPushVisitor(Expression expr) {
-    this.joins = new ArrayList<>();
-    this.sameTableSelect = new ArrayList<>();
-    this.usable_expr = new UnionFind();
+    this.unionFind = new UnionFind();
     this.expression = expr;
   }
 
@@ -47,14 +42,14 @@ public class SelectPushVisitor implements ExpressionVisitor {
 
     try {
       Integer eq = Integer.parseInt(right_str);
-      usable_expr.setEquality(left_str, eq);
+      unionFind.setEquality(left_str, eq);
 
     } catch (NumberFormatException e) {
-      usable_expr.mergeElements(left_str, right_str);
+      unionFind.mergeElements(left_str, right_str);
       if (Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])) {
-        sameTableSelect.add(equalsTo);
+        unionFind.sameTableSelect.add(equalsTo);
       } else {
-        joins.add(equalsTo);
+        unionFind.joins.add(equalsTo);
       }
     }
   }
@@ -65,13 +60,13 @@ public class SelectPushVisitor implements ExpressionVisitor {
     String right_str = greaterThan.getRightExpression().toString();
     try {
       Integer lower = Integer.parseInt(right_str) + 1;
-      usable_expr.setLower(left_str, lower);
+      unionFind.setLower(left_str, lower);
 
     } catch (NumberFormatException e) {
       if (Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])) {
-        sameTableSelect.add(greaterThan);
+        unionFind.sameTableSelect.add(greaterThan);
       } else {
-        joins.add(greaterThan);
+        unionFind.joins.add(greaterThan);
       }
     }
   }
@@ -82,13 +77,13 @@ public class SelectPushVisitor implements ExpressionVisitor {
     String right_str = greaterThanEquals.getRightExpression().toString();
     try {
       Integer lower = Integer.parseInt(right_str);
-      usable_expr.setLower(left_str, lower);
+      unionFind.setLower(left_str, lower);
 
     } catch (NumberFormatException e) {
       if (Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])) {
-        sameTableSelect.add(greaterThanEquals);
+        unionFind.sameTableSelect.add(greaterThanEquals);
       } else {
-        joins.add(greaterThanEquals);
+        unionFind.joins.add(greaterThanEquals);
       }
     }
   }
@@ -99,13 +94,13 @@ public class SelectPushVisitor implements ExpressionVisitor {
     String right_str = minorThan.getRightExpression().toString();
     try {
       Integer upper = Integer.parseInt(right_str) - 1;
-      usable_expr.setUpper(left_str, upper);
+      unionFind.setUpper(left_str, upper);
 
     } catch (NumberFormatException e) {
       if (Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])) {
-        sameTableSelect.add(minorThan);
+        unionFind.sameTableSelect.add(minorThan);
       } else {
-        joins.add(minorThan);
+        unionFind.joins.add(minorThan);
       }
     }
   }
@@ -116,13 +111,13 @@ public class SelectPushVisitor implements ExpressionVisitor {
     String right_str = minorThanEquals.getRightExpression().toString();
     try {
       Integer upper = Integer.parseInt(right_str);
-      usable_expr.setUpper(left_str, upper);
+      unionFind.setUpper(left_str, upper);
 
     } catch (NumberFormatException e) {
       if (Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])) {
-        sameTableSelect.add(minorThanEquals);
+        unionFind.sameTableSelect.add(minorThanEquals);
       } else {
-        joins.add(minorThanEquals);
+        unionFind.joins.add(minorThanEquals);
       }
     }
   }
@@ -133,13 +128,13 @@ public class SelectPushVisitor implements ExpressionVisitor {
     String left_str = notEqualsTo.getLeftExpression().toString();
     try {
       Integer.parseInt(right_str);
-      sameTableSelect.add(notEqualsTo);
+      unionFind.sameTableSelect.add(notEqualsTo);
 
     } catch (NumberFormatException e) {
       if (Objects.equals(left_str.split("\\.")[0], right_str.split("\\.")[0])) {
-        sameTableSelect.add(notEqualsTo);
+        unionFind.sameTableSelect.add(notEqualsTo);
       } else {
-        joins.add(notEqualsTo);
+        unionFind.joins.add(notEqualsTo);
       }
     }
   }

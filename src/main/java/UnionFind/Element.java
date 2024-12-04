@@ -11,6 +11,11 @@ import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 
+/**
+ *Element class represents objects that make up the union find collections. An element contains a set of attributes,
+ * an upper bound, an equality and a lower bound
+ */
+
 public class Element {
   Integer upper;
 
@@ -28,6 +33,7 @@ public class Element {
     attributes.add(attr);
   }
 
+  /** sets the upper bound for the element */
   void setUpper(Integer val) {
     if (this.upper == null) {
       this.upper = val;
@@ -36,6 +42,7 @@ public class Element {
     }
   }
 
+  /** sets the lower bound for the element */
   void setLower(Integer val) {
     if (this.lower == null) {
       this.lower = val;
@@ -44,10 +51,13 @@ public class Element {
     }
   }
 
+  /** sets the equality constraint for the element */
   void setEquality(Integer val) {
     this.equality = val;
   }
 
+
+  /** merges two elements together to become one */
   Element merge(Element elem) {
     this.attributes.addAll(elem.attributes);
     if (this.equality == null) {
@@ -86,6 +96,7 @@ public class Element {
         + equality;
   }
 
+  /** converts an element into a list of expressions using the bounds for selection conditions */
   public ArrayList<Expression> generateExpression() {
     ArrayList<Expression> expressions = new ArrayList<>();
     for (String attr : attributes) {

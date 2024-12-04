@@ -140,14 +140,15 @@ public class QueryPlanBuilder {
     if (where != null) {
       SelectPushVisitor pushSelect = new SelectPushVisitor(where);
       pushSelect.evaluate_expr();
-      System.out.println(
-          "Self table select: "
-              + pushSelect.sameTableSelect); // for select have same columns on either side
-      System.out.println("Joins: " + pushSelect.joins);
-      System.out.println("Generated select expr: " + pushSelect.usable_expr.generateExpr());
-      andExpressions.addAll(pushSelect.sameTableSelect);
-      andExpressions.addAll(pushSelect.joins);
-      andExpressions.addAll(pushSelect.usable_expr.generateExpr());
+//      System.out.println(
+//          "Self table select: "
+//              + pushSelect.sameTableSelect); // for select have same columns on either side
+//      System.out.println("Joins: " + pushSelect.joins);
+//      System.out.println("Generated select expr: " + pushSelect.unionFind.generateExpr());
+      System.out.println("Generated select expr: " + pushSelect.unionFind.toString());
+      andExpressions.addAll(pushSelect.unionFind.sameTableSelect);
+      andExpressions.addAll(pushSelect.unionFind.joins);
+      andExpressions.addAll(pushSelect.unionFind.generateExpr());
     }
 
     /*if (where != null) {
