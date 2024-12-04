@@ -83,6 +83,7 @@ public class BulkLoad {
       Node r = new Index(leaves, address, key);
       ArrayList<Node> root = new ArrayList<Node>();
       tree.addLayer(root);
+      tree.setHeight();
       return;
     }
     // create index layer right above the leaves; can pass in a Leaf list
@@ -96,6 +97,7 @@ public class BulkLoad {
       nodes = indexes;
     }
     // printLeaves(leaves);
+    tree.setHeight();
   }
 
   /**

@@ -2,6 +2,8 @@ package common;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,6 +52,7 @@ public class QueryPlanBuilder {
   Integer indexFlag;
   Integer queryFlag;
   Boolean is_sorted = false;
+  LogicalOperator logicalOP;
 
   public QueryPlanBuilder() {}
 
@@ -143,10 +146,14 @@ public class QueryPlanBuilder {
     if (where != null) {
       andExpressions = getAndExpressions(where);
     }
-
+  //maybe have to check before hand if the where expression is null???
     SelectPushVisitor pushSelect = new SelectPushVisitor(where);
     pushSelect.evaluate_expr();
-    // merge the useable_expr with the joins and sameTableSelect to get all expressions
+    //merge the useable_expr with the joins and sameTableSelect to get all expressions
+    System.out.println("Self table select: " + pushSelect.sameTableSelect);//for select have same columns on either side
+    System.out.println("Joins: " + pushSelect.joins);
+    System.out.println("Generated select expr: " + pushSelect.usable_expr.generateExpr()); //inferred expressions, only one table in them
+
 
     // For Project
     List<SelectItem> selectItems = plainSelect.getSelectItems();
@@ -202,21 +209,20 @@ public class QueryPlanBuilder {
     for (String table : tables) {
       table_path = DBCatalog.getInstance().getFileForTable(table).getPath();
       schema = copyColumn(DBCatalog.getInstance().get_Table(table), table);
-      LogicalOperator op = new ScanLogOperator(schema, table_path);
+      LogicalOperator op = new ScanLogOperator(schema, table_path, table);
       ArrayList<Expression> selectExpr = selectExpressions.get(table);
 
       // SELECT
       if (selectExpr.size() > 0) {
-        // first check if no indexing at all(not sure if necessary)
-        // op = filterScanExpressions(schema, table_path, selectExpressions.get(table), tableName,
-        // op);
-        SelectPlan selectPlan =
-            new SelectPlan(table, schema, table_path, selectExpressions.get(table), op);
+        op = new SelectLogOperator(createAndExpression(selectExpressions.get(table)), op, table,table_path);
 
-        selectPlan.plan(createAndExpression(selectExpressions.get(table)));
-        HashMap<String, Integer[]> colMinMax = selectPlan.getColMinMax();
-        op = selectPlan.optimalPlan();
-        vvalues.put(table, colMinMax);
+      }//for each table, check if can use index scan or need regular select
+
+      if (tables.get(0) == table) {
+        result = op;
+      } else {
+        //ArrayList<Column> outputSchema = new ArrayList<>();
+        outputSchema.addAll(result.getOutputSchema());
         outputSchema.addAll(op.getOutputSchema());
       } // for each table, check if can use index scan or need regular select
 
@@ -292,6 +298,7 @@ public class QueryPlanBuilder {
       }
     }
 
+    logicalOP = result;
     PhysicalPlanBuilder physicalPlanBuilder = new PhysicalPlanBuilder();
     try {
       result.accept(physicalPlanBuilder);
@@ -299,6 +306,20 @@ public class QueryPlanBuilder {
       throw new RuntimeException(e);
     }
     return physicalPlanBuilder.returnResultTuple();
+  }
+
+  public void printLogicalPlan(String path){
+    File queryi = new File(path);
+    try {
+      PrintStream ps = new PrintStream(queryi);
+      logicalOP.printLog(ps, 0);
+      ps.close();
+    }
+    catch (Exception e){
+      System.out.println("Failed to print logical plan");
+    }
+
+
   }
 
   /**
@@ -317,7 +338,7 @@ public class QueryPlanBuilder {
     return ands;
   }
 
-  public LogicalOperator filterScanExpressions(
+  /*public LogicalOperator filterScanExpressions(
       ArrayList<Column> outputSchema,
       String table_path,
       List<Expression> expressions,
@@ -381,7 +402,7 @@ public class QueryPlanBuilder {
             op);
     return op;
   }
-
+*/
   /**
    * Takes in a list of expressions and connects them with an and clause
    *

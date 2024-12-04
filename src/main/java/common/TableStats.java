@@ -38,11 +38,11 @@ public class TableStats {
     colTree.put(col, tree);
   }
 
-  public int getNumLeaves(String col) {
-    return colTree.get(col).getNumLeaves();
-  }
+    public int getNumLeaves(String col){
+        return colTree.get(col).getNumLeaves();
+    }
 
-  public HashMap<String, Integer[]> getColumnInfos() {
-    return this.col_infos;
-  }
+    public int getHeightforCol(String col){
+        return colTree.get(col).getHeight();
+    }
 }
