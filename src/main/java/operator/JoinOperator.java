@@ -77,7 +77,7 @@ public class JoinOperator extends Operator {
         if (this.condition == null) {
           return curr;
         }
-        SelectVisitor sv = new SelectVisitor(curr, this.outputSchema, this.condition);
+        SelectVisitor sv = new SelectVisitor(curr, concatSchema(), this.condition);
         if (sv.evaluate_expr()) {
           return curr;
         }
@@ -88,5 +88,12 @@ public class JoinOperator extends Operator {
     }
     leftOperator.reset();
     return leftTuple;
+  }
+
+  public ArrayList<Column> concatSchema(){
+    ArrayList<Column> conc = new ArrayList<Column>();
+    conc.addAll(leftOperator.getOutputSchema());
+    conc.addAll(rightOperator.getOutputSchema());
+    return conc;
   }
 }

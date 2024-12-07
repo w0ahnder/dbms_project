@@ -1,0 +1,10 @@
+/.DS_Store
+/common/
+/compiler/
+/log4j2.xml
+/operator/
+/tree/
+/utilities/
+/UnionFind/
+/optimal/
+/bin/

@@ -1,8 +1,10 @@
 package operator;
 
+import common.DBCatalog;
 import common.Tuple;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 
 /** Class that extends Operator Class to handle SQL queries with the ORDER BY keyword. */
@@ -22,18 +24,37 @@ public class SortOperator extends Operator {
    * @param sc the child operator
    */
   public SortOperator(
-      ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
+          ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
     super(outputSchema);
-    orderByElements = orderElements;
-    op = sc;
+    this.orderByElements = new ArrayList<>(); //order by elements kept like S.Sailors.A
+    this.op = sc;
+    this.curr = 0;
+    if (orderElements.size() == 0) {
+      for (Column c : outputSchema) {
+
+        OrderByElement ob = new OrderByElement();
+        Column newc = new Column();
+        String table_name =
+                DBCatalog.getInstance().getUseAlias()
+                        ? c.getTable().getSchemaName()
+                        : c.getTable().getName();
+        Table t = new Table(table_name);
+        newc.setTable(t);
+        newc.setColumnName(c.getColumnName());
+        ob.setExpression(c);
+        this.orderByElements.add(ob);
+      }
+    } else {
+      this.orderByElements = orderElements;
+    }
     curr = 0;
+    this.op = sc;
     Tuple tuple = sc.getNextTuple();
     while (tuple != null) {
       result.add(tuple);
       tuple = sc.getNextTuple();
     }
-
-    result.sort(new TupleComparator());
+    sort(result);
   }
 
   /**
@@ -45,6 +66,13 @@ public class SortOperator extends Operator {
     op.reset();
   }
 
+  public void reset(int i) {}
+
+  public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
+    result.sort(new TupleComparator());
+    return result;
+  }
+
   /**
    * Get next tuple from operator
    *
@@ -52,9 +80,7 @@ public class SortOperator extends Operator {
    *     "result" which is a sorted list of all the tuples from its child operator.
    */
   public Tuple getNextTuple() {
-
     if (curr == result.size()) {
-      this.reset();
       return null;
     }
     curr += 1;
@@ -62,7 +88,7 @@ public class SortOperator extends Operator {
   }
 
   /** Custom Comparator class to compare two tuples based on columns */
-  private class TupleComparator implements Comparator<Tuple> {
+  public class TupleComparator implements Comparator<Tuple> {
     public TupleComparator() {}
 
     /**
@@ -78,40 +104,63 @@ public class SortOperator extends Operator {
      */
     @Override
     public int compare(Tuple t1, Tuple t2) {
-      if (!orderByElements.isEmpty()) {
-        Map<String, Integer> columnToIndexMap = new HashMap<>();
-        for (int i = 0; i < outputSchema.size(); i += 1) {
-          columnToIndexMap.put(outputSchema.get(i).getFullyQualifiedName(), i);
-        }
-        for (OrderByElement orderByElement : orderByElements) {
-          Column orderToCol = (Column) orderByElement.getExpression();
-          String col = orderToCol.getFullyQualifiedName();
-          int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
-          int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
 
+      Map<String, Integer> columnToIndexMap = new HashMap<>();
+      for (int i = 0; i < outputSchema.size(); i += 1) {
+        String name = outputSchema.get(i).getTable().getName();
+        String ali = outputSchema.get(i).getTable().getSchemaName();
+        String col_name = outputSchema.get(i).getColumnName();
+        // gives Sailors, and when alias=true, it tries to get Sailors from alias map
+
+        String full = name + "." + col_name;
+        if (DBCatalog.getInstance().getUseAlias()) {
+          full = ali + "." + col_name;
+        }
+        columnToIndexMap.put(full, i); //keeps Sailors.A or S.A depending on no alias or if alias
+      }
+
+      for (OrderByElement orderByElement : orderByElements) {
+        Column orderToCol = (Column) orderByElement.getExpression();
+        String col = orderToCol.getColumnName();
+        String alias = orderToCol.getTable().getSchemaName();
+        String table = orderToCol.getTable().getName();
+        String full=table + "." + col;
+        if(DBCatalog.getInstance().getUseAlias()){
+          full = alias +"." + col;
+        }
+        int t1_val = t1.getElementAtIndex(columnToIndexMap.get(full));
+    //check for aliases^^
+        int t2_val = t2.getElementAtIndex(columnToIndexMap.get(full));
+
+        if (t1_val > t2_val) {
+          return 1;
+        } else if (t1_val < t2_val) {
+          return -1;
+        }
+        //        columnToIndexMap.remove(col);
+      }
+
+      for (Column col : outputSchema) {
+
+        String name = col.getTable().getName();
+        String ali = col.getTable().getSchemaName();
+        String col_name = col.getColumnName();
+        String col_str = name + "." + col_name;
+        if (DBCatalog.getInstance().getUseAlias()) {
+          col_str = ali + "." + col_name;
+        }
+
+        if (columnToIndexMap.containsKey(col_str)) {
+          int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col_str));
+          int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col_str));
           if (t1_val > t2_val) {
             return 1;
           } else if (t1_val < t2_val) {
             return -1;
           }
-          columnToIndexMap.remove(col);
         }
-        for (Column col : outputSchema) {
-          String col_str = col.getFullyQualifiedName();
-          if (columnToIndexMap.containsKey(col_str)) {
-            int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col_str));
-            int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col_str));
-            if (t1_val > t2_val) {
-              return 1;
-            } else if (t1_val < t2_val) {
-              return -1;
-            }
-          }
-        }
-        return 0;
-      } else {
-        return t1.toString().compareTo(t2.toString());
       }
+      return 0;
     }
   }
 }

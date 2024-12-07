@@ -3,11 +3,13 @@ package operator;
 import common.Tuple;
 import java.util.ArrayList;
 import net.sf.jsqlparser.schema.Column;
+import operator.Operator;
+import operator.SortOperator;
 
 /** Class that extends Operator Class to handle SQL queries with the DISTINCT keyword. */
 public class DuplicateEliminationOperator extends Operator {
 
-  SortOperator so;
+  Operator so;
 
   Tuple curr;
 
@@ -17,7 +19,7 @@ public class DuplicateEliminationOperator extends Operator {
    * @param outputSchema the Schema of the output which becomes its child.
    * @param sortOp the child operator which must be a SortOperator object
    */
-  public DuplicateEliminationOperator(ArrayList<Column> outputSchema, SortOperator sortOp) {
+  public DuplicateEliminationOperator(ArrayList<Column> outputSchema, Operator sortOp) {
     super(outputSchema);
     so = sortOp;
     curr = null;

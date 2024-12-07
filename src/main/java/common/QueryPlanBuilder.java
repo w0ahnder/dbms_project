@@ -68,32 +68,32 @@ public class QueryPlanBuilder {
     }
 
     List<Join> joinTables =
-        Optional.ofNullable(plainSelect.getJoins()).orElse(Collections.emptyList());
+            Optional.ofNullable(plainSelect.getJoins()).orElse(Collections.emptyList());
     // get rest of the tables in the join
     ArrayList<String> tables = new ArrayList<>();
 
     tables.add(tableName);
     joinTables.forEach(
-        join -> {
-          Table fromTable = (Table) join.getRightItem();
-          String fromName = fromTable.getName();
-          tables.add(fromName);
-          if (if_alias) {
-            // set alias for the all the tables used in the join
-            String alias = join.getRightItem().getAlias().toString().trim();
-            aliases.add(alias);
+            join -> {
+              Table fromTable = (Table) join.getRightItem();
+              String fromName = fromTable.getName();
+              tables.add(fromName);
+              if (if_alias) {
+                // set alias for the all the tables used in the join
+                String alias = join.getRightItem().getAlias().toString().trim();
+                aliases.add(alias);
 
-            // add alias, tablename to hashmap
-            DBCatalog.getInstance().setTableAlias(fromName, alias);
-          }
-        });
+                // add alias, tablename to hashmap
+                DBCatalog.getInstance().setTableAlias(fromName, alias);
+              }
+            });
 
     if (if_alias) {
       assert alias1 != null;
       tableName = alias1.toString().trim();
     }
     String table_path = DBCatalog.getInstance().getFileForTable(tableName).getPath();
-    ArrayList<Column> schema = DBCatalog.getInstance().get_Table(tableName);
+    ArrayList<Column> schema = copyColumn(DBCatalog.getInstance().get_Table(tableName), tableName);
     Expression where = plainSelect.getWhere();
 
     // List of all AND expressions
@@ -113,34 +113,55 @@ public class QueryPlanBuilder {
       if (tables.size() > 1) {
         if (if_alias) result = createJoinOperator(andExpressions, copyList(aliases));
         else result = createJoinOperator(andExpressions, copyList(tables));
-      }
-      if (selectItems.size() > 1 || !(selectItems.get(0) instanceof AllColumns)) {
-        ArrayList<Column> newSchema = new ArrayList<>();
-        for (SelectItem selectItem : selectItems) {
-          Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
-          newSchema.add(c);
-        }
 
+      }
+      //ORDER BY
+      if (orderByElements != null) {
+        result = new SortOperator(result.getOutputSchema(), createOrderBy(orderByElements), result);
+      }
+
+      //PROJECT
+      if (selectItems.size() >= 1 ){
+
+        ArrayList<Column> newSchema = new ArrayList<>();
+        if(!(selectItems.get(0) instanceof AllColumns)) {
+          for (SelectItem selectItem : selectItems) {
+            Column c = (Column) ((SelectExpressionItem) selectItem).getExpression();
+            Column newC = c;
+            if(DBCatalog.getInstance().getUseAlias()){
+              String alias = c.getTable().getName();
+              String actual_table = DBCatalog.getInstance().getTableName(alias);
+              String col  = c.getColumnName();
+              newC = new Column(new Table(alias, actual_table), col);
+            }
+            newSchema.add(newC);
+          }
+        }
         ArrayList<Column> schem = new ArrayList<>();
         ArrayList<String> schemaTables;
         if (if_alias) schemaTables = aliases;
         else schemaTables = tables;
         for (String t : schemaTables) {
-          ArrayList<Column> p = DBCatalog.getInstance().get_Table(t);
+          ArrayList<Column> p = copyColumn(DBCatalog.getInstance().get_Table(t), t);////may have to chwck this when using aliases
+          //branch p2 adb62f8 more debugging, all tests and compiler pass
           schem.addAll(p);
         }
-        result = new ProjectOperator(newSchema, schem, result, selectItems);
+        if(selectItems.get(0) instanceof AllColumns){
+          result = new ProjectOperator(schem, schem, result, selectItems);
+        }
+        else {
+          result = new ProjectOperator(newSchema, schem, result, selectItems);
+        }
       }
-      if (orderByElements != null) {
-        result = new SortOperator(result.getOutputSchema(), orderByElements, result);
-      }
+
+      //Distinct
       if (isDistinct) {
         if (orderByElements != null) {
           result =
-              new DuplicateEliminationOperator(result.getOutputSchema(), (SortOperator) result);
+                  new DuplicateEliminationOperator(result.getOutputSchema(), result);
         } else {
           SortOperator child =
-              new SortOperator(result.getOutputSchema(), new ArrayList<>(), result);
+                  new SortOperator(result.getOutputSchema(), new ArrayList<>(), result);
           result = new DuplicateEliminationOperator(result.getOutputSchema(), child);
         }
       }
@@ -159,8 +180,8 @@ public class QueryPlanBuilder {
    * @throws FileNotFoundException
    */
   private JoinOperator createJoinOperator(
-      ArrayList<Expression> andExpressions, ArrayList<String> tableNames)
-      throws FileNotFoundException {
+          ArrayList<Expression> andExpressions, ArrayList<String> tableNames)
+          throws FileNotFoundException {
     JoinOperator joinOperator = null;
     if (tableNames.size() == 1) {
       return joinOperator;
@@ -177,7 +198,7 @@ public class QueryPlanBuilder {
       // GETS ALL TABLE NAMES IN THE EXPRESSION
       tablesInExpression = tablesNamesFinder.getTableList(expr);
       if (tablesInExpression.size() == 1
-          && tablesInExpression.get(0).trim().equalsIgnoreCase(lastTable)) {
+              && tablesInExpression.get(0).trim().equalsIgnoreCase(lastTable)) {
         rightExpressions.add(expr);
       } else if (tablesInExpression.contains(lastTable)) {
         inExpressions.add(expr);
@@ -226,13 +247,13 @@ public class QueryPlanBuilder {
       ;
       if (rightExpression != null) {
         rightOperator =
-            new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
+                new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
       }
 
       ArrayList<Column> leftSchema = leftOperator.getOutputSchema();
       joinSchema = new ArrayList<>();
       joinSchema.addAll(leftSchema);
-      leftSchema.addAll(rightSchema);
+      joinSchema.addAll(rightSchema);
       joinOperator = new JoinOperator(joinSchema, leftOperator, rightOperator, inExpression);
     }
     return joinOperator;
@@ -250,11 +271,11 @@ public class QueryPlanBuilder {
    * @return JoinOperator object
    */
   private JoinOperator joinTwoTables(
-      ArrayList<String> tableNames,
-      Expression rightExpression,
-      Expression leftExpression,
-      Expression inExpression)
-      throws FileNotFoundException {
+          ArrayList<String> tableNames,
+          Expression rightExpression,
+          Expression leftExpression,
+          Expression inExpression)
+          throws FileNotFoundException {
     String leftTable = tableNames.get(0);
     String rightTable = tableNames.get(1);
 
@@ -267,7 +288,7 @@ public class QueryPlanBuilder {
     Operator leftOperator = new ScanOperator(leftSchema, leftTablePath);
     if (rightExpression != null) {
       rightOperator =
-          new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
+              new SelectOperator(rightSchema, (ScanOperator) rightOperator, rightExpression);
     }
     if (leftExpression != null) {
       leftOperator = new SelectOperator(leftSchema, (ScanOperator) leftOperator, leftExpression);
@@ -320,5 +341,37 @@ public class QueryPlanBuilder {
     ArrayList<String> res = new ArrayList<>();
     res.addAll(l);
     return res;
+  }
+
+  private ArrayList<Column> copyColumn(ArrayList<Column> columns, String table) {
+    ArrayList<Column> res = new ArrayList<>();
+    String al = null;
+    for (Column c : columns) {
+      if (if_alias) {
+        al = table;
+      }
+      res.add(new Column(new Table(al, c.getTable().getName()), c.getColumnName()));
+    }
+    return res;
+  }
+
+  private List<OrderByElement> createOrderBy(List<OrderByElement> orderByEle){
+    //if we use aliases the order by expression will be of the form S.A,
+    //so we construct new orderby element S.Sailors.A
+    List<OrderByElement> oel  = new ArrayList<>();
+    for(OrderByElement orderByElement: orderByEle) {
+      Column orderToCol = (Column) orderByElement.getExpression();
+      String table = orderToCol.getTable().getName();
+      String colname = orderToCol.getColumnName();
+      Column newCol = new Column( new Table(DBCatalog.getInstance().getTableName(table)), colname);
+      if(DBCatalog.getInstance().getUseAlias()){
+        String alias = table;
+        newCol  = new Column( new Table(alias, DBCatalog.getInstance().getTableName(table)), colname);
+      }
+      OrderByElement ob = new OrderByElement();
+      ob.setExpression(newCol);
+      oel.add(ob);
+    }
+    return oel;
   }
 }

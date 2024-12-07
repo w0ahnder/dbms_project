@@ -38,6 +38,30 @@ public class SelectVisitor extends ExpressVisit {
     String[] data = (column.toString()).split("\\.");
     String table = data[0];
     String col = data[1];
+
+    int count = 0;
+    for (Column c : schema) {
+      String colName = c.getColumnName();
+
+      String alias = c.getTable().getSchemaName();
+      // if an alias, this will be null
+      String column_table = DBCatalog.getInstance().getTableName(c.getTable().getName());
+
+      if (DBCatalog.getInstance().getUseAlias()) {
+        column_table = alias;
+      }
+      if (colName.equalsIgnoreCase(col) && table.equalsIgnoreCase(column_table)) {
+        longValue = tuple.getElementAtIndex(count);
+        return;
+      }
+      count++;
+    }
+  }
+  /*
+  public void visit(Column column) {
+    String[] data = (column.toString()).split("\\.");
+    String table = data[0];
+    String col = data[1];
     String tablename = DBCatalog.getInstance().getTableName(table);
     int count = 0;
     for (Column c : schema) {
@@ -53,4 +77,6 @@ public class SelectVisitor extends ExpressVisit {
       count++;
     }
   }
+
+   */
 }

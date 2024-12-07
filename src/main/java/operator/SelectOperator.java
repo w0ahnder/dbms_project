@@ -39,7 +39,6 @@ public class SelectOperator extends Operator {
       }
       curr = scanOp.getNextTuple();
     }
-    scanOp.reset();
     return null;
   }
 }
