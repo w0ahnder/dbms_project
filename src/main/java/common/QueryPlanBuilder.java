@@ -228,10 +228,14 @@ public class QueryPlanBuilder {
       tableToOp.put(table, op);
     }
     if (tables.size() > 1) {
-      SelectPushVisitor unionFind = null;
+      SelectPushVisitor unionFind;
+      UnionFind union;
       if (where != null) {
         unionFind = new SelectPushVisitor(where);
         unionFind.evaluate_expr();
+        union = unionFind.unionFind;
+      }else{
+        union = new UnionFind();
       }
 
       result =
@@ -243,7 +247,7 @@ public class QueryPlanBuilder {
               joinExpressions,
               tableToOp,
               vvalues,
-              unionFind.unionFind);
+              union);
       // TODO: REMOVE!! these lines
       // PhysicalPlanBuilder physicalPlanBuilder = new PhysicalPlanBuilder();
       // try {
