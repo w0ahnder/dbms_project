@@ -109,18 +109,16 @@ public class InMemorySortOperator extends SortOperator {
 
       for (OrderByElement orderByElement : orderByElements) {
         Column orderToCol = (Column) orderByElement.getExpression();
-        String col = orderToCol.getFullyQualifiedName();
-
-        // Sailors.C
-        /*if(DBCatalog.getInstance().getUseAlias()){
-                    String[] names = col.split("\\.");
-                    col = DBCatalog.getInstance().getTableName(names[0]) + "." + names[names.length - 1];
-                  }
-        */
-
-        int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
-
-        int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
+        String col = orderToCol.getColumnName();
+        String alias = orderToCol.getTable().getSchemaName();
+        String table = orderToCol.getTable().getName();
+        String full=table + "." + col;
+        if(DBCatalog.getInstance().getUseAlias()){
+          full = alias +"." + col;
+        }
+        int t1_val = t1.getElementAtIndex(columnToIndexMap.get(full));
+        //check for aliases^^
+        int t2_val = t2.getElementAtIndex(columnToIndexMap.get(full));
 
         if (t1_val > t2_val) {
           return 1;

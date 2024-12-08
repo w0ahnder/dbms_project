@@ -186,24 +186,10 @@ public class QueryPlanBuilder {
     // ORDER BY
     if (orderByElements != null) {
       if (sortConfig.get(0).equals(0)) {
-        result = new SortLogOperator(orderByElements, result);
+        result = new SortLogOperator(createOrderBy(orderByElements), result);
       } else {
-        result = new SortLogOperator(orderByElements, result, sortConfig.get(1), tempDir);
-      }
-    }
-
-    // DISTINCT
-    if (isDistinct) {
-      if (orderByElements != null) {
-        result = new DuplicateEliminationLogOperator(schema, result);
-      } else {
-        SortLogOperator child;
-        if (sortConfig.get(0).equals(0)) {
-          child = new SortLogOperator(new ArrayList<>(), result);
-        } else {
-          child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
-        }
-        result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
+        //result = new SortLogOperator(orderByElements, result, sortConfig.get(1), tempDir);
+        result = new SortLogOperator(createOrderBy(orderByElements), result, sortConfig.get(1), tempDir);
       }
     }
 
@@ -223,6 +209,23 @@ public class QueryPlanBuilder {
         result = new ProjectLogOperator(result, selectItems, newSchema);
       }
     }
+
+    // DISTINCT
+    if (isDistinct) {
+      if (orderByElements != null) {
+        result = new DuplicateEliminationLogOperator(schema, result);
+      } else {
+        SortLogOperator child;
+        if (sortConfig.get(0).equals(0)) {
+          child = new SortLogOperator(new ArrayList<>(), result);
+        } else {
+          child = new SortLogOperator(new ArrayList<>(), result, sortConfig.get(1), tempDir);
+        }
+        result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
+      }
+    }
+
+
 
     PhysicalPlanBuilder physicalPlanBuilder = new PhysicalPlanBuilder();
     try {
@@ -288,4 +291,24 @@ public class QueryPlanBuilder {
     }
     return res;
   }
+  private List<OrderByElement> createOrderBy(List<OrderByElement> orderByEle){
+    //if we use aliases the order by expression will be of the form S.A,
+    //so we construct new orderby element S.Sailors.A
+    List<OrderByElement> oel  = new ArrayList<>();
+    for(OrderByElement orderByElement: orderByEle) {
+      Column orderToCol = (Column) orderByElement.getExpression();
+      String table = orderToCol.getTable().getName();
+      String colname = orderToCol.getColumnName();
+      Column newCol = new Column( new Table(DBCatalog.getInstance().getTableName(table)), colname);
+      if(DBCatalog.getInstance().getUseAlias()){
+        String alias = table;
+        newCol  = new Column( new Table(alias, DBCatalog.getInstance().getTableName(table)), colname);
+      }
+      OrderByElement ob = new OrderByElement();
+      ob.setExpression(newCol);
+      oel.add(ob);
+    }
+    return oel;
+  }
+
 }

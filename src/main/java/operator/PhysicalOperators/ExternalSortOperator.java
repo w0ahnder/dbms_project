@@ -56,7 +56,9 @@ public class ExternalSortOperator extends SortOperator {
     int tupleSize = op.outputSchema.size() * 4;
     this.numTuples = this.bufferSize / tupleSize;
     this.orderByElements = orderElements;
+    //op.reset();
     sort();
+
   }
 
   /** Sorts the tuples loaded into memory. */
@@ -67,7 +69,8 @@ public class ExternalSortOperator extends SortOperator {
     // numTuples = 2; // remove after testing
     ArrayList<Tuple> tuples = new ArrayList<>(numTuples);
     sortOperator = new SortOperator(outputSchema, this.orderByElements, op);
-
+    op.reset();
+    //returned null here
     Tuple next = op.getNextTuple();
     try {
       while (next != null) {

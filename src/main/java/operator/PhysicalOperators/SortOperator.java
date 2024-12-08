@@ -1,5 +1,4 @@
 package operator.PhysicalOperators;
-
 import common.DBCatalog;
 import common.Tuple;
 import java.util.*;
@@ -24,9 +23,9 @@ public class SortOperator extends Operator {
    * @param sc the child operator
    */
   public SortOperator(
-      ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
+          ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
     super(outputSchema);
-    this.orderByElements = new ArrayList<>();
+    this.orderByElements = new ArrayList<>(); //order by elements kept like S.Sailors.A
     this.op = sc;
     this.curr = 0;
     if (orderElements.size() == 0) {
@@ -35,9 +34,9 @@ public class SortOperator extends Operator {
         OrderByElement ob = new OrderByElement();
         Column newc = new Column();
         String table_name =
-            DBCatalog.getInstance().getUseAlias()
-                ? c.getTable().getSchemaName()
-                : c.getTable().getName();
+                DBCatalog.getInstance().getUseAlias()
+                        ? c.getTable().getSchemaName()
+                        : c.getTable().getName();
         Table t = new Table(table_name);
         newc.setTable(t);
         newc.setColumnName(c.getColumnName());
@@ -47,19 +46,15 @@ public class SortOperator extends Operator {
     } else {
       this.orderByElements = orderElements;
     }
-  }
-
-  // Tuple tuple = sc.getNextTuple();
-  // while (tuple != null) {
-  //   result.add(tuple);
-  //   tuple = sc.getNextTuple();
-  // }
-
-  // result.sort(new TupleComparator());
-
-  public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
-    result.sort(new TupleComparator());
-    return result;
+    curr = 0;
+    this.op = sc;
+    Tuple tuple = op.getNextTuple();
+    while (tuple != null) {
+      result.add(tuple);
+      tuple = op.getNextTuple();
+    }
+    //op.reset();
+    result = sort(result);
   }
 
   /**
@@ -72,6 +67,11 @@ public class SortOperator extends Operator {
   }
 
   public void reset(int i) {}
+
+  public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
+    result.sort(new TupleComparator());
+    return result;
+  }
 
   /**
    * Get next tuple from operator
@@ -116,22 +116,28 @@ public class SortOperator extends Operator {
         if (DBCatalog.getInstance().getUseAlias()) {
           full = ali + "." + col_name;
         }
-        columnToIndexMap.put(full, i);
+        columnToIndexMap.put(full, i); //keeps Sailors.A or S.A depending on no alias or if alias
       }
 
       for (OrderByElement orderByElement : orderByElements) {
         Column orderToCol = (Column) orderByElement.getExpression();
-        String col = orderToCol.getFullyQualifiedName();
-        int t1_val = t1.getElementAtIndex(columnToIndexMap.get(col));
-
-        int t2_val = t2.getElementAtIndex(columnToIndexMap.get(col));
+        String col = orderToCol.getColumnName();
+        String alias = orderToCol.getTable().getSchemaName();
+        String table = orderToCol.getTable().getName();
+        String full=table + "." + col;
+        if(DBCatalog.getInstance().getUseAlias()){
+          full = alias +"." + col;
+        }
+        int t1_val = t1.getElementAtIndex(columnToIndexMap.get(full));
+        //check for aliases^^
+        int t2_val = t2.getElementAtIndex(columnToIndexMap.get(full));
 
         if (t1_val > t2_val) {
           return 1;
         } else if (t1_val < t2_val) {
           return -1;
         }
-//        columnToIndexMap.remove(col);
+        //        columnToIndexMap.remove(col);
       }
 
       for (Column col : outputSchema) {

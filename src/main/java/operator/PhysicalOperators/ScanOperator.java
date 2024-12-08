@@ -14,7 +14,6 @@ import net.sf.jsqlparser.schema.Column;
  */
 public class ScanOperator extends Operator {
   public DBCatalog db;
-  public BufferedReader br;
   public String table_path;
   public TupleReader reader;
 
