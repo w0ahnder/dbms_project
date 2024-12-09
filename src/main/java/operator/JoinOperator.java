@@ -90,7 +90,7 @@ public class JoinOperator extends Operator {
     return leftTuple;
   }
 
-  public ArrayList<Column> concatSchema(){
+  public ArrayList<Column> concatSchema() {
     ArrayList<Column> conc = new ArrayList<Column>();
     conc.addAll(leftOperator.getOutputSchema());
     conc.addAll(rightOperator.getOutputSchema());

@@ -1,8 +1,8 @@
 package operator;
+
 import common.DBCatalog;
 import common.Tuple;
 import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import net.sf.jsqlparser.schema.Column;
@@ -14,13 +14,14 @@ public class ProjectOperator extends Operator {
   Operator childOperator;
   List<SelectItem> selectItems;
   ArrayList<Column> oldSchema;
-//projection newschema if alias is S.A, not S.sailors.A, taken directly from query
+
+  // projection newschema if alias is S.A, not S.sailors.A, taken directly from query
   public ProjectOperator(
-          ArrayList<Column> newSchema,
-          ArrayList<Column> oldSchema,
-          Operator childOperator,
-          List<SelectItem> selectItems)
-          throws FileNotFoundException {
+      ArrayList<Column> newSchema,
+      ArrayList<Column> oldSchema,
+      Operator childOperator,
+      List<SelectItem> selectItems)
+      throws FileNotFoundException {
     super(newSchema);
     this.childOperator = childOperator;
     this.selectItems = selectItems;
@@ -57,12 +58,12 @@ public class ProjectOperator extends Operator {
     ArrayList<String> tables = new ArrayList<>();
     ArrayList<String> columns = new ArrayList<>();
 
-    //the select items come directly from the query, so if alias then like S.A.
+    // the select items come directly from the query, so if alias then like S.A.
     for (SelectItem s : selectItems) {
       Column c = (Column) ((SelectExpressionItem) s).getExpression();
       // if we use aliases, then this adds the alias instead like S.C adds S and Sailors.C adds
       // Sailors
-      String t = c.getTable().getName(); //get actual table name, like sailors, not S
+      String t = c.getTable().getName(); // get actual table name, like sailors, not S
       /*if (DBCatalog.getInstance().getUseAlias()) {
         t = c.getTable().getSchemaName();
       }*/
@@ -89,14 +90,16 @@ public class ProjectOperator extends Operator {
       Column curr = oldSchema.get(i);
       String c = curr.getColumnName();
       // String t = curr.getTable().getName();
-      String al = curr.getTable().getSchemaName(); //get the alias, null if doesnt exist
-      String table_name = DBCatalog.getInstance().getTableName(name);//get the actual table name
+      String al = curr.getTable().getSchemaName(); // get the alias, null if doesnt exist
+      String table_name = DBCatalog.getInstance().getTableName(name); // get the actual table name
       if (DBCatalog.getInstance().getUseAlias()) {
-        table_name = al;//if use an alias, set the name of the table to the alias
+        table_name = al; // if use an alias, set the name of the table to the alias
       }
 
       // if (DBCatalog.getInstance().getUseAlias()) t = curr.getTable().getName();
-      if (c.equalsIgnoreCase(column) && table_name.equals(name)) { // check that the alas if we use it or table name matches 'name'
+      if (c.equalsIgnoreCase(column)
+          && table_name.equals(
+              name)) { // check that the alas if we use it or table name matches 'name'
         return i;
       }
     }

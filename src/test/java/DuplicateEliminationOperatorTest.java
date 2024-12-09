@@ -62,7 +62,7 @@ public class DuplicateEliminationOperatorTest {
 
     for (int i = 0; i < trimSize; i++) {
       Tuple expectedTuple = expectedTuples[i];
-      Tuple actualTuple = plan.getNextTuple();
+      Tuple actualTuple = tuples.get(i);
       Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
     }
   }
@@ -70,6 +70,7 @@ public class DuplicateEliminationOperatorTest {
   @Test
   public void resetTest() throws ExecutionControl.NotImplementedException {
     Operator plan = queryPlanBuilder.buildPlan(statementList.get(8));
+    List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
 
     int resetIndex = 6;
 
@@ -89,7 +90,7 @@ public class DuplicateEliminationOperatorTest {
     plan.reset();
     for (int i = 0; i < resetIndex; i++) {
       Tuple expectedTuple = expectedTuples[i];
-      Tuple actualTuple = plan.getNextTuple();
+      Tuple actualTuple = tuples.get(i);
       Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
     }
   }

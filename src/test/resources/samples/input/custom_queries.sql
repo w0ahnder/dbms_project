@@ -1,6 +1,6 @@
 SELECT * FROM Sailors;
 SELECT * FROM Sailors WHERE Sailors.A < 4;
-SELECT * FROM Sailors, Reserves;
+SELECT DISTINCT S.A, R.G FROM Sailors S, Reserves R ORDER BY R.G, S.A;
 SELECT * FROM Sailors, Reserves WHERE Sailors.A < 0; 
 SELECT * FROM Reserves, Sailors WHERE Sailors.A < 0; 
 SELECT * FROM Reserves, Sailors WHERE Sailors.A = Reserves.H;

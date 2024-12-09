@@ -1,4 +1,5 @@
 package operator;
+
 import common.DBCatalog;
 import common.Tuple;
 import java.io.*;
@@ -40,7 +41,7 @@ public class ScanOperator extends Operator {
    */
   public Tuple getNextTuple() {
     try {
-      return new Tuple (br.readLine());
+      return new Tuple(br.readLine());
     } catch (Exception e) {
       return null;
     }

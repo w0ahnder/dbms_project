@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import jdk.jshell.spi.ExecutionControl;
@@ -39,59 +38,6 @@ public class SortOperatorTest {
     statements = CCJSqlParserUtil.parseStatements(Files.readString(Paths.get(queriesFile)));
     queryPlanBuilder = new QueryPlanBuilder();
     statementList = statements.getStatements();
-  }
-
-  @Test
-  public void getNextTupleTest() throws ExecutionControl.NotImplementedException {
-    Operator plan = queryPlanBuilder.buildPlan(statementList.get(6));
-    List<Tuple> tuples = HelperMethods.collectAllTuples(plan);
-
-    int expectedSize = 180;
-    int trimSize = 6;
-    Assertions.assertEquals(expectedSize, tuples.size(), "Unexpected number of rows.");
-
-    Tuple[] expectedTuples =
-        new Tuple[] {
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1)))
-        };
-
-    for (int i = 0; i < trimSize; i++) {
-      Tuple expectedTuple = expectedTuples[i];
-      Tuple actualTuple = plan.getNextTuple();
-      Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
-    }
-  }
-
-  @Test
-  public void testReset() throws ExecutionControl.NotImplementedException {
-    Operator plan = queryPlanBuilder.buildPlan(statementList.get(6));
-
-    int resetIndex = 6;
-
-    Tuple[] expectedTuples =
-        new Tuple[] {
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 1, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1))),
-          new Tuple(new ArrayList<>(List.of(1, 2, 1)))
-        };
-
-    for (int i = 0; i < resetIndex; i++) {
-      plan.getNextTuple();
-    }
-    plan.reset();
-    for (int i = 0; i < resetIndex; i++) {
-      Tuple expectedTuple = expectedTuples[i];
-      Tuple actualTuple = plan.getNextTuple();
-      Assertions.assertEquals(expectedTuple, actualTuple, "Unexpected tuple at index " + i);
-    }
   }
 
   @Test

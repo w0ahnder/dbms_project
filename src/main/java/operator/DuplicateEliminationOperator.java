@@ -3,8 +3,6 @@ package operator;
 import common.Tuple;
 import java.util.ArrayList;
 import net.sf.jsqlparser.schema.Column;
-import operator.Operator;
-import operator.SortOperator;
 
 /** Class that extends Operator Class to handle SQL queries with the DISTINCT keyword. */
 public class DuplicateEliminationOperator extends Operator {
@@ -45,6 +43,9 @@ public class DuplicateEliminationOperator extends Operator {
   @Override
   public Tuple getNextTuple() {
     Tuple next = so.getNextTuple();
+    if (next == null) {
+      return null;
+    }
     if (curr == null) {
       curr = next;
       return curr;
