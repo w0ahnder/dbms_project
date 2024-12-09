@@ -132,18 +132,18 @@ public class SelectPlan {
 
       Integer[] selectRange = colMinMax.get(col);
       double redFactor = (double) (selectRange[1] - selectRange[0]) / rangeSize;
-      System.out.println("reduction factor before for  " + col + " is: " + redFactor);
+      //System.out.println("reduction factor before for  " + col + " is: " + redFactor);
       // calc cost for clustered and unclustered indexes
       Tuple index_info = DBCatalog.getInstance().getIndexInfo(DBCatalog.getInstance().getTableName(tableName), col);
       boolean clustered = index_info.getElementAtIndex(0) == 1;
       // tree_height + pages*reduction factos
       int treeHeight = stats.getHeightforCol(col);
-      System.out.println("Tree height for column " + col + " is: " + treeHeight);
+      //System.out.println("Tree height for column " + col + " is: " + treeHeight);
       if (clustered) {
-        System.out.println("clustered");
+        //System.out.println("clustered");
         indexScan = treeHeight + pages * redFactor;
       } else {
-        System.out.println("not clustered on column " + col);
+        //System.out.println("not clustered on column " + col);
         int numLeaves = stats.getNumLeaves(col);
         // if(redFactor==0){
         //  redFactor = 1;
@@ -151,7 +151,7 @@ public class SelectPlan {
         indexScan = treeHeight + (numLeaves * redFactor) + (numTuples * redFactor);
       }
       // now keep track of cost for each index on available column
-      System.out.println("index scan cost for " + col + ": " + indexScan);
+      //System.out.println("index scan cost for " + col + ": " + indexScan);
       if (indexScan <= pages) { // means better than doing a full scan
         colIndexCost.put(col, indexScan);
       }
@@ -165,7 +165,7 @@ public class SelectPlan {
         allExp.add((indexedExpressions.get(col)));
       }
       Expression finalExp = createAndExpression(allExp);
-      System.out.println("Just doing regular full scan because more efficient");
+      //System.out.println("Just doing regular full scan because more efficient");
       // case when it is more efficient to do a full scan, or no available index
       ScanOperator scanOp = new ScanOperator(schema, tablePath);
       return new SelectOperator(schema, scanOp, finalExp);
@@ -186,13 +186,13 @@ public class SelectPlan {
     Expression unindexed = combineUnindexed(minCol);
     // if uindexed expressions non existent, then can just use an index scan op
     if (unindexed == null && indexedExpressions != null) {
-      System.out.println(
-          "Just using a regular index scan operator because only have indexed expressions");
+      //System.out.println(
+        //  "Just using a regular index scan operator because only have indexed expressions");
       return createOP(unindexed, minCol);
     }
     // now cover case when there are unindexed and indexed expressions
-    System.out.println(
-        "Uisng IndexScan as a child because we have unindexed and indexed expressions");
+    //System.out.println(
+       // "Uisng IndexScan as a child because we have unindexed and indexed expressions");
     ScanOperator childOperator = createOP(unindexed, minCol);
     return new SelectOperator(schema, childOperator, unindexed);
     // actually want to return the column we want to index on and
@@ -216,9 +216,9 @@ public class SelectPlan {
     boolean clustered =
         DBCatalog.getInstance().getClustOrd(DBCatalog.getInstance().getTableName(tableName), col).getElementAtIndex(0) == 1;
     File indexFile = DBCatalog.getInstance().getAvailableIndex(tableName, col);
-    System.out.println("IndexedExpr: " + indexedExpr);
-    System.out.println("Unindexed Expr: " + unIndexedExpr);
-    System.out.println("Indexing column: " + col);
+    //System.out.println("IndexedExpr: " + indexedExpr);
+    //System.out.println("Unindexed Expr: " + unIndexedExpr);
+    //System.out.println("Indexing column: " + col);
     return new IndexScanOperator(
         schema, tablePath, tableName, indexFile, ind, low, high, clustered);
   }

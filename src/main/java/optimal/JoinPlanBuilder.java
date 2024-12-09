@@ -1,14 +1,19 @@
 package optimal;
 
 import common.*;
+
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
 
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
+import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.statement.select.OrderByElement;
 import operator.LogicalOperators.*;
 import operator.PhysicalOperators.*;
+import utilities.ColumnProcessor;
 
 public class JoinPlanBuilder {
   Map<String, LogicalOperator> tableToOp;
@@ -28,7 +33,6 @@ public class JoinPlanBuilder {
     this.plan = new PhysicalPlanBuilder();
     this.realSchema = realSchema;
   }
-
   public Operator buildPlan() {
     Operator op = null;
     ArrayList<Column> outputSchema = new ArrayList<Column>();
@@ -42,6 +46,7 @@ public class JoinPlanBuilder {
         } else {
           //System.out.println(table + " joinExp " + this.newJoinLogOperator.joinExpressions.get(table));
           ArrayList<Expression> joinExp = this.newJoinLogOperator.joinExpressions.get(table);
+
           HashSet<String> cols = new HashSet<>();
           op.getOutputSchema().forEach(column -> cols.add(getColname(column)));
           plan.returnResultTuple().getOutputSchema().forEach(column -> cols.add(getColname(column)));
@@ -57,7 +62,6 @@ public class JoinPlanBuilder {
               bnlJoinExpr.add(expr);
             }
           }
-          //System.out.println("after processing expr " + bnlJoinExpr);
           op =
               new BNLOperator(
                   outputSchema,
@@ -72,6 +76,8 @@ public class JoinPlanBuilder {
     }
     return op;
   }
+
+
 
   private Expression createAndExpression(List<Expression> expressions) {
     if (expressions.size() < 1) {

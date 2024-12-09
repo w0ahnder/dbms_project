@@ -265,6 +265,7 @@ public class QueryPlanBuilder {
     // LIST OF TABLES TO BE JOINED
     // MAP OF TABLE -> UPPER AND LOWER LIMIT
 
+
     // ORDER BY
     if (orderByElements != null) {
       is_sorted = true;

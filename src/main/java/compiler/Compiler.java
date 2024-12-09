@@ -41,8 +41,7 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    //String configFile = args[0];
-    String configFile = "/Users/savitta/Desktop/p4debug/input/configFile.txt";
+    String configFile = args[0];
     // String configFile = "src/test/resources/binary_samples/configFile.txt";
     readDirectories(configFile);
     // inputDir = args[0];
