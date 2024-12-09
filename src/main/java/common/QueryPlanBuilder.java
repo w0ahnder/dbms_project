@@ -1,4 +1,5 @@
 package common;
+
 import UnionFind.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -189,8 +190,8 @@ public class QueryPlanBuilder {
         // for it
         Integer firstTableIndex = tables.indexOf(tablesInExpression.get(0).trim());
         Integer secondTableIndex = tables.indexOf(tablesInExpression.get(1).trim());
-        //String lastTable = tables.get(Integer.max(firstTableIndex, secondTableIndex));
-        //joinExpressions.get(lastTable).add(expr);
+        // String lastTable = tables.get(Integer.max(firstTableIndex, secondTableIndex));
+        // joinExpressions.get(lastTable).add(expr);
         joinExpressions.get(tables.get(firstTableIndex)).add(expr);
         joinExpressions.get(tables.get(secondTableIndex)).add(expr);
       }
@@ -236,7 +237,7 @@ public class QueryPlanBuilder {
         unionFind = new SelectPushVisitor(where);
         unionFind.evaluate_expr();
         union = unionFind.unionFind;
-      }else{
+      } else {
         union = new UnionFind();
       }
 
@@ -264,7 +265,6 @@ public class QueryPlanBuilder {
     // UPPER AND LOWER LIMITS FOR EACH TABLE COLUMN
     // LIST OF TABLES TO BE JOINED
     // MAP OF TABLE -> UPPER AND LOWER LIMIT
-
 
     // ORDER BY
     if (orderByElements != null) {

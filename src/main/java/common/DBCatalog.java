@@ -462,7 +462,7 @@ public class DBCatalog {
    * @return the File for the index if it exists, null o/w
    */
   public File getAvailableIndex(String table, String col) {
-    if(DBCatalog.getInstance().getUseAlias()){
+    if (DBCatalog.getInstance().getUseAlias()) {
       table = getTableName(table);
     }
     String indexName = table + "." + col;
@@ -483,9 +483,9 @@ public class DBCatalog {
    * @return
    */
   public String getAvailableIndexColumn(String table) {
-    //if(DBCatalog.getInstance().getUseAlias()){
-     // table = getTableName(table);
-    //}
+    // if(DBCatalog.getInstance().getUseAlias()){
+    // table = getTableName(table);
+    // }
     String prefix = table + ".";
     ArrayList<String> indexes = new ArrayList<>();
     for (String indexName : availableIndex.keySet()) {

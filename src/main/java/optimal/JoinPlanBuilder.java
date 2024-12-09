@@ -1,19 +1,13 @@
 package optimal;
 
 import common.*;
-
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
-
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.statement.select.OrderByElement;
 import operator.LogicalOperators.*;
 import operator.PhysicalOperators.*;
-import utilities.ColumnProcessor;
 
 public class JoinPlanBuilder {
   Map<String, LogicalOperator> tableToOp;
@@ -33,6 +27,7 @@ public class JoinPlanBuilder {
     this.plan = new PhysicalPlanBuilder();
     this.realSchema = realSchema;
   }
+
   public Operator buildPlan() {
     Operator op = null;
     ArrayList<Column> outputSchema = new ArrayList<Column>();
@@ -44,30 +39,31 @@ public class JoinPlanBuilder {
         if (op == null) {
           op = plan.returnResultTuple();
         } else {
-          //System.out.println(table + " joinExp " + this.newJoinLogOperator.joinExpressions.get(table));
+          // System.out.println(table + " joinExp " +
+          // this.newJoinLogOperator.joinExpressions.get(table));
           ArrayList<Expression> joinExp = this.newJoinLogOperator.joinExpressions.get(table);
 
           HashSet<String> cols = new HashSet<>();
           op.getOutputSchema().forEach(column -> cols.add(getColname(column)));
-          plan.returnResultTuple().getOutputSchema().forEach(column -> cols.add(getColname(column)));
-          //System.out.println("all cols from left and right " + cols);
+          plan.returnResultTuple()
+              .getOutputSchema()
+              .forEach(column -> cols.add(getColname(column)));
+          // System.out.println("all cols from left and right " + cols);
           ArrayList<Expression> bnlJoinExpr = new ArrayList<>();
-          for (Expression expr: joinExp){
+          for (Expression expr : joinExp) {
             String[] exprStr = expr.toString().split("\\s");
-//            System.out.println(Arrays.toString(exprStr));
-//            System.out.println(exprStr[0]);
-//            System.out.println(exprStr[2]);
-//            System.out.println(cols.contains(exprStr[0]) && cols.contains(exprStr[2]));
-            if (cols.contains(exprStr[0]) && cols.contains(exprStr[2])){
+            //            System.out.println(Arrays.toString(exprStr));
+            //            System.out.println(exprStr[0]);
+            //            System.out.println(exprStr[2]);
+            //            System.out.println(cols.contains(exprStr[0]) &&
+            // cols.contains(exprStr[2]));
+            if (cols.contains(exprStr[0]) && cols.contains(exprStr[2])) {
               bnlJoinExpr.add(expr);
             }
           }
           op =
               new BNLOperator(
-                  outputSchema,
-                  op,
-                  plan.returnResultTuple(),
-                  createAndExpression(bnlJoinExpr));
+                  outputSchema, op, plan.returnResultTuple(), createAndExpression(bnlJoinExpr));
         }
       }
       return new NewJoinOperator(op, outputSchema, this.realSchema);
@@ -76,8 +72,6 @@ public class JoinPlanBuilder {
     }
     return op;
   }
-
-
 
   private Expression createAndExpression(List<Expression> expressions) {
     if (expressions.size() < 1) {
@@ -95,10 +89,10 @@ public class JoinPlanBuilder {
     return andExpression;
   }
 
-  public String getColname(Column col){
+  public String getColname(Column col) {
     String cols = col.toString();
     String[] colStr = cols.split("\\.");
-    if(colStr.length == 3 ){
+    if (colStr.length == 3) {
       StringBuilder build = new StringBuilder();
       build.append(colStr[0]).append(".").append(colStr[2]);
       return build.toString();

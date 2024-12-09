@@ -92,7 +92,7 @@ public class UnionFind {
     if (elem != null) {
       line.append("[[");
       for (String att : elem.attributes) {
-        line.append(att+ ",");
+        line.append(att + ",");
       }
       line.append("], ");
       line.append("equals ").append(elem.equality).append(", ");

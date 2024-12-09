@@ -42,7 +42,6 @@ public class Compiler {
   public static void main(String[] args) {
 
     String configFile = args[0];
-    // String configFile = "src/test/resources/binary_samples/configFile.txt";
     readDirectories(configFile);
     // inputDir = args[0];
     // outputDir = args[1];
@@ -63,7 +62,7 @@ public class Compiler {
       QueryPlanBuilder queryPlanBuilder = new QueryPlanBuilder();
       if (outputToFiles) {
         for (File file : (new File(tempDir).listFiles())) file.delete();
-        //for (File file : (new File(outputDir).listFiles())) file.delete();
+        for (File file : (new File(outputDir).listFiles())) file.delete();
       }
 
       int counter = 1; // for numbering output files
