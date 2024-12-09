@@ -1,6 +1,5 @@
 package compiler;
 
-import common.Convert;
 import common.DBCatalog;
 import common.QueryPlanBuilder;
 import common.TupleWriter;
@@ -42,9 +41,6 @@ public class Compiler {
     inputDir = args[0];
     outputDir = args[1];
     tempDir = args[2];
-    // inputDir = "/Users/savitta/Desktop/p2debug/1a_downloaded/input";
-    // outputDir = "/Users/savitta/Desktop/p2debug/1a_downloaded/output";
-    // tempDir = "/Users/savitta/Desktop/p2debug/1a_downloaded/temp";
 
     // TODO: Get the join and sort methods from the configuration file
     // TODO: get the location of the tmepDir
@@ -58,7 +54,7 @@ public class Compiler {
       List<List<Integer>> planConfig = readNumbersFromFile(inputDir + "/plan_builder_config.txt");
       if (outputToFiles) {
         for (File file : (new File(tempDir).listFiles())) file.delete();
-        // for (File file : (new File(outputDir).listFiles())) file.delete(); // clean output
+        for (File file : (new File(outputDir).listFiles())) file.delete(); // clean output
         // directory
       }
       int counter = 1; // for numbering output files
@@ -70,11 +66,6 @@ public class Compiler {
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
             long start = System.currentTimeMillis();
             plan.dump(tw);
-
-            // convert the binary output to human
-            File outFile = new File(outputDir + "/human_output/query" + counter);
-            Convert c = new Convert(outputDir + "/query" + counter, new PrintStream(outFile));
-            c.bin_to_human();
             long end = System.currentTimeMillis();
 
             System.out.println("Elapsed time: " + (end - start));

@@ -95,7 +95,7 @@ public class SortMergeJoinOperator extends Operator {
         } else if (comparator.compare(left_curr, right_curr) < 0) {
           if (partition_indx
               != -1) { // means we created a partition, since right>left, reset the right partition
-                       // and get next left tuple
+            // and get next left tuple
             right.reset(partition_indx);
             tuple_count_right = partition_indx;
             right_curr = right.getNextTuple();

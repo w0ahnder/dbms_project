@@ -187,7 +187,7 @@ public class QueryPlanBuilder {
     // ORDER BY
     if (orderByElements
         != null) { // orderby elements are constructed as table.col or schema.table.col if we use
-                   // aliases
+      // aliases
       if (sortConfig.get(0).equals(0)) { // in memory
         result = new SortLogOperator(createOrderBy(orderByElements), result);
       } else {
