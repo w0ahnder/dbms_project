@@ -189,8 +189,10 @@ public class QueryPlanBuilder {
         // for it
         Integer firstTableIndex = tables.indexOf(tablesInExpression.get(0).trim());
         Integer secondTableIndex = tables.indexOf(tablesInExpression.get(1).trim());
-        String lastTable = tables.get(Integer.max(firstTableIndex, secondTableIndex));
-        joinExpressions.get(lastTable).add(expr);
+        //String lastTable = tables.get(Integer.max(firstTableIndex, secondTableIndex));
+        //joinExpressions.get(lastTable).add(expr);
+        joinExpressions.get(tables.get(firstTableIndex)).add(expr);
+        joinExpressions.get(tables.get(secondTableIndex)).add(expr);
       }
     }
 
