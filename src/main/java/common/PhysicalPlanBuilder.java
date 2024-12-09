@@ -55,25 +55,24 @@ public class PhysicalPlanBuilder {
       //  TODO: change buffer pages to accurate one
       SortOperator left;
       SortOperator right;
-      if(DBCatalog.getInstance().getSort_type()==0){
-        left = new InMemorySortOperator(child[0].getOutputSchema(),leftCond, child[0]);
-        right = new InMemorySortOperator(child[1].getOutputSchema(),rightCond, child[1]);
-      }
-      else {
+      if (DBCatalog.getInstance().getSort_type() == 0) {
+        left = new InMemorySortOperator(child[0].getOutputSchema(), leftCond, child[0]);
+        right = new InMemorySortOperator(child[1].getOutputSchema(), rightCond, child[1]);
+      } else {
         left =
-                new ExternalSortOperator(
-                        child[0].getOutputSchema(),
-                        leftCond,
-                        child[0],
-                        DBCatalog.getInstance().getSortBuff(),
-                        joinLogOperator.tempDir);
+            new ExternalSortOperator(
+                child[0].getOutputSchema(),
+                leftCond,
+                child[0],
+                DBCatalog.getInstance().getSortBuff(),
+                joinLogOperator.tempDir);
         right =
-                new ExternalSortOperator(
-                        child[1].getOutputSchema(),
-                        rightCond,
-                        child[1],
-                        DBCatalog.getInstance().getSortBuff(),
-                        joinLogOperator.tempDir);
+            new ExternalSortOperator(
+                child[1].getOutputSchema(),
+                rightCond,
+                child[1],
+                DBCatalog.getInstance().getSortBuff(),
+                joinLogOperator.tempDir);
       }
       rootOperator =
           new SortMergeJoinOperator(joinLogOperator.outputSchema, left, right, leftCond, rightCond);

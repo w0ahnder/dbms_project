@@ -39,12 +39,12 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    //inputDir = args[0];
-    //outputDir = args[1];
-    //tempDir = args[2];
-    inputDir = "/Users/savitta/Desktop/p2debug/3a_downloaded/input";
-    outputDir = "/Users/savitta/Desktop/p2debug/3a_downloaded/output";
-    tempDir = "/Users/savitta/Desktop/p2debug/3a_downloaded/temp";
+    inputDir = args[0];
+    outputDir = args[1];
+    tempDir = args[2];
+    // inputDir = "/Users/savitta/Desktop/p2debug/1a_downloaded/input";
+    // outputDir = "/Users/savitta/Desktop/p2debug/1a_downloaded/output";
+    // tempDir = "/Users/savitta/Desktop/p2debug/1a_downloaded/temp";
 
     // TODO: Get the join and sort methods from the configuration file
     // TODO: get the location of the tmepDir
@@ -61,18 +61,12 @@ public class Compiler {
         // for (File file : (new File(outputDir).listFiles())) file.delete(); // clean output
         // directory
       }
-    //all 3a test files pass
-      //all 1a test files pass
-      //SELECT DISTINCT S.C FROM Sailors S, Reserves R WHERE S.A = R.G ORDER BY S.C fails query 6 mine
-      //TODO: CHECK THAT ALIAS WORK FOR IN MEMOTY AND EXTERNAL SORT, 2B USES EXTERNAL 1 6
-      //TODO: CHECK THAT ALIAS WORK FOR SMJ external and in memory sort
       int counter = 1; // for numbering output files
       for (Statement statement : statements.getStatements()) {
         try {
           System.out.println(statement);
           Operator plan = queryPlanBuilder.buildPlan(statement, tempDir, planConfig);
           if (outputToFiles) {
-            // TODO: change to Binary format
             TupleWriter tw = new TupleWriter(outputDir + "/query" + counter);
             long start = System.currentTimeMillis();
             plan.dump(tw);
@@ -82,22 +76,14 @@ public class Compiler {
             Convert c = new Convert(outputDir + "/query" + counter, new PrintStream(outFile));
             c.bin_to_human();
             long end = System.currentTimeMillis();
-            // tw.close();
-            // convert the expected binary file to human
-            //File outhumanexp = new File(outputDir + "/human_expected/query" + counter);
-           // Convert c2 =
-            //    new Convert(outputDir + "/expected/query" + counter, new PrintStream(outhumanexp));
-            //c2.bin_to_human();
 
             System.out.println("Elapsed time: " + (end - start));
-            // Convert cv = new Convert(tw.outFile, new PrintStream(tw.outFile + "human"));
-            // cv.bin_to_human();
           } else {
 
             plan.dump(System.out);
           }
         } catch (Exception e) {
-          //logger.error(e.getMessage());
+          // logger.error(e.getMessage());
           e.printStackTrace();
         }
 

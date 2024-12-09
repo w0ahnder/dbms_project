@@ -114,7 +114,7 @@ public class SortOperator extends Operator {
         // gives Sailors, and when alias=true, it tries to get Sailors from alias map
 
         String full = name + "." + col_name;
-        if (DBCatalog.getInstance().getUseAlias() && ali!=null) {
+        if (DBCatalog.getInstance().getUseAlias() && ali != null) {
           full = ali + "." + col_name;
         }
         columnToIndexMap.put(full, i); // keeps Sailors.A or S.A depending on no alias or if alias
@@ -126,20 +126,25 @@ public class SortOperator extends Operator {
         String[] splitname = full_name.split("\\.");
 
         String col = orderToCol.getColumnName();
-        String alias = orderToCol.getTable().getSchemaName(); //can have S.A or S.Sailors.A need to distinguish
+        String alias =
+            orderToCol
+                .getTable()
+                .getSchemaName(); // can have S.A or S.Sailors.A need to distinguish
         String table = orderToCol.getTable().getName();
         String full = table + "." + col;
-        if(splitname.length ==2){ //means alias not created when column created
-            full = splitname[0] + "." + splitname[1];
+        if (splitname.length == 2) { // means alias not created when column created
+          full = splitname[0] + "." + splitname[1];
         }
         if (splitname.length == 3) {
-          full = splitname[0] + "." + splitname[2]; //means alias was included when column made, so alias.col
+          full =
+              splitname[0]
+                  + "."
+                  + splitname[2]; // means alias was included when column made, so alias.col
         }
 
-        //if (DBCatalog.getInstance().getUseAlias()) { //SOMETIMES THIS IS null.col
+        // if (DBCatalog.getInstance().getUseAlias()) { //SOMETIMES THIS IS null.col
         //  full = alias + "." + col;
-        //}
-
+        // }
 
         int t1_val = t1.getElementAtIndex(columnToIndexMap.get(full));
         // check for aliases^^

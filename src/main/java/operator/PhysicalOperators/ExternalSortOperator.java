@@ -68,7 +68,7 @@ public class ExternalSortOperator extends SortOperator {
     sortOperator = new SortOperator(outputSchema, this.orderByElements, op);
     op.reset();
     // returned null here
-    //B.D is not sorted
+    // B.D is not sorted
     Tuple next = op.getNextTuple();
     try {
       while (next != null) {
@@ -98,7 +98,7 @@ public class ExternalSortOperator extends SortOperator {
     }
     if (run == 0) return;
     merge(run);
-    System.out.println("merging for ordeer by elelment " + orderByElements);
+    // System.out.println("merging for ordeer by elelment " + orderByElements);
   }
 
   /** Merge sep in External Sort Algoritms */
@@ -147,7 +147,7 @@ public class ExternalSortOperator extends SortOperator {
         }
         outputPage.close();
         reader = new TupleReader(new File(tempDir + "/run" + pass));
-        //reader.newPage();
+        // reader.newPage();
         pass++;
         num = num + numTuples;
       } catch (IOException e) {
@@ -166,7 +166,8 @@ public class ExternalSortOperator extends SortOperator {
       e.printStackTrace();
     }
   }
-//external sort operator with order by elements sailors.c
+
+  // external sort operator with order by elements sailors.c
   // sort operator: op is SMJ left is external sort for sailors, right is external sort for reserves
   // the reader is null for some reason
   /** Resets the operator to the to a particular position, not the beginning. */
@@ -178,7 +179,6 @@ public class ExternalSortOperator extends SortOperator {
       e.printStackTrace();
     }
   }
-
 
   /**
    * returns the next tuple from the sorted files

@@ -36,12 +36,12 @@ public class DBCatalog {
   private String dbDirectory;
 
   /**
-   *
    * @return 0 if in memory, 1 if external
    */
-  public int getSort_type(){
+  public int getSort_type() {
     return sort_type;
   }
+
   /** Reads schemaFile and populates schema information */
   private DBCatalog() {
     tables = new HashMap<>();

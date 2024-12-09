@@ -78,10 +78,9 @@ public class TupleReader {
   public void newPage() {
     // limit=pos, pos=0
     buff.flip();
-    if(numAttr ==0){
+    if (numAttr == 0) {
       numAttr = buff.getInt();
-    }
-    else{
+    } else {
       buff.getInt();
     }
 
@@ -111,7 +110,7 @@ public class TupleReader {
     buff = ByteBuffer.allocate(4096);
     page_start = true;
     done = false;
-    //numAttr = 0;
+    // numAttr = 0;
     numTuples = 0;
   }
 
@@ -129,7 +128,7 @@ public class TupleReader {
     // number of bytes is 4096 * page tuple is on
     // have to calculate offset
     // =>>>>>>>>> (index  - tuple index on previous page)*4*numcol + 8
-    if(numAttr==0){
+    if (numAttr == 0) {
       fc.read(buff);
       buff.flip();
       numAttr = buff.getInt();

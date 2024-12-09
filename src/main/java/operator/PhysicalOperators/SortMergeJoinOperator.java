@@ -63,7 +63,7 @@ public class SortMergeJoinOperator extends Operator {
     right.reset();
     left.reset();
     partition_indx = -1;
-    tuple_count_right=0;
+    tuple_count_right = 0;
     right_curr = right.getNextTuple();
   }
 
@@ -77,7 +77,7 @@ public class SortMergeJoinOperator extends Operator {
    *     each other
    */
   public Tuple getNextTuple() {
-    if(left_curr==null){
+    if (left_curr == null) {
       left_curr = left.getNextTuple();
     }
     try {
@@ -93,14 +93,17 @@ public class SortMergeJoinOperator extends Operator {
           }
           left_curr = left.getNextTuple();
         } else if (comparator.compare(left_curr, right_curr) < 0) {
-          if (partition_indx != -1) { //means we created a partition, since right>left, reset the right partition and get next left tuple
+          if (partition_indx
+              != -1) { // means we created a partition, since right>left, reset the right partition
+                       // and get next left tuple
             right.reset(partition_indx);
             tuple_count_right = partition_indx;
             right_curr = right.getNextTuple();
             tuple_count_right++;
           }
           left_curr = left.getNextTuple();
-        } else if (comparator.compare(left_curr, right_curr) > 0) { //means left is larger, so incrememnt right?
+        } else if (comparator.compare(left_curr, right_curr)
+            > 0) { // means left is larger, so incrememnt right?
           right_curr = right.getNextTuple();
           tuple_count_right++;
           // partition_indx = tuple_count_right;

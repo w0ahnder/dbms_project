@@ -60,7 +60,8 @@ public class QueryPlanBuilder {
       throws ExecutionControl.NotImplementedException {
 
     // List<Integer> joinConfig = planConfList.get(0);
-    List<Integer> sortConfig = planConfList.get(1); //get second line 0 for in memory, 1 for external
+    List<Integer> sortConfig =
+        planConfList.get(1); // get second line 0 for in memory, 1 for external
 
     tables = new ArrayList<>();
     andExpressions = new ArrayList<>();
@@ -184,12 +185,14 @@ public class QueryPlanBuilder {
     }
 
     // ORDER BY
-    if (orderByElements != null) { //orderby elements are constructed as table.col or schema.table.col if we use aliases
-      if (sortConfig.get(0).equals(0)) { //in memory
+    if (orderByElements
+        != null) { // orderby elements are constructed as table.col or schema.table.col if we use
+                   // aliases
+      if (sortConfig.get(0).equals(0)) { // in memory
         result = new SortLogOperator(createOrderBy(orderByElements), result);
       } else {
         // result = new SortLogOperator(orderByElements, result, sortConfig.get(1), tempDir);
-        result = //external
+        result = // external
             new SortLogOperator(createOrderBy(orderByElements), result, sortConfig.get(1), tempDir);
       }
     }

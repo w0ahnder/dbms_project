@@ -56,7 +56,7 @@ public class InMemorySortOperator extends SortOperator {
     }
     */
 
-    //sort(result);
+    // sort(result);
     op.reset();
     result = super.result;
   }
@@ -65,6 +65,7 @@ public class InMemorySortOperator extends SortOperator {
   public void reset(int index) {
     curr = index;
   }
+
   /**
    * Get next tuple from operator
    *
