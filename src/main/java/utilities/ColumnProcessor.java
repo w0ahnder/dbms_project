@@ -13,9 +13,9 @@ import operator.PhysicalOperators.Operator;
 public class ColumnProcessor {
 
   /***
-   * Get the columns from where expressions 
+   * Get the columns from where expressions
    * @param op operator to get schema from
-   * @param expr where expression for joining 
+   * @param expr where expression for joining
    * @return
    */
   public List<OrderByElement> getOrderByElements(Operator op, Expression expr) {
@@ -34,9 +34,9 @@ public class ColumnProcessor {
   }
 
   /***
-   * 
+   *
    * @param expr AndExpression to parse
-   * @return list of all the expressions in expr 
+   * @return list of all the expressions in expr
    */
   private static List<Expression> getAndExpressions(Expression expr) {
     List<Expression> temp = new ArrayList<>();
@@ -50,7 +50,7 @@ public class ColumnProcessor {
   }
 
   /***
-   * 
+   *
    * @param outputSchema schema of table
    * @return the names of all the columns in form of Alias.Col or TableName .col
    */
@@ -70,7 +70,7 @@ public class ColumnProcessor {
   }
 
   /***
-   * 
+   *
    * @param exprs List of EqualsTo expressions
    * @return the List of Column Expressions in exprs
    */

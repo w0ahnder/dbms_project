@@ -1,12 +1,10 @@
 package operator.PhysicalOperators;
 
-import common.Convert;
 import common.Tuple;
 import common.TupleReader;
 import common.TupleWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -56,9 +54,8 @@ public class ExternalSortOperator extends SortOperator {
     int tupleSize = op.outputSchema.size() * 4;
     this.numTuples = this.bufferSize / tupleSize;
     this.orderByElements = orderElements;
-    //op.reset();
+    // op.reset();
     sort();
-
   }
 
   /** Sorts the tuples loaded into memory. */
@@ -70,7 +67,7 @@ public class ExternalSortOperator extends SortOperator {
     ArrayList<Tuple> tuples = new ArrayList<>(numTuples);
     sortOperator = new SortOperator(outputSchema, this.orderByElements, op);
     op.reset();
-    //returned null here
+    // returned null here
     Tuple next = op.getNextTuple();
     try {
       while (next != null) {
@@ -96,9 +93,11 @@ public class ExternalSortOperator extends SortOperator {
       }
     } catch (IOException e) {
       logger.error(e.getMessage());
+      e.printStackTrace();
     }
     if (run == 0) return;
     merge(run);
+    System.out.println("merging for ordeer by elelment " + orderByElements);
   }
 
   /** Merge sep in External Sort Algoritms */
@@ -147,13 +146,13 @@ public class ExternalSortOperator extends SortOperator {
         }
         outputPage.close();
         reader = new TupleReader(new File(tempDir + "/run" + pass));
+        //reader.newPage();
         pass++;
         num = num + numTuples;
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
-
   }
 
   /** Resets the operator to the beginning. */
@@ -166,7 +165,9 @@ public class ExternalSortOperator extends SortOperator {
       e.printStackTrace();
     }
   }
-
+//external sort operator with order by elements sailors.c
+  // sort operator: op is SMJ left is external sort for sailors, right is external sort for reserves
+  // the reader is null for some reason
   /** Resets the operator to the to a particular position, not the beginning. */
   @Override
   public void reset(int index) {
@@ -177,8 +178,12 @@ public class ExternalSortOperator extends SortOperator {
     }
   }
 
-  /** returns the next tuple from the sorted files
-   * @return Tuple or null if we are at the end of the file*/
+
+  /**
+   * returns the next tuple from the sorted files
+   *
+   * @return Tuple or null if we are at the end of the file
+   */
   @Override
   public Tuple getNextTuple() {
     if (reader == null) {

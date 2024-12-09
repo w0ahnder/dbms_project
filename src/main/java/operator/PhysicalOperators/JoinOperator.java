@@ -82,9 +82,9 @@ public class JoinOperator extends Operator {
    *
    * @return joint nextTuple or null if we are at the end
    */
-  public Tuple getNextTuple() {//left tuple is null here, enter from
-    //external sort next = op.getNextTuple()
-    if(leftTuple==null){
+  public Tuple getNextTuple() { // left tuple is null here, enter from
+    // external sort next = op.getNextTuple()
+    if (leftTuple == null) {
       this.leftTuple = leftOperator.getNextTuple();
     }
     while (leftTuple != null) {
@@ -110,7 +110,7 @@ public class JoinOperator extends Operator {
       rightOperator.reset();
       leftTuple = leftOperator.getNextTuple();
     }
-    //leftOperator.reset();
-    return leftTuple;//return null
+    // leftOperator.reset();
+    return leftTuple; // return null
   }
 }

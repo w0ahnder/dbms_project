@@ -60,7 +60,7 @@ public class QueryPlanBuilder {
       throws ExecutionControl.NotImplementedException {
 
     // List<Integer> joinConfig = planConfList.get(0);
-    List<Integer> sortConfig = planConfList.get(1);
+    List<Integer> sortConfig = planConfList.get(1); //get second line 0 for in memory, 1 for external
 
     tables = new ArrayList<>();
     andExpressions = new ArrayList<>();
@@ -184,12 +184,13 @@ public class QueryPlanBuilder {
     }
 
     // ORDER BY
-    if (orderByElements != null) {
-      if (sortConfig.get(0).equals(0)) {
+    if (orderByElements != null) { //orderby elements are constructed as table.col or schema.table.col if we use aliases
+      if (sortConfig.get(0).equals(0)) { //in memory
         result = new SortLogOperator(createOrderBy(orderByElements), result);
       } else {
-        //result = new SortLogOperator(orderByElements, result, sortConfig.get(1), tempDir);
-        result = new SortLogOperator(createOrderBy(orderByElements), result, sortConfig.get(1), tempDir);
+        // result = new SortLogOperator(orderByElements, result, sortConfig.get(1), tempDir);
+        result = //external
+            new SortLogOperator(createOrderBy(orderByElements), result, sortConfig.get(1), tempDir);
       }
     }
 
@@ -224,8 +225,6 @@ public class QueryPlanBuilder {
         result = new DuplicateEliminationLogOperator(result.getOutputSchema(), child);
       }
     }
-
-
 
     PhysicalPlanBuilder physicalPlanBuilder = new PhysicalPlanBuilder();
     try {
@@ -291,18 +290,19 @@ public class QueryPlanBuilder {
     }
     return res;
   }
-  private List<OrderByElement> createOrderBy(List<OrderByElement> orderByEle){
-    //if we use aliases the order by expression will be of the form S.A,
-    //so we construct new orderby element S.Sailors.A
-    List<OrderByElement> oel  = new ArrayList<>();
-    for(OrderByElement orderByElement: orderByEle) {
+
+  private List<OrderByElement> createOrderBy(List<OrderByElement> orderByEle) {
+    // if we use aliases the order by expression will be of the form S.A,
+    // so we construct new orderby element S.Sailors.A
+    List<OrderByElement> oel = new ArrayList<>();
+    for (OrderByElement orderByElement : orderByEle) {
       Column orderToCol = (Column) orderByElement.getExpression();
       String table = orderToCol.getTable().getName();
       String colname = orderToCol.getColumnName();
-      Column newCol = new Column( new Table(DBCatalog.getInstance().getTableName(table)), colname);
-      if(DBCatalog.getInstance().getUseAlias()){
+      Column newCol = new Column(new Table(DBCatalog.getInstance().getTableName(table)), colname);
+      if (DBCatalog.getInstance().getUseAlias()) {
         String alias = table;
-        newCol  = new Column( new Table(alias, DBCatalog.getInstance().getTableName(table)), colname);
+        newCol = new Column(new Table(alias, DBCatalog.getInstance().getTableName(table)), colname);
       }
       OrderByElement ob = new OrderByElement();
       ob.setExpression(newCol);
@@ -310,5 +310,4 @@ public class QueryPlanBuilder {
     }
     return oel;
   }
-
 }

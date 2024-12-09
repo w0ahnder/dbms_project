@@ -1,4 +1,5 @@
 package operator.PhysicalOperators;
+
 import common.DBCatalog;
 import common.Tuple;
 import java.util.*;
@@ -23,9 +24,9 @@ public class SortOperator extends Operator {
    * @param sc the child operator
    */
   public SortOperator(
-          ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
+      ArrayList<Column> outputSchema, List<OrderByElement> orderElements, Operator sc) {
     super(outputSchema);
-    this.orderByElements = new ArrayList<>(); //order by elements kept like S.Sailors.A
+    this.orderByElements = new ArrayList<>(); // order by elements kept like S.Sailors.A
     this.op = sc;
     this.curr = 0;
     if (orderElements.size() == 0) {
@@ -34,9 +35,9 @@ public class SortOperator extends Operator {
         OrderByElement ob = new OrderByElement();
         Column newc = new Column();
         String table_name =
-                DBCatalog.getInstance().getUseAlias()
-                        ? c.getTable().getSchemaName()
-                        : c.getTable().getName();
+            DBCatalog.getInstance().getUseAlias()
+                ? c.getTable().getSchemaName()
+                : c.getTable().getName();
         Table t = new Table(table_name);
         newc.setTable(t);
         newc.setColumnName(c.getColumnName());
@@ -53,8 +54,8 @@ public class SortOperator extends Operator {
       result.add(tuple);
       tuple = op.getNextTuple();
     }
-    //op.reset();
-    result = sort(result);
+    // op.reset();
+    result = this.sort(result);
   }
 
   /**
@@ -113,23 +114,35 @@ public class SortOperator extends Operator {
         // gives Sailors, and when alias=true, it tries to get Sailors from alias map
 
         String full = name + "." + col_name;
-        if (DBCatalog.getInstance().getUseAlias()) {
+        if (DBCatalog.getInstance().getUseAlias() && ali!=null) {
           full = ali + "." + col_name;
         }
-        columnToIndexMap.put(full, i); //keeps Sailors.A or S.A depending on no alias or if alias
+        columnToIndexMap.put(full, i); // keeps Sailors.A or S.A depending on no alias or if alias
       }
 
       for (OrderByElement orderByElement : orderByElements) {
         Column orderToCol = (Column) orderByElement.getExpression();
+        String full_name = orderToCol.getFullyQualifiedName();
+        String[] splitname = full_name.split("\\.");
+
         String col = orderToCol.getColumnName();
-        String alias = orderToCol.getTable().getSchemaName();
+        String alias = orderToCol.getTable().getSchemaName(); //can have S.A or S.Sailors.A need to distinguish
         String table = orderToCol.getTable().getName();
-        String full=table + "." + col;
-        if(DBCatalog.getInstance().getUseAlias()){
-          full = alias +"." + col;
+        String full = table + "." + col;
+        if(splitname.length ==2){ //means alias not created when column created
+            full = splitname[0] + "." + splitname[1];
         }
+        if (splitname.length == 3) {
+          full = splitname[0] + "." + splitname[2]; //means alias was included when column made, so alias.col
+        }
+
+        //if (DBCatalog.getInstance().getUseAlias()) { //SOMETIMES THIS IS null.col
+        //  full = alias + "." + col;
+        //}
+
+
         int t1_val = t1.getElementAtIndex(columnToIndexMap.get(full));
-        //check for aliases^^
+        // check for aliases^^
         int t2_val = t2.getElementAtIndex(columnToIndexMap.get(full));
 
         if (t1_val > t2_val) {

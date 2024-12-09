@@ -1,0 +1,4 @@
+SELECT * FROM Sailors, Reserves WHERE Sailors.A = Reserves.G ORDER BY Sailors.C
+SELECT * FROM Sailors S, Reserves R, Boats B WHERE S.A = R.G AND R.H = B.D AND S.B < 50 ORDER BY S.C
+maybe has to do with the order by
+failed for smj 2, 1 6 3a

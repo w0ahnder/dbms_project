@@ -23,7 +23,6 @@ public class BNLOperator extends Operator {
   public Tuple check;
   public Tuple check_t;
 
-
   /**
    * Creates a BNLOperator Object
    *
@@ -46,9 +45,10 @@ public class BNLOperator extends Operator {
     // fill();//get block B from left operators
 
   }
+
   /**
-   * Resets pointer on the operator object to the beginning. Achieves this by resetting its left and right children
-   * and resetting some tracking fields
+   * Resets pointer on the operator object to the beginning. Achieves this by resetting its left and
+   * right children and resetting some tracking fields
    */
   public void reset() {
     reads = 0;
@@ -60,14 +60,16 @@ public class BNLOperator extends Operator {
   }
 
   /**
-   * Fills the buffer with the correct amount of tuples from the outer table that can fit on the buffer
+   * Fills the buffer with the correct amount of tuples from the outer table that can fit on the
+   * buffer
    */
   public void fill() {
     // get the total number of elements that can fit in the buffer where each page is 4096 bytes
     // (4096/ (num of col * 4) ) * block = total number of tuples we should have in the block B
     // initialize the block
 
-    // when we reach the end of all the blocks and left.getNextTuple is called, it starts reading from
+    // when we reach the end of all the blocks and left.getNextTuple is called, it starts reading
+    // from
     // the beginning again
     reads = 0;
     tot_elements = 0;
@@ -88,7 +90,8 @@ public class BNLOperator extends Operator {
    * Get next tuple from operator
    *
    * @return Tuple, or null if we are at the end. Retrieves next tuple by calling getNextTuple() on
-   * its left and right child operator and checking that those tuples satisfy the condition in the expression
+   *     its left and right child operator and checking that those tuples satisfy the condition in
+   *     the expression
    */
   public Tuple getNextTuple() {
     if (!filled) fill();
@@ -127,9 +130,7 @@ public class BNLOperator extends Operator {
     return this.getNextTuple();
   }
 
-  /**
-   * Concatenates the schema of the two tuples
-   */
+  /** Concatenates the schema of the two tuples */
   public ArrayList<Column> concatSchema() {
     ArrayList<Column> conc = new ArrayList<Column>();
     conc.addAll(left.getOutputSchema());

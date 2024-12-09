@@ -49,19 +49,22 @@ public class InMemorySortOperator extends SortOperator {
 
     curr = 0;
     this.op = sc;
-    Tuple tuple = sc.getNextTuple();
+    /*Tuple tuple = sc.getNextTuple();
     while (tuple != null) {
       result.add(tuple);
       tuple = sc.getNextTuple();
     }
-    sort(result);
+    */
+
+    //sort(result);
+    op.reset();
+    result = super.result;
   }
 
-  public ArrayList<Tuple> sort(ArrayList<Tuple> result) {
-    result.sort(new TupleComparator());
-    return result;
+  @Override
+  public void reset(int index) {
+    curr = index;
   }
-
   /**
    * Get next tuple from operator
    *
@@ -112,12 +115,12 @@ public class InMemorySortOperator extends SortOperator {
         String col = orderToCol.getColumnName();
         String alias = orderToCol.getTable().getSchemaName();
         String table = orderToCol.getTable().getName();
-        String full=table + "." + col;
-        if(DBCatalog.getInstance().getUseAlias()){
-          full = alias +"." + col;
+        String full = table + "." + col;
+        if (DBCatalog.getInstance().getUseAlias()) {
+          full = alias + "." + col;
         }
         int t1_val = t1.getElementAtIndex(columnToIndexMap.get(full));
-        //check for aliases^^
+        // check for aliases^^
         int t2_val = t2.getElementAtIndex(columnToIndexMap.get(full));
 
         if (t1_val > t2_val) {

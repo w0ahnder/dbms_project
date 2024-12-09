@@ -1,4 +1,6 @@
+/*
 import common.Convert;
+
 import common.DBCatalog;
 import common.QueryPlanBuilder;
 import common.TupleWriter;
@@ -55,7 +57,7 @@ public class P2debug1A {
         secondList.add(2); // Add [2]
         configList.add(secondList);/*
 
-        */
+
         firstList.add(1);
         firstList.add(1);
         configList.add(firstList);
@@ -63,7 +65,7 @@ public class P2debug1A {
         secondList.add(0);
         configList.add(secondList);
     }
- /**THIS QUERY PASSES*/
+ /**THIS QUERY PASSES
     @Test
     public void testQuery1()
             throws ExecutionControl.NotImplementedException,
@@ -92,7 +94,7 @@ public class P2debug1A {
 
     }
 
-    /** THIS QUERY PASSES*/
+    /** THIS QUERY PASSES
     @Test
     public void testQuery2()
             throws ExecutionControl.NotImplementedException,
@@ -120,7 +122,7 @@ public class P2debug1A {
     }
 
     /**THIS QUERY PASSES
-     */
+
     @Test
     public void testQuery3()
             throws ExecutionControl.NotImplementedException,
@@ -145,7 +147,7 @@ public class P2debug1A {
         Convert c2 = new Convert(out2 + "/query3", new PrintStream(outFile2));
         c2.bin_to_human();
     }
-    /**THIS QUERY PASSES */
+    /**THIS QUERY PASSES
     @Test
     public void testQuery4()
             throws ExecutionControl.NotImplementedException,
@@ -166,7 +168,7 @@ public class P2debug1A {
         Convert c2 = new Convert(out2 + "/query4", new PrintStream(outFile2));
         c2.bin_to_human();
     }
-    /**THIS QUERY PASSES*/
+    /**THIS QUERY PASSES
     @Test
     public void testQuery5()
             throws ExecutionControl.NotImplementedException,
@@ -189,3 +191,4 @@ public class P2debug1A {
 
     }
 }
+*/

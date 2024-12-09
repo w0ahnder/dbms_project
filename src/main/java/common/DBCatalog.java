@@ -35,6 +35,13 @@ public class DBCatalog {
   private int sort_buff;
   private String dbDirectory;
 
+  /**
+   *
+   * @return 0 if in memory, 1 if external
+   */
+  public int getSort_type(){
+    return sort_type;
+  }
   /** Reads schemaFile and populates schema information */
   private DBCatalog() {
     tables = new HashMap<>();
@@ -178,10 +185,10 @@ public class DBCatalog {
   }
 
   /**
-   * Parses the config file to determine the type of join and the block size (if applicable)
-   *and the type of sort to use and number of buffer pages for it if external sort
-   * @param input_dir is the path for the config file
+   * Parses the config file to determine the type of join and the block size (if applicable) and the
+   * type of sort to use and number of buffer pages for it if external sort
    *
+   * @param input_dir is the path for the config file
    */
   public void config_file(String input_dir) {
     try {
@@ -216,7 +223,6 @@ public class DBCatalog {
 
   /**
    * @return sort_buff is the number of buffer pages for sorting if external
-   *
    */
   public int getSortBuff() {
     return sort_buff;
@@ -224,16 +230,13 @@ public class DBCatalog {
 
   /**
    * @return BNLJ is true if the loop type is a block nested
-   *
    */
   public boolean if_BNLJ() {
     return BNLJ;
   }
 
-
   /**
    * @return TNLJ is true if the loop type is a tuple nested
-   *
    */
   public boolean if_TNLJ() {
     return TNLJ;
@@ -241,7 +244,6 @@ public class DBCatalog {
 
   /**
    * @return SMJ is true if the loop type is a sort merge join
-   *
    */
   public boolean if_SMJ() {
     return SMJ;
@@ -249,40 +251,36 @@ public class DBCatalog {
 
   /**
    * @return BNLJ_buff is the size of the block for a block nested loop
-   *
    */
   public int blockSize() {
     return BNLJ_buff;
   }
 
-    /*************************   Benchmarking Functions    *************/
-    /******Functions used to set parameters in order to do Benchmarking ***********/
+  /*************************   Benchmarking Functions    *************/
+  /******Functions used to set parameters in order to do Benchmarking ***********/
 
   /**
    * @param jointype is to set the type of join
-   *
-   *
    */
-    public void setLoop(int jointype){
-      TNLJ= jointype==0;
-      BNLJ = jointype==1;
-      SMJ = jointype ==2;
-    }
+  public void setLoop(int jointype) {
+    TNLJ = jointype == 0;
+    BNLJ = jointype == 1;
+    SMJ = jointype == 2;
+  }
 
   /**
    * sets the block size for a block nested loop for benchmarking
-   * @param b is the block size for the block nested loop join
    *
+   * @param b is the block size for the block nested loop join
    */
-    public void setBNLbuff(int b){
-      BNLJ_buff =b;
-    }
+  public void setBNLbuff(int b) {
+    BNLJ_buff = b;
+  }
 
   /**
    * @param b is to set the number of buffer pages when using external sort
    */
-    public void setSortBuff(int b){
-      sort_buff  =b;
-    }
-  
+  public void setSortBuff(int b) {
+    sort_buff = b;
+  }
 }

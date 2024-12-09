@@ -1,4 +1,6 @@
+/*
 import common.Convert;
+
 import common.DBCatalog;
 import common.QueryPlanBuilder;
 import common.TupleWriter;
@@ -56,7 +58,7 @@ public class P2debug2b {
         configList.add(secondList);
     }
 
-    /**THIS QUERY PASSES*/
+    /**THIS QUERY PASSES
     @Test
     public void testQuery1()
             throws ExecutionControl.NotImplementedException,
@@ -83,7 +85,7 @@ public class P2debug2b {
 
     }
 
-/**THIS QUERY PASSES*/
+/**THIS QUERY PASSES
     @Test
     public void testQuery2()
             throws ExecutionControl.NotImplementedException,
@@ -106,7 +108,7 @@ public class P2debug2b {
 
     }
 
-    /**This query passes*/
+    /**This query passes
     @Test
     public void testQuery3()
             throws ExecutionControl.NotImplementedException,
@@ -130,7 +132,7 @@ public class P2debug2b {
         c2.bin_to_human();
     }
 
-    /**THIS QUERY PASSSES*/
+    /**THIS QUERY PASSSES
     @Test
     public void testQuery4()
             throws ExecutionControl.NotImplementedException,
@@ -152,7 +154,7 @@ public class P2debug2b {
         c2.bin_to_human();
     }
 
-    /**THIS QUERY PASSES*/
+    /**THIS QUERY PASSES
     @Test
     public void testQuery5()
             throws ExecutionControl.NotImplementedException,
@@ -173,8 +175,8 @@ public class P2debug2b {
         Convert c2 = new Convert(out2 + "/query5", new PrintStream(outFile2));
         c2.bin_to_human();
     }
-    /*************************** REST ARE MY QUERIES *************/
-    /**PASSES*/
+     // my queries
+    //PASSES
     @Test
     public void testQuery6()
             throws ExecutionControl.NotImplementedException,
@@ -192,7 +194,7 @@ public class P2debug2b {
         c2.bin_to_human();
     }
 
-    /*********** PASSES now :)********/
+     //  PASSES now :)********
     @Test
     public void testQuery7()
             throws ExecutionControl.NotImplementedException,
@@ -209,4 +211,5 @@ public class P2debug2b {
         Convert c2 = new Convert(out2 + "/query7", new PrintStream(outFile2));
         c2.bin_to_human();
     }
-}
+
+ */

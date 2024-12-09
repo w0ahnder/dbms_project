@@ -1,13 +1,8 @@
 package operator.PhysicalOperators;
 
-import common.Convert;
 import common.DBCatalog;
 import common.Tuple;
-import common.TupleReader;
-import common.TupleWriter;
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.OrderByElement;
@@ -30,7 +25,6 @@ public class SortMergeJoinOperator extends Operator {
   Tuple right_curr;
 
   TupleComparator comparator = new TupleComparator();
-
 
   public int partition_indx;
 
@@ -61,24 +55,29 @@ public class SortMergeJoinOperator extends Operator {
   }
 
   /**
-   * Resets pointer on the operator object to the beginning. Achieves this by resetting its left and right children
+   * Resets pointer on the operator object to the beginning. Achieves this by resetting its left and
+   * right children
    */
   @Override
   public void reset() {
     right.reset();
     left.reset();
+
   }
 
   public void reset(int index) throws IOException {}
-
 
   /**
    * Get next tuple from operator
    *
    * @return Tuple, or null if we are at the end. Retrieves next tuple by calling getNextTuple() on
-   * its left and right child operator and checking that the values at the required column match each other
+   *     its left and right child operator and checking that the values at the required column match
+   *     each other
    */
   public Tuple getNextTuple() {
+    if(left_curr==null){
+      left_curr = left.getNextTuple();
+    }
     try {
       while (left_curr != null) {
         if (right_curr == null) {
@@ -92,14 +91,14 @@ public class SortMergeJoinOperator extends Operator {
           }
           left_curr = left.getNextTuple();
         } else if (comparator.compare(left_curr, right_curr) < 0) {
-          if (partition_indx != -1) {
+          if (partition_indx != -1) { //means we created a partition, since right>left, reset the right partition and get next left tuple
             right.reset(partition_indx);
             tuple_count_right = partition_indx;
             right_curr = right.getNextTuple();
             tuple_count_right++;
           }
           left_curr = left.getNextTuple();
-        } else if (comparator.compare(left_curr, right_curr) > 0) {
+        } else if (comparator.compare(left_curr, right_curr) > 0) { //means left is larger, so incrememnt right?
           right_curr = right.getNextTuple();
           tuple_count_right++;
           // partition_indx = tuple_count_right;
@@ -128,8 +127,9 @@ public class SortMergeJoinOperator extends Operator {
   }
 
   /**
-   * Custom Comparator class to compare to tuples two tuples to determine if to move to the next tuple
-   * on the left(outer) table or on the right(inner) table.
+   * Custom Comparator class to compare to tuples two tuples to determine if to move to the next
+   * tuple on the left(outer) table or on the right(inner) table.
+   *
    * <p>
    */
   private class TupleComparator implements Comparator<Tuple> {
