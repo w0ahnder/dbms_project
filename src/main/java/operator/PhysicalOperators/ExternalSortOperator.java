@@ -68,6 +68,7 @@ public class ExternalSortOperator extends SortOperator {
     sortOperator = new SortOperator(outputSchema, this.orderByElements, op);
     op.reset();
     // returned null here
+    //B.D is not sorted
     Tuple next = op.getNextTuple();
     try {
       while (next != null) {

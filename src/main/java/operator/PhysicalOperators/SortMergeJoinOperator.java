@@ -62,7 +62,9 @@ public class SortMergeJoinOperator extends Operator {
   public void reset() {
     right.reset();
     left.reset();
-
+    partition_indx = -1;
+    tuple_count_right=0;
+    right_curr = right.getNextTuple();
   }
 
   public void reset(int index) throws IOException {}
