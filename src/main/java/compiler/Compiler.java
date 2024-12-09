@@ -41,7 +41,8 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    String configFile = args[0];
+    //String configFile = args[0];
+    String configFile = "/Users/savitta/Desktop/p4debug/input/configFile.txt";
     // String configFile = "src/test/resources/binary_samples/configFile.txt";
     readDirectories(configFile);
     // inputDir = args[0];
@@ -55,21 +56,21 @@ public class Compiler {
     DBCatalog.getInstance().config_file(inputDir);
     DBCatalog.getInstance().setInterpreter(configFile);
     DBCatalog.getInstance().createStatsFile(inputDir);
-    if (!DBCatalog.getInstance().isFullScan()) { // we have to use an index
-      DBCatalog.getInstance().processIndex(); // reads
-    }
+    DBCatalog.getInstance().processIndex(); // reads
+
     try {
       String str = Files.readString(Paths.get(inputDir + "/queries.sql"));
       Statements statements = CCJSqlParserUtil.parseStatements(str);
       QueryPlanBuilder queryPlanBuilder = new QueryPlanBuilder();
       if (outputToFiles) {
         for (File file : (new File(tempDir).listFiles())) file.delete();
-        for (File file : (new File(outputDir).listFiles())) file.delete();
+        //for (File file : (new File(outputDir).listFiles())) file.delete();
       }
 
       int counter = 1; // for numbering output files
       for (Statement statement : statements.getStatements()) {
         try {
+          System.out.println(statement);
           Operator plan = queryPlanBuilder.buildPlan(statement, tempDir, indexFlag, queryFlag);
           queryPlanBuilder.printLogicalPlan(outputDir + "/query" + counter + "_");
           if (outputToFiles) {
@@ -92,6 +93,7 @@ public class Compiler {
           }
         } catch (Exception e) {
           logger.error(e.getMessage());
+          e.printStackTrace();
         }
 
         ++counter;

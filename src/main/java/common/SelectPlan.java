@@ -36,7 +36,7 @@ public class SelectPlan {
       String tableName, ArrayList<Column> schema, String tablePath, LogicalOperator scan) {
     // this.expressions = expressions;
     this.tableName = tableName;
-    stats = DBCatalog.getInstance().getTableStats(tableName);
+    stats = DBCatalog.getInstance().getTableStats(DBCatalog.getInstance().getTableName(tableName));
     numTuples =
         DBCatalog.getInstance()
             .getTableStats(DBCatalog.getInstance().getTableName(tableName))
@@ -81,7 +81,7 @@ public class SelectPlan {
         unindexedExpressions.add(exp);
         continue;
       }
-      boolean tableHasIndex = DBCatalog.getInstance().getAvailableIndexColumn(tableName) != null;
+      boolean tableHasIndex = DBCatalog.getInstance().getAvailableIndexColumn(DBCatalog.getInstance().getTableName(tableName)) != null;
       boolean colHasIndex =
           DBCatalog.getInstance().getAvailableIndex(tableName, colToCheck) != null;
       if (tableHasIndex && colHasIndex) {
@@ -134,7 +134,7 @@ public class SelectPlan {
       double redFactor = (double) (selectRange[1] - selectRange[0]) / rangeSize;
       System.out.println("reduction factor before for  " + col + " is: " + redFactor);
       // calc cost for clustered and unclustered indexes
-      Tuple index_info = DBCatalog.getInstance().getIndexInfo(tableName, col);
+      Tuple index_info = DBCatalog.getInstance().getIndexInfo(DBCatalog.getInstance().getTableName(tableName), col);
       boolean clustered = index_info.getElementAtIndex(0) == 1;
       // tree_height + pages*reduction factos
       int treeHeight = stats.getHeightforCol(col);
@@ -212,9 +212,9 @@ public class SelectPlan {
     Expression unIndexedExpr = unindexed;
     int low = colMinMax.get(col)[0];
     int high = colMinMax.get(col)[1];
-    Integer ind = DBCatalog.getInstance().colIndex(tableName, col);
+    Integer ind = DBCatalog.getInstance().colIndex(DBCatalog.getInstance().getTableName(tableName), col);
     boolean clustered =
-        DBCatalog.getInstance().getClustOrd(tableName, col).getElementAtIndex(0) == 1;
+        DBCatalog.getInstance().getClustOrd(DBCatalog.getInstance().getTableName(tableName), col).getElementAtIndex(0) == 1;
     File indexFile = DBCatalog.getInstance().getAvailableIndex(tableName, col);
     System.out.println("IndexedExpr: " + indexedExpr);
     System.out.println("Unindexed Expr: " + unIndexedExpr);

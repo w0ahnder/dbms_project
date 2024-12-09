@@ -1,5 +1,5 @@
 package common;
-
+import UnionFind.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
