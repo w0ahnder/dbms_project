@@ -94,7 +94,7 @@ public class DBCatalog {
    */
   public void createStatsFile(String directory) {
     String inputPath = directory + "/db/data";
-    String outputPath = directory + "/stats.txt";
+    String outputPath = directory + "/db/stats.txt";
     try {
       BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath));
       for (String key : tables.keySet()) {
