@@ -38,9 +38,13 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    inputDir = args[0];
-    outputDir = args[1];
-    tempDir = args[2];
+    //inputDir = args[0];
+    //outputDir = args[1];
+    //tempDir = args[2];
+    inputDir = "/Users/savitta/Desktop/cs4320/p5/input";
+    outputDir = "/Users/savitta/Desktop/cs4320/p5/output";
+    tempDir = "/Users/savitta/Desktop/cs4320/p5/temp";
+
 
     // TODO: Get the join and sort methods from the configuration file
     // TODO: get the location of the tmepDir
