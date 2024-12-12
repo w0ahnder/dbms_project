@@ -41,7 +41,8 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    String configFile = args[0];
+    //String configFile = args[0];
+    String configFile = "/Users/savitta/Desktop/cs4320/p5/input/configFile.txt";
     readDirectories(configFile);
     // inputDir = args[0];
     // outputDir = args[1];
