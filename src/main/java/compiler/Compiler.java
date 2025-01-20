@@ -41,14 +41,13 @@ public class Compiler {
    */
   public static void main(String[] args) {
 
-    //String configFile = args[0];
-    String configFile = "/Users/savitta/Desktop/cs4320/p5/input/configFile.txt";
+    String configFile = args[0];
     readDirectories(configFile);
-    // inputDir = args[0];
-    // outputDir = args[1];
-    // tempDir = args[2];
+     inputDir = args[0];
+     outputDir = args[1];
+     tempDir = args[2];
 
-    // TODO: Get the join and sort methods from the configuration file
+      // TODO: Get the join and sort methods from the configuration file
     // TODO: get the location of the tmepDir
 
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");

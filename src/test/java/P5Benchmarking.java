@@ -72,13 +72,13 @@ public class P5Benchmarking {
             //3 tables 500 and 1000 and 5000
             String db = "/Users/savitta/Desktop/cs4320/p5/input/db/data";
             //small table
-            DataGenerator smallTable = new DataGenerator(1000, 500, 3, db +"/small");
+            DataGenerator smallTable = new DataGenerator(1000, 1000, 3, db +"/small");
             smallTable.generateTuples();
             //medium table
-            DataGenerator medTable = new DataGenerator(1000, 1000, 3, db + "/medium");
+            DataGenerator medTable = new DataGenerator(1000, 5000, 3, db + "/medium");
             medTable.generateTuples();
             //large table
-            DataGenerator largeTable = new DataGenerator(1000, 5000, 3, db+"/large") ;
+            DataGenerator largeTable = new DataGenerator(1000, 10000, 3, db+"/large") ;
             largeTable.generateTuples();
 
 
