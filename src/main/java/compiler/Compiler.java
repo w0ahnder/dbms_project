@@ -47,9 +47,6 @@ public class Compiler {
      outputDir = args[1];
      tempDir = args[2];
 
-      // TODO: Get the join and sort methods from the configuration file
-    // TODO: get the location of the tmepDir
-
     DBCatalog.getInstance().setDataDirectory(inputDir + "/db");
     DBCatalog.getInstance().config_file(inputDir);
     DBCatalog.getInstance().setInterpreter(configFile);
