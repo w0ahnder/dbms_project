@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="IntegratedTests" tests="10" skipped="0" failures="0" errors="0" timestamp="2024-09-21T00:52:53" hostname="dhcp-vl2041-27801.eduroam.cornell.edu" time="0.105">
+  <properties/>
+  <testcase name="testQueryNo10()" classname="IntegratedTests" time="0.015"/>
+  <testcase name="testQueryNo7()" classname="IntegratedTests" time="0.009"/>
+  <testcase name="testQueryNo8()" classname="IntegratedTests" time="0.017"/>
+  <testcase name="testQueryNo9()" classname="IntegratedTests" time="0.012"/>
+  <testcase name="testQuery1()" classname="IntegratedTests" time="0.006"/>
+  <testcase name="testQuery2()" classname="IntegratedTests" time="0.007"/>
+  <testcase name="testQuery3()" classname="IntegratedTests" time="0.01"/>
+  <testcase name="testQuery4()" classname="IntegratedTests" time="0.009"/>
+  <testcase name="testQuery5()" classname="IntegratedTests" time="0.007"/>
+  <testcase name="testQuery6()" classname="IntegratedTests" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

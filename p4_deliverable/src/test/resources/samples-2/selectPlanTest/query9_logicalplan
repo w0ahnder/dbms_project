@@ -1,0 +1,8 @@
+Join
+[Sailors.A > Boats.E]
+[[Sailors.A,], equals null, min 9969, max null ]
+[[Boats.E,], equals null, min 9973, max null ]
+-Select[Sailors.A >= 9969]
+--Leaf[ Sailors]
+-Select[Boats.E > Boats.D AND Boats.E >= 9973]
+--Leaf[ Boats]

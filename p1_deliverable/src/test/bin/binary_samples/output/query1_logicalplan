@@ -1,0 +1,8 @@
+DupElim
+-Project[S.Sailors.A, R.Reserves.G, ]
+--Sort[S.A, ]
+---Join
+----Leaf[ S]
+----Select[R.H <= 99]
+-----Leaf[ R]
+----Leaf[ B]

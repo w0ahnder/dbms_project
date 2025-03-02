@@ -1,0 +1,11 @@
+/.DS_Store
+/benchmarking/
+/binary_samples/
+/Benchmarking.class
+/HelperMethods.class
+/P2BinaryTest.class
+/P2CheckpointTest.class
+/TupleReadWriteTest.class
+/external_sort/
+/samples/
+/scratch.txt

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inheritJdk="true">
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$/../../src/main"/>
+	<levels>
+		<level name="Gradle: com.github.jsqlparser:jsqlparser:4.6" value="project"/>
+		<level name="Gradle: org.apache.logging.log4j:log4j-core:2.20.0" value="project"/>
+		<level name="Gradle: org.apache.logging.log4j:log4j-api:2.20.0" value="project"/>
+	</levels>
+</component>

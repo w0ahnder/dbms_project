@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="SelectPlanTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2024-12-04T05:30:07" hostname="dhcp-vl2041-51820.eduroam.cornell.edu" time="1.35">
+  <properties/>
+  <testcase name="testQuery1()" classname="SelectPlanTest" time="0.433"/>
+  <testcase name="testQuery2()" classname="SelectPlanTest" time="0.124"/>
+  <testcase name="testQuery3()" classname="SelectPlanTest" time="0.108"/>
+  <testcase name="testQuery4()" classname="SelectPlanTest" time="0.151"/>
+  <testcase name="testQuery5()" classname="SelectPlanTest" time="0.176"/>
+  <testcase name="testQuery6()" classname="SelectPlanTest" time="0.074"/>
+  <testcase name="testQuery7()" classname="SelectPlanTest" time="0.123"/>
+  <testcase name="testQuery8()" classname="SelectPlanTest" time="0.076"/>
+  <testcase name="testQuery9()" classname="SelectPlanTest" time="0.073"/>
+  <system-out><![CDATA[regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Sailors.A >= 9969
+Unindexed Expr: null
+Indexing column: A
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+reduction factor before for  B is: 0.0031
+Tree height for column B is: 3
+not clustered on column B
+index scan cost for B: 34.6603
+Uisng IndexScan as a child because we have unindexed and indexed expressions
+IndexedExpr: Sailors.A >= 9969
+Unindexed Expr: Sailors.B >= 9969 AND Sailors.B = Sailors.A
+Indexing column: A
+regular scan cost for table Sailors: 30.0
+Just doing regular full scan because more efficient
+regular scan cost for table Sailors: 30.0
+reduction factor before for  B is: 0.5
+Tree height for column B is: 3
+not clustered on column B
+index scan cost for B: 5109.5
+Just doing regular full scan because more efficient
+cost is 0
+cost is 0
+best join order: [Sailors, Boats]
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 2.0002000200020003E-4
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.006000600060006
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Sailors.A >= 9998
+Unindexed Expr: null
+Indexing column: A
+regular scan cost for table Boats: 30.0
+reduction factor before for  E is: 0.0
+Tree height for column E is: 3
+not clustered on column E
+index scan cost for E: 3.0
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Boats.E >= 9999
+Unindexed Expr: null
+Indexing column: E
+cost is 0
+cost is 0
+best join order: [Sailors, Boats]
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Sailors.A >= 9969
+Unindexed Expr: null
+Indexing column: A
+regular scan cost for table Boats: 30.0
+reduction factor before for  E is: 0.0026013006503251626
+Tree height for column E is: 3
+not clustered on column E
+index scan cost for E: 29.83501750875438
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Boats.E >= 9973
+Unindexed Expr: null
+Indexing column: E
+cost is 0
+cost is 0
+best join order: [Sailors, Boats]
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+Uisng IndexScan as a child because we have unindexed and indexed expressions
+IndexedExpr: Sailors.A >= 9969
+Unindexed Expr: Sailors.A > Sailors.B
+Indexing column: A
+regular scan cost for table Boats: 30.0
+reduction factor before for  E is: 0.0026013006503251626
+Tree height for column E is: 3
+not clustered on column E
+index scan cost for E: 29.83501750875438
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Boats.E >= 9973
+Unindexed Expr: null
+Indexing column: E
+cost is 0
+cost is 0
+best join order: [Sailors, Boats]
+regular scan cost for table Sailors: 30.0
+reduction factor before for  A is: 0.0031003100310031005
+Tree height for column A is: 3
+clustered
+index scan cost for A: 3.093009300930093
+Just using a regular index scan operator because only have indexed expressions
+IndexedExpr: Sailors.A >= 9969
+Unindexed Expr: null
+Indexing column: A
+regular scan cost for table Boats: 30.0
+reduction factor before for  E is: 0.0026013006503251626
+Tree height for column E is: 3
+not clustered on column E
+index scan cost for E: 29.83501750875438
+Uisng IndexScan as a child because we have unindexed and indexed expressions
+IndexedExpr: Boats.E >= 9973
+Unindexed Expr: Boats.E > Boats.D
+Indexing column: E
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

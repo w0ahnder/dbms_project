@@ -1,0 +1,4 @@
+BNLJ[Sailors.A > Boats.E]
+-IndexScan[Sailors,A,9969,10000]
+-Select[Boats.E > Boats.D]
+--IndexScan[Boats,E,9973,9999]

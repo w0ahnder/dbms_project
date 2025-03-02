@@ -1,0 +1,3 @@
+BNLJ[null]
+-IndexScan[Sailors,A,9969,10000]
+-IndexScan[Boats,E,9973,9999]
